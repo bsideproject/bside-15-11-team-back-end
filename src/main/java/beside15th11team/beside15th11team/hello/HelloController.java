@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/hello")
+@RequestMapping("/api")
 @Slf4j
 public class HelloController {
-	private final HelloRepository helloRepository;
+	private final HelloService helloService;
 
-	public HelloController(HelloRepository helloRepository) {
-		this.helloRepository = helloRepository;
+	public HelloController(HelloService helloService) {
+		this.helloService = helloService;
 	}
 
-	@GetMapping
+	@GetMapping("/hello")
 	public String hello() {
-		log.info("success! -> {}",helloRepository.findById(1l).get().toString());
+		log.info("success! -> {}", helloService.hello());
 		return "OK";
 	}
 }
