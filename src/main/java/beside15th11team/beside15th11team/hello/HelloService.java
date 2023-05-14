@@ -11,6 +11,6 @@ public class HelloService {
 	}
 
 	public Hello hello() {
-		return helloRepository.findById(1l).get();
+		return helloRepository.findByBody("hello").orElse(Hello.builder().body("NO").build());
 	}
 }

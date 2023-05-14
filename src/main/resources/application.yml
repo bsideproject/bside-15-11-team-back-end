@@ -1,8 +1,7 @@
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/beside
-    username: root
-    password:
+  data:
+    mongodb:
+      uri: mongodb+srv://beside15th11team:beside11!@beside.hxhx7vu.mongodb.net/?retryWrites=true&w=majority
+      database: beside
 static:
   path: /Users/user/beside/

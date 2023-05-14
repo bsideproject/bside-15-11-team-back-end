@@ -1,12 +1,8 @@
 package beside15th11team.beside15th11team.hello;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,11 +13,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity
-@Table(name = "hello")
+@Document("hello")
 public class Hello {
 	@Id
-	@Column
-	@GeneratedValue
-	private Long id;
+	private String id;
+
+	private String body;
 }
