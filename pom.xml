@@ -8,11 +8,11 @@
 		<version>3.0.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>beside-15th-11team</groupId>
-	<artifactId>beside-15th-11team</artifactId>
+	<groupId>beside-15th-11team-back-end</groupId>
+	<artifactId>beside-15th-11team-back-end</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>beside-15th-11team</name>
-	<description>beside-15th-11team</description>
+	<name>beside-15th-11team-back-end</name>
+	<description>beside-15th-11team-back-end</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
