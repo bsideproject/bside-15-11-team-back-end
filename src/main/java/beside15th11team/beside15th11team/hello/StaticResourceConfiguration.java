@@ -8,17 +8,17 @@ import org.springframework.web.reactive.resource.PathResourceResolver;
 
 @Configuration
 public class StaticResourceConfiguration implements WebFluxConfigurer {
-	private final String staticPath;
+  private final String staticPath;
 
-	public StaticResourceConfiguration(@Value("${static.path}") String staticPath) {
-		this.staticPath = staticPath;
-	}
+  public StaticResourceConfiguration(@Value("${static.path}") String staticPath) {
+    this.staticPath = staticPath;
+  }
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/**")
-			.addResourceLocations("file:" + staticPath)
-			.resourceChain(true)
-			.addResolver(new PathResourceResolver());
-	}
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry.addResourceHandler("/**")
+        .addResourceLocations("file:" + staticPath)
+        .resourceChain(true)
+        .addResolver(new PathResourceResolver());
+  }
 }

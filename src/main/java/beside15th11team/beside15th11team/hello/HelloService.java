@@ -4,13 +4,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class HelloService {
-	private final HelloRepository helloRepository;
+  private final HelloRepository helloRepository;
 
-	public HelloService(HelloRepository helloRepository) {
-		this.helloRepository = helloRepository;
-	}
+  public HelloService(HelloRepository helloRepository) {
+    this.helloRepository = helloRepository;
+  }
 
-	public Hello hello() {
-		return helloRepository.findByBody("hello").orElse(Hello.builder().body("NO").build());
-	}
+  public Hello hello() {
+    return helloRepository.findByBody("hello").orElse(Hello.builder().body("NO").build());
+  }
 }
