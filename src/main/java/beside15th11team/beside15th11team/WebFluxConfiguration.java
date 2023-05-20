@@ -1,4 +1,4 @@
-package beside15th11team.beside15th11team.hello;
+package beside15th11team.beside15th11team;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
