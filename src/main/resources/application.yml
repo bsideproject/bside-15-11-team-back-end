@@ -6,4 +6,5 @@ spring:
 static:
   path: /Users/user/beside/
 cors:
-  origins: 127.0.0.1, localhost, 223.130.136.211
+  origins: '*'
+#  origins: 127.0.0.1, localhost, 223.130.136.211
