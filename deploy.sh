@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=~/app/backend
+REPOSITORY=~/app/backend/deploy
 
 echo "> 실행중인 애플리케이션 pid 확인"
 CURRENT_PID=$(lsof -i tcp:8080 | awk 'NR!=1 {print$2}')

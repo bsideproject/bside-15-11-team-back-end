@@ -29,11 +29,18 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
+      # make release artifact
+      - name: Add artifacts to publish to the deploy folder
+        run: |
+          mkdir -p ./deploy
+          cp -r ./target/*.jar ./deploy
+          cp -r ./deploy.sh ./deploy
+
       - name: Upload release artifact
         uses: actions/upload-artifact@v2
         with:
           name: release-artifact
-          files: [./target/*.jar, ./deploy.sh]
+          path: ./deploy
 
   deploy:
     needs: build
@@ -52,7 +59,7 @@ jobs:
           host: ${{ secrets.NCP_HOST }}
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
-          source: "*"
+          source: "./deploy"
           target: "~/app/backend"
 
       - name: Execute Server Init Script
@@ -63,4 +70,4 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           script_stop: true
-          script: chmod +x ~/app/backend && sh ~/app/backend/deploy.sh
+          script: chmod +x ~/app/backend/deploy && sh ~/app/backend/deploy/deploy.sh
