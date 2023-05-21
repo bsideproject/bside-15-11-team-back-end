@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=~/app/backend/deploy
+REPOSITORY=~/app/backend
 
 echo "> 실행중인 애플리케이션 pid 확인"
 CURRENT_PID=$(lsof -i tcp:8080 | awk 'NR!=1 {print$2}')
@@ -15,7 +15,7 @@ else
 fi
 
 echo "> 새 애플리케이션 배포"
-JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
+JAR_NAME=$(ls -tr $REPOSITORY/ |grep jar | tail -n 1)
 echo "> JAR Name: $JAR_NAME"
 
 nohup java -jar -Dspring.profiles.active=release $REPOSITORY/$JAR_NAME 2>&1 &
