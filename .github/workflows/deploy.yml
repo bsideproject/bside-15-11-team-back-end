@@ -1,8 +1,12 @@
 name: deploy
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
-    branches: [temp/deploy]
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   build:
