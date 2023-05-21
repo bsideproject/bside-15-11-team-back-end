@@ -19,4 +19,3 @@ JAR_NAME=$(ls -tr $REPOSITORY/ |grep jar | tail -n 1)
 echo "> JAR Name: $JAR_NAME"
 
 nohup java -jar -Dspring.profiles.active=release $REPOSITORY/$JAR_NAME 2>&1 &
- sleep 2
