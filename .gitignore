@@ -34,3 +34,6 @@ build/
 
 ### mac ###
 .DS_Store
+
+### Secret yml ##
+**/src/main/resources/secret

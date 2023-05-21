@@ -1,7 +1,9 @@
 spring:
+  config:
+    import: secret/mongo-info.yml
   data:
     mongodb:
-      uri: mongodb+srv://beside15th11team:beside11!@beside.hxhx7vu.mongodb.net/?retryWrites=true&w=majority
+      uri: mongodb+srv://${mongodb.env.username}:${mongodb.env.password}@${mongodb.env.cluster}.mongodb.net/?retryWrites=true&w=majority
       database: beside
 static:
   path: /Users/user/beside/
