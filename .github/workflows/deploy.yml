@@ -1,7 +1,7 @@
 name: deploy
 
 on:
-  pull_request:
+  push:
     branches: [temp/deploy]
 
 jobs:
@@ -12,6 +12,7 @@ jobs:
       # Project JDK 17 Setting
       - name: Checkout
         uses: actions/checkout@v3
+      - run: mkdir -p ./src/main/resources/secret
       - run: touch ./src/main/resources/secret/mongo-info.yml
       - run: echo "${{ secrets.MONGO_INFO }}" > ./src/main/resources/secret/mongo-info.yml
       - run: cat ./src/main/resources/secret/mongo-info.yml
