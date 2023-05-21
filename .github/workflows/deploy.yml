@@ -64,7 +64,7 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           source: "*.jar"
-          target: "~/app/backend"
+          target: "~/app/back-end"
           strip_components: 2
 
       - name: Transfer Deploy Script use SCP
@@ -75,7 +75,7 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           source: "deploy.sh"
-          target: "~/app/backend"
+          target: "~/app/backend/deploy"
 
       - name: Execute Server Init Script
         uses: appleboy/ssh-action@master
@@ -85,4 +85,4 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           script_stop: true
-          script: chmod +x ~/app/backend && sh ~/app/backend/deploy.sh
+          script: chmod +x ~/app/backend && sh ~/app/backend/deploy/deploy.sh
