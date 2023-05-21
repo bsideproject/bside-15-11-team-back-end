@@ -74,4 +74,4 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           script_stop: true
-          script: chmod +x ~/app/backend && sh ~/app/backend/deploy.sh
+          script: chmod +x ~/app/backend && sh ~/app/backend/deploy.sh && exit
