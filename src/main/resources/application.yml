@@ -8,3 +8,18 @@ static:
 cors:
   origins: '*'
 #  origins: 127.0.0.1, localhost, 223.130.136.211
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+---
+spring:
+  config:
+    activate:
+      on-profile: release
+
+static:
+  path: /root/static
