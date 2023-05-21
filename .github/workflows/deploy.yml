@@ -12,11 +12,12 @@ jobs:
       # Checkout & Secret yml create
       - name: Checkout
         uses: actions/checkout@v3
-        run: |
+      - run: |
           mkdir -p ./src/main/resources/secret
           touch ./src/main/resources/secret/mongo-info.yml
           echo "${{ secrets.MONGO_INFO }}" > ./src/main/resources/secret/mongo-info.yml
           cat ./src/main/resources/secret/mongo-info.yml
+
       # Project JDK 17 setting
       - name: Set up JDK 17
         uses: actions/setup-java@v3
