@@ -59,7 +59,7 @@ jobs:
           host: ${{ secrets.NCP_HOST }}
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
-          source: "./deploy"
+          source: "*"
           target: "~/app/backend"
 
       - name: Execute Server Init Script
@@ -70,4 +70,4 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           script_stop: true
-          script: chmod +x ~/app/backend/deploy && sh ~/app/backend/deploy/deploy.sh
+          script: chmod +x ~/app/backend && sh ~/app/backend/deploy.sh
