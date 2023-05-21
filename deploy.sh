@@ -18,4 +18,4 @@ echo "> 새 애플리케이션 배포"
 JAR_NAME=$(ls -tr $REPOSITORY/ |grep jar | tail -n 1)
 echo "> JAR Name: $JAR_NAME"
 
-nohup java -jar -Dspring.profiles.active=release $REPOSITORY/$JAR_NAME 2>&1 &
+nohup java -jar -Dspring.profiles.active=release $REPOSITORY/$JAR_NAME > nohup.out 2> nohup.err < /dev/null &
