@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false">
+    <springProperty scope="context" name="LOG_PATTERN" source="log.pattern"/>
+    <springProperty scope="context" name="LOG_LEVEL" source="log.level"/>
+
+    <springProfile name="local">
+        <include resource="console-appender.xml"/>
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+    <springProfile name="release">
+        <include resource="file-appender.xml"/>
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+</configuration>

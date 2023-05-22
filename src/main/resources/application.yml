@@ -9,16 +9,24 @@ spring:
       database: beside
 cors:
   origins: '*'
-#  origins: 127.0.0.1, localhost, 223.130.136.211
+#  origins: 127.0.0.1, localhost, 223.130.136.211\
+log:
+  pattern: "[%level] %d{yy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] - %msg%n"
 
 ---
 spring:
   config:
     activate:
       on-profile: local
+log:
+  level: info
 
 ---
 spring:
   config:
     activate:
       on-profile: release
+log:
+  path: /Users/user/logs
+  filename: beside-15th-11team
+  level: warn
