@@ -2,8 +2,9 @@ name: deploy
 
 on:
   push:
-    tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+    branches: [temp/deploy]
+#    tags:
+#      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   build:
@@ -16,8 +17,11 @@ jobs:
       - run: |
           mkdir -p ./src/main/resources/secret
           touch ./src/main/resources/secret/mongo-info.yml
+          touch ./src/main/resources/secret/front-info.yml
+          touch ./src/deploy.sh
           echo "${{ secrets.MONGO_INFO }}" > ./src/main/resources/secret/mongo-info.yml
-          cat ./src/main/resources/secret/mongo-info.yml
+          echo "${{ secrets.FRONT_INFO }}" > ./src/main/resources/secret/front-info.yml
+          echo "${{ secrets.DEPLOY_SCRIPT }}" > ./src/deploy.sh
 
       # Project JDK 17 setting
       - name: Set up JDK 17
@@ -49,7 +53,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      # Upload release artifact
+      # Download release artifact
       - name: Download artifact jar
         uses: actions/download-artifact@v2
         with:
