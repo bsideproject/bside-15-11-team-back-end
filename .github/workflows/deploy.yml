@@ -18,10 +18,10 @@ jobs:
           mkdir -p ./src/main/resources/secret
           touch ./src/main/resources/secret/mongo-info.yml
           touch ./src/main/resources/secret/front-info.yml
-          touch ./src/deploy.sh
+          touch ./deploy.sh
           echo "${{ secrets.MONGO_INFO }}" > ./src/main/resources/secret/mongo-info.yml
           echo "${{ secrets.FRONT_INFO }}" > ./src/main/resources/secret/front-info.yml
-          echo "${{ secrets.DEPLOY_SCRIPT }}" > ./src/deploy.sh
+          echo "${{ secrets.DEPLOY_SCRIPT }}" > ./deploy.sh
 
       # Project JDK 17 setting
       - name: Set up JDK 17

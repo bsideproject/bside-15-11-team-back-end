@@ -16,6 +16,9 @@ jobs:
     - run: |
         mkdir -p ./src/main/resources/secret
         touch ./src/main/resources/secret/mongo-info.yml
+        touch ./src/main/resources/secret/front-info.yml
+        echo "${{ secrets.MONGO_INFO }}" > ./src/main/resources/secret/mongo-info.yml
+        echo "${{ secrets.FRONT_INFO }}" > ./src/main/resources/secret/front-info.yml
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
