@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false">
-    <springProperty scope="context" name="LOG_PATTERN" source="log.pattern"/>
     <springProperty scope="context" name="LOG_LEVEL" source="log.level"/>
+    <property name="LOG_PATTERN" value="[%level] %d{yy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] - %msg%n"/>
+
+    <logger name="org.springframework.data.mongodb.core" level="debug"/>
 
     <springProfile name="local">
         <include resource="console-appender.xml"/>
