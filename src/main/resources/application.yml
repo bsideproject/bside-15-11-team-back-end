@@ -27,6 +27,6 @@ spring:
     activate:
       on-profile: release
 log:
-  path: /Users/user/logs
+  path: /logs
   filename: beside-15th-11team
   level: warn
