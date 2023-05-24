@@ -1,11 +1,11 @@
-package beside15th11team.beside15th11team;
+package com.beside.mamgwanboo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Beside15th11teamBackEndApplication {
+public class MamgwanbooApplication {
   public static void main(String[] args) {
-    SpringApplication.run(Beside15th11teamBackEndApplication.class, args);
+    SpringApplication.run(MamgwanbooApplication.class, args);
   }
 }

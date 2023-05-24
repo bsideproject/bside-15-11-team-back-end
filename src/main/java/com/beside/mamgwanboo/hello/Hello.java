@@ -1,4 +1,4 @@
-package beside15th11team.beside15th11team.hello;
+package com.beside.mamgwanboo.hello;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

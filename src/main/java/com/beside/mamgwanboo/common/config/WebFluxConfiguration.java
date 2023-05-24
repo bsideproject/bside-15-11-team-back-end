@@ -1,4 +1,4 @@
-package beside15th11team.beside15th11team;
+package com.beside.mamgwanboo.common.config;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
