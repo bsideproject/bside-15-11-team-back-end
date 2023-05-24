@@ -13,8 +13,10 @@
     </springProfile>
     <springProfile name="release">
         <include resource="file-appender.xml"/>
+        <include resource="slack-appender.xml"/>
         <root level="${LOG_LEVEL}">
             <appender-ref ref="FILE"/>
+            <appender-ref ref="SLACK"/>
         </root>
     </springProfile>
 </configuration>

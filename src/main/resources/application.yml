@@ -3,6 +3,7 @@ spring:
     import:
       - secret/mongo-info.yml
       - secret/front-info.yml
+      - secret/slack-info.yml
   data:
     mongodb:
       uri: mongodb+srv://${mongodb.env.username}:${mongodb.env.password}@${mongodb.env.cluster}.mongodb.net/?retryWrites=true&w=majority

@@ -33,6 +33,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.maricn</groupId>
+            <artifactId>logback-slack-appender</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
