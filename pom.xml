@@ -46,6 +46,12 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.23.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -69,6 +75,29 @@
                 <configuration>
                     <configLocation>${basedir}/google_checks.xml</configLocation>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.os72</groupId>
+                <artifactId>protoc-jar-maven-plugin</artifactId>
+                <version>3.11.4</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <protocVersion>3.23.2</protocVersion>
+                            <addProtoSources>all</addProtoSources>
+                            <optimizeCodegen>true</optimizeCodegen>
+                            <inputDirectories>
+                                <include>protobuf</include>
+                            </inputDirectories>
+                            <type>java</type>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
