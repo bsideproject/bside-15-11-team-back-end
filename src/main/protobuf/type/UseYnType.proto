@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package protobuf.type;
+
+enum UseYnType {
+  Y = 0;
+  N = 1;
+}
