@@ -14,7 +14,13 @@ cors:
 #  origins: 127.0.0.1, localhost, 223.130.136.211
 jwt:
   baseKey: ${jwt.baseKey}
-
+oauth:
+  kakao:
+    baseUrl: https://kauth.kakao.com
+    uri: /oauth/token
+api:
+  kakao:
+    baseUrl: https://kapi.kakao.com
 ---
 
 spring:

@@ -7,7 +7,6 @@ import reactor.core.publisher.Mono;
 
 import lombok.Setter;
 
-@Setter
 public class SignRequestDto {
 	private OauthServiceType oauthServiceType;
 	private String authenticationCode;

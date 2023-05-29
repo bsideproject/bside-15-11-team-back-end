@@ -17,7 +17,7 @@ public abstract class AbstractSignService {
 		OauthServiceType oauthServiceType,
 		String authenticationCode
 	) {
-		return getAccessToken(oauthServiceType, authenticationCode)
+		return getAccessToken(authenticationCode)
 			.flatMap(accessToken -> getUserInformation(oauthServiceType, accessToken))
 			.flatMap(this::makeUser)
 			.flatMap(user -> isNewUser(user)
@@ -39,15 +39,9 @@ public abstract class AbstractSignService {
 			.build());
 	}
 
-	abstract Mono<String> getAccessToken(
-		OauthServiceType oauthServiceType,
-		String authenticationCode
-	);
+	abstract Mono<String> getAccessToken(String authenticationCode);
 
-	abstract Mono<UserInformation> getUserInformation(
-		OauthServiceType oauthServiceType,
-		String accessToken
-	);
+	abstract Mono<UserInformation> getUserInformation(OauthServiceType oauthServiceType, String accessToken);
 
 	abstract Mono<Boolean> isNewUser(User user);
 

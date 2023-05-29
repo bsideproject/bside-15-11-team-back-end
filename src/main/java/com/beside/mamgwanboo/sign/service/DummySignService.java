@@ -19,15 +19,14 @@ public class DummySignService extends AbstractSignService {
 	}
 
 	@Override
-	Mono<String> getAccessToken(
-		OauthServiceType oauthServiceType, String authenticationCode
-	) {
+	Mono<String> getAccessToken(String authenticationCode) {
 		return Mono.just("dummy");
 	}
 
 	@Override
 	Mono<AbstractSignService.UserInformation> getUserInformation(
-		OauthServiceType oauthServiceType, String accessToken
+		OauthServiceType oauthServiceType,
+		String accessToken
 	) {
 		return Mono.just(UserInformation.builder()
 			.oauthServiceType(oauthServiceType)
