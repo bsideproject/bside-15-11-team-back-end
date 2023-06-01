@@ -4,6 +4,8 @@ spring:
       - secret/mongo-info.yml
       - secret/front-info.yml
       - secret/slack-info.yml
+      - secret/jwt-info.yml
+      - secret/kakao-info.yml
   data:
     mongodb:
       uri: mongodb+srv://${mongodb.env.username}:${mongodb.env.password}@${mongodb.env.cluster}.mongodb.net/?retryWrites=true&w=majority
@@ -11,6 +13,14 @@ spring:
 cors:
   origins: '*'
 #  origins: 127.0.0.1, localhost, 223.130.136.211
+jwt:
+  baseKey: ${jwt.baseKey}
+oauth:
+  kakao:
+    uri: https://kauth.kakao.com/oauth/token
+api:
+  kakao:
+    uri: https://kapi.kakao.com/v2/user/me
 
 ---
 

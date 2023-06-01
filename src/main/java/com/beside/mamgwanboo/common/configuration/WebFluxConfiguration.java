@@ -1,4 +1,4 @@
-package com.beside.mamgwanboo.common.config;
+package com.beside.mamgwanboo.common.configuration;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +13,10 @@ public class WebFluxConfiguration implements WebFluxConfigurer {
   private final String staticPath;
   private final List<String> origins;
 
-  public WebFluxConfiguration(@Value("${static.path}") String staticPath,
-                              @Value("${cors.origins}") List<String> origins) {
+  public WebFluxConfiguration(
+      @Value("${static.path}") String staticPath,
+      @Value("${cors.origins}") List<String> origins
+  ) {
     this.staticPath = staticPath;
     this.origins = origins;
   }
