@@ -1,9 +1,9 @@
 package com.beside.mamgwanboo.common.handler;
 
-import static org.springframework.web.reactive.function.server.RouterFunctions.*;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
+import com.beside.mamgwanboo.common.model.GlobalErrorAttributes;
 import java.util.Map;
-
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -17,29 +17,30 @@ import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
-import com.beside.mamgwanboo.common.model.GlobalErrorAttributes;
 import reactor.core.publisher.Mono;
 
 @Component
 @Order(-2)
 public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
-	public GlobalExceptionHandler(GlobalErrorAttributes globalErrorAttributes, ApplicationContext applicationContext, ServerCodecConfigurer serverCodecConfigurer) {
-		super(globalErrorAttributes, new WebProperties.Resources(), applicationContext);
-		super.setMessageWriters(serverCodecConfigurer.getWriters());
-		super.setMessageReaders(serverCodecConfigurer.getReaders());
-	}
+  public GlobalExceptionHandler(GlobalErrorAttributes globalErrorAttributes,
+                                ApplicationContext applicationContext,
+                                ServerCodecConfigurer serverCodecConfigurer) {
+    super(globalErrorAttributes, new WebProperties.Resources(), applicationContext);
+    super.setMessageWriters(serverCodecConfigurer.getWriters());
+    super.setMessageReaders(serverCodecConfigurer.getReaders());
+  }
 
-	@Override
-	protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
-		return route(RequestPredicates.all(), this::handle);
-	}
+  @Override
+  protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
+    return route(RequestPredicates.all(), this::handle);
+  }
 
-	private Mono<ServerResponse> handle(ServerRequest serverRequest) {
-		Map<String, Object> errorAttributes = getErrorAttributes(serverRequest, ErrorAttributeOptions.defaults());
+  private Mono<ServerResponse> handle(ServerRequest serverRequest) {
+    Map<String, Object> errorAttributes =
+        getErrorAttributes(serverRequest, ErrorAttributeOptions.defaults());
 
-		return ServerResponse
-			.status((HttpStatus)errorAttributes.get("status"))
-			.bodyValue(errorAttributes.get("message"));
-	}
+    return ServerResponse
+        .status((HttpStatus) errorAttributes.get("status"))
+        .bodyValue(errorAttributes.get("message"));
+  }
 }

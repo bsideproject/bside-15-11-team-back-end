@@ -1,34 +1,33 @@
 package com.beside.mamgwanboo.sign.kakao.type;
 
+import com.beside.mamgwanboo.common.type.YnType;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import com.beside.mamgwanboo.common.type.YnType;
-
 import lombok.Getter;
 
 @Getter
 public enum KakaoBirthdayType {
-	SOLAR("SOLAR", YnType.N),
-	LUNAR("LUNAR", YnType.Y);
+  SOLAR("SOLAR", YnType.N),
+  LUNAR("LUNAR", YnType.Y);
 
-	private final String value;
-	private final YnType isLunar;
-	private static final Map<String, KakaoBirthdayType> valueMap = Arrays.stream(KakaoBirthdayType.values())
-		.collect(Collectors.toMap(KakaoBirthdayType::getValue, Function.identity()));
+  private static final Map<String, KakaoBirthdayType> valueMap =
+      Arrays.stream(KakaoBirthdayType.values())
+          .collect(Collectors.toMap(KakaoBirthdayType::getValue, Function.identity()));
+  private final String value;
+  private final YnType isLunar;
 
-	public static KakaoBirthdayType fromValue(String value) {
-		if (!valueMap.containsKey(value)) {
-			return null;
-		}
+  KakaoBirthdayType(String value, YnType isLunar) {
+    this.value = value;
+    this.isLunar = isLunar;
+  }
 
-		return valueMap.get(value);
-	}
+  public static KakaoBirthdayType fromValue(String value) {
+    if (!valueMap.containsKey(value)) {
+      return null;
+    }
 
-	KakaoBirthdayType(String value, YnType isLunar) {
-		this.value = value;
-		this.isLunar = isLunar;
-	}
+    return valueMap.get(value);
+  }
 }

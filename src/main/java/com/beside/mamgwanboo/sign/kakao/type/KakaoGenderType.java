@@ -1,35 +1,34 @@
 package com.beside.mamgwanboo.sign.kakao.type;
 
+import com.beside.mamgwanboo.user.type.SexType;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import com.beside.mamgwanboo.user.type.SexType;
-
 import lombok.Getter;
 
 @Getter
 public enum KakaoGenderType {
-	MALE("male", SexType.MALE),
-	FEMALE("female", SexType.FEMALE);
+  MALE("male", SexType.MALE),
+  FEMALE("female", SexType.FEMALE);
 
-	private final String value;
-	private final SexType sexType;
-	private static final Map<String, KakaoGenderType> valueMap = Arrays.stream(KakaoGenderType.values())
-		.collect(Collectors.toMap(KakaoGenderType::getValue, Function.identity()));
+  private static final Map<String, KakaoGenderType> valueMap =
+      Arrays.stream(KakaoGenderType.values())
+          .collect(Collectors.toMap(KakaoGenderType::getValue, Function.identity()));
+  private final String value;
+  private final SexType sexType;
 
-	public static KakaoGenderType fromValue(String value) {
-		if (!valueMap.containsKey(value)) {
-			return null;
-		}
+  KakaoGenderType(String value, SexType sexType) {
+    this.value = value;
+    this.sexType = sexType;
+  }
 
-		return valueMap.get(value);
-	}
+  public static KakaoGenderType fromValue(String value) {
+    if (!valueMap.containsKey(value)) {
+      return null;
+    }
 
-	KakaoGenderType(String value, SexType sexType) {
-		this.value = value;
-		this.sexType = sexType;
-	}
+    return valueMap.get(value);
+  }
 
 }
