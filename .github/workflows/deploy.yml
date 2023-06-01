@@ -69,7 +69,7 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           source: "*"
-          target: "~/app/backend"
+          target: "~/app"
 
       # Exec Deploy Script
       - name: Execute Server Deploy Script
