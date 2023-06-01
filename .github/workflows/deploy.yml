@@ -20,6 +20,9 @@ jobs:
           echo "${{ secrets.SLACK_INFO }}" > ./src/main/resources/secret/slack-info.yml
           echo "${{ secrets.JWT_INFO }}" > ./src/main/resources/secret/jwt-info.yml
           echo "${{ secrets.KAKAO_INFO }}" > ./src/main/resources/secret/kakao-info.yml
+      # Update Submodule - Protocol Buffer
+      - name: Submodule Update
+        run: git submodule update --init --remote
       # Project JDK 17 setting
       - name: Set up JDK 17
         uses: actions/setup-java@v3
