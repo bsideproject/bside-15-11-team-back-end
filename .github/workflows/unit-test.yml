@@ -28,8 +28,6 @@ jobs:
         java-version: 17
         distribution: temurin
         cache: maven
-    - name: log
-      run: ls -R
     - name: build without test
       run: mvn -B package --file pom.xml
     - name: test
