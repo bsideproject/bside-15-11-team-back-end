@@ -21,7 +21,7 @@ jobs:
         echo "${{ secrets.JWT_INFO }}" > ./src/main/resources/secret/jwt-info.yml
         echo "${{ secrets.KAKAO_INFO }}" > ./src/main/resources/secret/kakao-info.yml
     - name: Submodule Update
-    - run: git submodule --init --update
+      run: git submodule --init --update
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
