@@ -9,7 +9,6 @@ import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import protobuf.sign.MamgwanbooJwtPayload;
-import reactor.core.publisher.Mono;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -22,15 +21,14 @@ public class JwtServiceImpl implements JwtService {
 	}
 
 	@Override
-	public Mono<String> makeMamgwanbooJwt(
+	public String makeMamgwanbooJwt(
 		MamgwanbooJwtPayload mamgwanbooJwtPayload
 	) {
-		return Mono.just(
-			Jwts.builder()
+		return Jwts.builder()
 				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
 				.setHeaderParam(HEADER_ALGORITHM_KEY, HEADER_ALGORITHM_HS256)
 				.setPayload(mamgwanbooJwtPayload.getSequence())
 				.signWith(Keys.hmacShaKeyFor(baseKey.getBytes(StandardCharsets.UTF_8)))
-				.compact());
+				.compact();
 	}
 }

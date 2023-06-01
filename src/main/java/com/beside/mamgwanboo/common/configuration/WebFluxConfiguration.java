@@ -4,14 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.resource.PathResourceResolver;
-
-import protobuf.type.OauthServiceTypeOuterClass;
 
 @Configuration
 public class WebFluxConfiguration implements WebFluxConfigurer {
@@ -40,14 +36,4 @@ public class WebFluxConfiguration implements WebFluxConfigurer {
 			.addMapping("/**")
 			.allowedOrigins(origins.toArray(String[]::new));
 	}
-
-	// @Override
-	// public void addFormatters(FormatterRegistry registry) {
-	// 	registry.addConverter(new Converter<Integer, OauthServiceTypeOuterClass.OauthServiceType>() {
-	// 		@Override
-	// 		public OauthServiceTypeOuterClass.OauthServiceType convert(Integer source) {
-	// 			return OauthServiceTypeOuterClass.OauthServiceType.forNumber(source);
-	// 		}
-	// 	});
-	// }
 }
