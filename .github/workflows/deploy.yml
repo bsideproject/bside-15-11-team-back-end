@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v3
       - run: |
           mkdir -p ./src/main/resources/secret
-          touch ./deploy.sh
+          echo "${{ secrets.DEPLOY_SCRIPT }}" > ./deploy.sh
           echo "${{ secrets.MONGO_INFO }}" > ./src/main/resources/secret/mongo-info.yml
           echo "${{ secrets.FRONT_INFO }}" > ./src/main/resources/secret/front-info.yml
           echo "${{ secrets.SLACK_INFO }}" > ./src/main/resources/secret/slack-info.yml
