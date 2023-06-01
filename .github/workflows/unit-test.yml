@@ -26,8 +26,10 @@ jobs:
         java-version: 17
         distribution: temurin
         cache: maven
+    - name: log
+      run: ls -R target
     - name: build without test
-      run: mvn -B -DskipTests protobuf:compile package --file pom.xml
+      run: mvn -B package --file pom.xml
     - name: test
       run: mvn -B -Dmaven.test.failure.ignore=true test
     - name: report
