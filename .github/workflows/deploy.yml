@@ -26,7 +26,7 @@ jobs:
           echo "  sleep 1" >> ./deploy.sh
           echo "fi" >> ./deploy.sh
           echo "echo 애플리케이션 배포" >> ./deploy.sh
-          echo "java -Dspring.profiles.active=release -jar ~/app/${{ secrets.JAVA_APPLICATION_NAME }}*.jar > /dev/null &" >> ./deploy.sh
+          echo "java -Dspring.profiles.active=release -jar ~/app/${{ secrets.JAVA_APPLICATION_NAME }}*.jar > /dev/null" >> ./deploy.sh
           
           echo "${{ secrets.MONGO_INFO }}" > ./src/main/resources/secret/mongo-info.yml
           echo "${{ secrets.FRONT_INFO }}" > ./src/main/resources/secret/front-info.yml
