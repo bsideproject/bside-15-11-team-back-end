@@ -26,7 +26,7 @@ jobs:
           echo "  sleep 1" >> ./deploy.sh
           echo "fi" >> ./deploy.sh
           echo "echo 애플리케이션 배포" >> ./deploy.sh
-          echo "java -jar ~/app/${{ secrets.JAVA_APPLICATION_NAME }}*.jar -Dspring.profiles.active=release 2>&1 &" >> ./deploy.sh
+          echo "java -jar ~/app/${{ secrets.JAVA_APPLICATION_NAME }}*.jar -Dspring.profiles.active=release >/dev/null &" >> ./deploy.sh
           
           echo "${{ secrets.MONGO_INFO }}" > ./src/main/resources/secret/mongo-info.yml
           echo "${{ secrets.FRONT_INFO }}" > ./src/main/resources/secret/front-info.yml
@@ -91,4 +91,5 @@ jobs:
           host: ${{ secrets.NCP_HOST }}
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
-          command: chmod -R +x ~/app && sh ~/app/deploy.sh
+          script_stop: true
+          script: chmod -R +x ~/app && sh ~/app/deploy.sh &
