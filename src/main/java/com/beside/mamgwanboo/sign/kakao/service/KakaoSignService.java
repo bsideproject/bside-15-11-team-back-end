@@ -67,7 +67,7 @@ public class KakaoSignService extends AbstractSignService {
     return webClient.get().uri(apiUri)
         .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", accessToken)).retrieve()
         .bodyToMono(KakaoApiResponse.class)
-        .map(kakaoApiResponseDto -> toUserInformation(oauthServiceType, kakaoApiResponseDto));
+        .map(kakaoApiResponse -> toUserInformation(oauthServiceType, kakaoApiResponse));
   }
 
   @Override
