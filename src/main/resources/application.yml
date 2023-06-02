@@ -50,4 +50,4 @@ server:
 log:
   path: /logs
   filename: beside-15th-11team
-  level: info
+  level: warn
