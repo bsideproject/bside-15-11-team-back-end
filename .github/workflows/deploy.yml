@@ -15,8 +15,8 @@ jobs:
         uses: actions/checkout@v3
       - run: |
           mkdir -p ./src/main/resources/secret
-          echo "echo #!/bin/bash" > ./deploy.sh
-          echo "echo 애플리케이션 pid 확인" >> ./deploy.sh
+          echo "#!/bin/bash" > ./deploy.sh
+          echo "애플리케이션 pid 확인" >> ./deploy.sh
           echo "CURRENT_PID=\$(jps | grep ${{ secrets.JAVA_APPLICATION_NAME }} | awk '{print \$1}')" >> ./deploy.sh
           echo "if [ -z \$CURRENT_PID ]; then" >> ./deploy.sh
           echo "  echo 애플리케이션 없음" >> ./deploy.sh
@@ -93,4 +93,4 @@ jobs:
           port: ${{ secrets.NCP_PORT }}
           script_stop: true
           script: |
-            chmod -R +x ~/app && sh ~/app/deploy.sh
+            chmod -R +x ~/app && sh ~/app/deploy.sh &
