@@ -92,4 +92,5 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           script_stop: true
-          script: chmod -R +x ~/app && sh ~/app/deploy.sh
+          script: |
+            chmod -R +x ~/app && sh ~/app/deploy.sh
