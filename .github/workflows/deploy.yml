@@ -15,7 +15,19 @@ jobs:
         uses: actions/checkout@v3
       - run: |
           mkdir -p ./src/main/resources/secret
-          echo "${{ secrets.DEPLOY_SCRIPT }}" > ./deploy.sh
+          echo "echo #!/bin/bash" > ./deploy.sh
+          echo "echo 애플리케이션 pid 확인" >> ./deploy.sh
+          echo "CURRENT_PID=$(jps | grep ${{ JAVA_APPLICATION_NAME }} | awk '{print $1}')" >> ./deploy.sh
+          echo "if [ -z CURRENT_PID ]; then" >> ./deploy.sh
+          echo "  echo 애플리케이션 없음." >> ./deploy.sh
+          echo "else" >> ./deploy.sh
+          echo "  echo 애플리케이션 pid=$CURRENT_PID" >> ./deploy.sh
+          echo "  kill -9 $CURRENT_PID" >> ./deploy.sh
+          echo "  sleep 1" >> ./deploy.sh
+          echo "fi" >> ./deploy.sh
+          echo "echo 애플리케이션 배포" >> ./deploy.sh
+          echo "java -jar mamgwanboo*.jar -Dspring.profiles.active=release &" >> ./deploy.sh
+          
           echo "${{ secrets.MONGO_INFO }}" > ./src/main/resources/secret/mongo-info.yml
           echo "${{ secrets.FRONT_INFO }}" > ./src/main/resources/secret/front-info.yml
           echo "${{ secrets.SLACK_INFO }}" > ./src/main/resources/secret/slack-info.yml
