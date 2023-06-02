@@ -2,7 +2,7 @@ package com.beside.mamgwanboo.common.handler;
 
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
-import com.beside.mamgwanboo.common.model.GlobalErrorAttributes;
+import com.beside.mamgwanboo.common.errorAttribute.GlobalErrorAttributes;
 import java.util.Map;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;

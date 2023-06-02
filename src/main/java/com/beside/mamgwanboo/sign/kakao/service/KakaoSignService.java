@@ -32,14 +32,12 @@ public class KakaoSignService extends AbstractSignService {
   private final UserRepository userRepository;
   private final WebClient webClient;
 
-  public KakaoSignService(
-      @Value("${oauth.kakao.uri}") String oauthUri,
-      @Value("${api.kakao.uri}") String apiUri,
-      @Value("${oauth.kakao.clientId}") String clientId,
-      @Value("${oauth.kakao.redirectUri}") String redirectUri,
-      @Value("${oauth.kakao.clientSecret}") String clientSecret,
-      UserRepository userRepository
-  ) {
+  public KakaoSignService(@Value("${oauth.kakao.uri}") String oauthUri,
+                          @Value("${api.kakao.uri}") String apiUri,
+                          @Value("${oauth.kakao.clientId}") String clientId,
+                          @Value("${oauth.kakao.redirectUri}") String redirectUri,
+                          @Value("${oauth.kakao.clientSecret}") String clientSecret,
+                          UserRepository userRepository) {
     this.oauthUri = oauthUri;
     this.apiUri = apiUri;
     this.clientId = clientId;
@@ -58,23 +56,16 @@ public class KakaoSignService extends AbstractSignService {
 
   @Override
   public Mono<String> getAccessToken(String code) {
-    return webClient
-        .post()
-        .uri(oauthUri)
-        .body(BodyInserters.fromFormData(makeOauthRequest(code).toFromData()))
-        .retrieve()
-        .bodyToMono(KakaoOauthResponse.class)
-        .map(KakaoOauthResponse::getAccessToken);
+    return webClient.post().uri(oauthUri)
+        .body(BodyInserters.fromFormData(makeOauthRequest(code).toFromData())).retrieve()
+        .bodyToMono(KakaoOauthResponse.class).map(KakaoOauthResponse::getAccessToken);
   }
 
   @Override
   public Mono<UserInformation> getUserInformation(OauthServiceType oauthServiceType,
                                                   String accessToken) {
-    return webClient
-        .get()
-        .uri(apiUri)
-        .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", accessToken))
-        .retrieve()
+    return webClient.get().uri(apiUri)
+        .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", accessToken)).retrieve()
         .bodyToMono(KakaoApiResponse.class)
         .map(kakaoApiResponseDto -> toUserInformation(oauthServiceType, kakaoApiResponseDto));
   }
@@ -92,29 +83,22 @@ public class KakaoSignService extends AbstractSignService {
   }
 
   private KakaoOauthRequest makeOauthRequest(String authenticationCode) {
-    return KakaoOauthRequest.builder()
-        .clientId(clientId)
-        .redirectUri(redirectUri)
-        .clientSecret(clientSecret)
-        .code(authenticationCode)
-        .build();
+    return KakaoOauthRequest.builder().clientId(clientId).redirectUri(redirectUri)
+        .clientSecret(clientSecret).code(authenticationCode).build();
   }
 
   private UserInformation toUserInformation(OauthServiceType oauthServiceType,
                                             KakaoApiResponse kakaoApiResponse) {
-    return UserInformation.builder()
-        .oauthServiceType(oauthServiceType)
+    return UserInformation.builder().oauthServiceType(oauthServiceType)
         .serviceUserId(String.valueOf(kakaoApiResponse.getId()))
         .profileNickname(kakaoApiResponse.getKakaoAccount().getKakaoProfile().getNickname())
         .profileImageLink(kakaoApiResponse.getKakaoAccount().getKakaoProfile().getProfileImageUrl())
         .sexType(kakaoApiResponse.getKakaoAccount().getKakaoGenderType().getSexType())
         .ageRangeType(kakaoApiResponse.getKakaoAccount().getKakaoAgeRangeType().getAgeRangeType())
         .birth(Birth.builder()
-            .isLunar(kakaoApiResponse.getKakaoAccount().getKakaoBirthdayType().getIsLunar())
-            .date(toLocalDate(kakaoApiResponse.getKakaoAccount().getBirthYear(),
-                kakaoApiResponse.getKakaoAccount().getBirthDay()))
-            .build())
-        .build();
+            .isLunar(kakaoApiResponse.getKakaoAccount().getKakaoBirthdayType().getIsLunar()).date(
+                toLocalDate(kakaoApiResponse.getKakaoAccount().getBirthYear(),
+                    kakaoApiResponse.getKakaoAccount().getBirthDay())).build()).build();
   }
 
   private LocalDate toLocalDate(Year year, MonthDay monthDay) {
