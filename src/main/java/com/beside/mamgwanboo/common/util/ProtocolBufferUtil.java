@@ -1,6 +1,5 @@
 package com.beside.mamgwanboo.common.util;
 
-import com.beside.mamgwanboo.common.exception.InvalidBodyException;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
@@ -16,7 +15,7 @@ public final class ProtocolBufferUtil {
 
       return Mono.just((T) messageBuilder.build());
     } catch (InvalidProtocolBufferException invalidProtocolBufferException) {
-      return Mono.error(new InvalidBodyException(
+      return Mono.error(new IllegalArgumentException(
           String.format("body 파싱에 실패했습니다. body: %s, type: %s", body,
               messageBuilder.getDescriptorForType()), invalidProtocolBufferException));
     }
