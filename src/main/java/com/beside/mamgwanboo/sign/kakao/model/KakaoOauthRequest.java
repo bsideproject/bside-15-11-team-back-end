@@ -24,7 +24,7 @@ public class KakaoOauthRequest {
   private String clientSecret;
   private String code;
 
-  public MultiValueMap<String, String> toFromData() {
+  public MultiValueMap<String, String> toFormData() {
     MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
     formData.add("grant_type", grantType);
     formData.add("client_id", clientId);

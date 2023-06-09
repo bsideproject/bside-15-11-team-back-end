@@ -1,4 +1,4 @@
-package com.beside.mamgwanboo.common.jwt.service;
+package com.beside.mamgwanboo.common.service;
 
 import protobuf.sign.MamgwanbooJwtPayload;
 
