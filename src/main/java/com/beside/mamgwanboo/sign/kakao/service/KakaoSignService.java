@@ -57,7 +57,7 @@ public class KakaoSignService extends AbstractSignService {
   @Override
   public Mono<String> getAccessToken(String code) {
     return webClient.post().uri(oauthUri)
-        .body(BodyInserters.fromFormData(makeOauthRequest(code).toFromData())).retrieve()
+        .body(BodyInserters.fromFormData(makeOauthRequest(code).toFormData())).retrieve()
         .bodyToMono(KakaoOauthResponse.class).map(KakaoOauthResponse::getAccessToken);
   }
 

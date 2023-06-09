@@ -20,6 +20,7 @@ public enum KakaoAgeRangeType {
   SEVENTIES("70~79", AgeRangeType.OVER_FIFTY),
   EIGHTIES("80~89", AgeRangeType.OVER_FIFTY),
   OVER_EIGHTY("90~", AgeRangeType.OVER_FIFTY);
+
   private static final Map<String, KakaoAgeRangeType> valueMap =
       Arrays.stream(KakaoAgeRangeType.values())
           .collect(Collectors.toMap(KakaoAgeRangeType::getValue, Function.identity()));
