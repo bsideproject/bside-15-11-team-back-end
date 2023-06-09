@@ -9,6 +9,7 @@ public final class ProtocolBufferUtil {
   private ProtocolBufferUtil() {
   }
 
+  @SuppressWarnings("unchecked")
   public static <T extends Message> Mono<T> parse(String body, T.Builder messageBuilder) {
     try {
       JsonFormat.parser().merge(body, messageBuilder);
