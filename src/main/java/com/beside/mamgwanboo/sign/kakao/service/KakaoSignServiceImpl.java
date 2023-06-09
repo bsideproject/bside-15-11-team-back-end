@@ -23,7 +23,7 @@ import protobuf.common.type.OauthServiceType;
 import reactor.core.publisher.Mono;
 
 @Service
-public class KakaoSignService extends AbstractSignService {
+public class KakaoSignServiceImpl extends AbstractSignService {
   private final String oauthUri;
   private final String apiUri;
   private final String clientId;
@@ -32,12 +32,12 @@ public class KakaoSignService extends AbstractSignService {
   private final UserRepository userRepository;
   private final WebClient webClient;
 
-  public KakaoSignService(@Value("${oauth.kakao.uri}") String oauthUri,
-                          @Value("${api.kakao.uri}") String apiUri,
-                          @Value("${oauth.kakao.clientId}") String clientId,
-                          @Value("${oauth.kakao.redirectUri}") String redirectUri,
-                          @Value("${oauth.kakao.clientSecret}") String clientSecret,
-                          UserRepository userRepository) {
+  public KakaoSignServiceImpl(@Value("${oauth.kakao.uri}") String oauthUri,
+                              @Value("${api.kakao.uri}") String apiUri,
+                              @Value("${oauth.kakao.clientId}") String clientId,
+                              @Value("${oauth.kakao.redirectUri}") String redirectUri,
+                              @Value("${oauth.kakao.clientSecret}") String clientSecret,
+                              UserRepository userRepository) {
     this.oauthUri = oauthUri;
     this.apiUri = apiUri;
     this.clientId = clientId;
