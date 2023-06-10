@@ -1,4 +1,4 @@
-package com.beside.mamgwanboo.sign.kakao.service;
+package com.beside.mamgwanboo.sign.kakao.command;
 
 import com.beside.mamgwanboo.common.type.YnType;
 import com.beside.mamgwanboo.sign.common.command.SignCommand;

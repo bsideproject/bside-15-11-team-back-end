@@ -5,7 +5,6 @@ import com.beside.mamgwanboo.sign.common.command.SignCommandProxy;
 import com.beside.mamgwanboo.sign.common.model.SignResult;
 import com.beside.mamgwanboo.user.document.User;
 import com.beside.mamgwanboo.user.model.UserInformation;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 import protobuf.common.type.OauthServiceType;
 import reactor.core.publisher.Mono;
@@ -22,16 +21,7 @@ public class SignService {
       OauthServiceType oauthServiceType,
       String code
   ) {
-    return Mono.just(signCommandProxy.getTargetCommand(oauthServiceType))
-        .filter(Objects::nonNull)
-        .switchIfEmpty(Mono.error(
-            new IllegalArgumentException(
-                String.format(
-                    "잘못된 oauthServiceType입니다. oauthServiceType: %s",
-                    oauthServiceType.name()
-                )
-            )
-        ))
+    return Mono.justOrEmpty(signCommandProxy.getTargetCommand(oauthServiceType))
         .flatMap(signCommand -> signCommand.getAccessToken(code)
             .flatMap(accessToken ->
                 signCommand.getUserInformation(oauthServiceType, accessToken))
@@ -41,7 +31,6 @@ public class SignService {
                         userInformation.getServiceUserId(),
                         YnType.Y
                     )
-                    .filter(Objects::nonNull)
                     .map(user ->
                         SignResult.builder()
                             .user(user)
@@ -51,9 +40,11 @@ public class SignService {
                     .switchIfEmpty(signCommand.signUp(makeUser(userInformation))
                         .map(user ->
                             SignResult.builder()
+                                .user(user)
                                 .isNewUser(true)
                                 .build()
-                        ))
+                        )
+                    )
             )
         );
   }

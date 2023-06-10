@@ -16,6 +16,13 @@ public class SignCommandProxy {
     return signCommands.stream()
         .filter(signCommand -> signCommand.isTargetService(oauthServiceType))
         .findFirst()
-        .orElse(null);
+        .orElseThrow(() ->
+            new UnsupportedOperationException(
+                String.format(
+                    "아직 구현되지 않은 타입입니다. oauthServiceType: %s",
+                    oauthServiceType.name()
+                )
+            )
+        );
   }
 }

@@ -11,11 +11,14 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 
 @Configuration
 public class SignRouterConfiguration {
-  // todo 테스트 코드 작성 - 코어
   @Bean
   public RouterFunction<?> routeSign(SignHandler signHandler) {
     return route()
-        .POST("/api/sign", accept(MediaType.APPLICATION_JSON), signHandler::sign)
+        .POST(
+            "/api/sign",
+            accept(MediaType.APPLICATION_JSON),
+            signHandler
+        )
         .build();
   }
 }

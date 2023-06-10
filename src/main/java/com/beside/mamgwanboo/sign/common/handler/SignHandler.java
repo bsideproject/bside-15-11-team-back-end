@@ -5,6 +5,7 @@ import com.beside.mamgwanboo.common.util.ProtocolBufferUtil;
 import com.beside.mamgwanboo.sign.common.service.SignService;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.HandlerFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import protobuf.sign.MamgwanbooJwtPayload;
@@ -13,7 +14,7 @@ import protobuf.sign.SignResponse;
 import reactor.core.publisher.Mono;
 
 @Component
-public class SignHandler {
+public class SignHandler implements HandlerFunction<ServerResponse> {
   private final SignService signService;
   private final JwtService jwtService;
 
@@ -23,7 +24,8 @@ public class SignHandler {
     this.jwtService = jwtService;
   }
 
-  public Mono<ServerResponse> sign(ServerRequest serverRequest) {
+  @Override
+  public Mono<ServerResponse> handle(ServerRequest serverRequest) {
     return serverRequest.bodyToMono(String.class)
         .flatMap(body -> ProtocolBufferUtil.<SignRequest>parse(body, SignRequest.newBuilder()))
         .flatMap(signRequest ->
@@ -32,14 +34,15 @@ public class SignHandler {
                 signRequest.getCode()
             )
         )
-        .map(signResult ->
-            SignResponse.newBuilder()
-                .setJwt(jwtService.packMamgwanbooJwt(MamgwanbooJwtPayload.newBuilder()
+        .flatMap(signResult ->
+            jwtService.makeJwt(MamgwanbooJwtPayload.newBuilder()
                     .setSequence(signResult.getUser().getSequence())
-                    .build()))
-                .setIsNewUser(signResult.isNewUser())
-                .build()
-        )
+                    .build())
+                .map(mamgwanbooJwt ->
+                    SignResponse.newBuilder()
+                        .setJwt(mamgwanbooJwt)
+                        .setIsNewUser(signResult.isNewUser())
+                        .build()))
         .flatMap(signResponse ->
             ServerResponse
                 .ok()

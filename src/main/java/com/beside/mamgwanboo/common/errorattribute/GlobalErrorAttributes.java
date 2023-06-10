@@ -26,6 +26,18 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
       return attributes;
     }
 
+    if (throwable instanceof UnsupportedOperationException) {
+      attributes.put("status", HttpStatus.BAD_REQUEST);
+      attributes.put("message", "아직 지원하지 않습니다.");
+      return attributes;
+    }
+
+    if (throwable instanceof IllegalArgumentException) {
+      attributes.put("status", HttpStatus.BAD_REQUEST);
+      attributes.put("message", "잘못된 요청입니다.");
+      return attributes;
+    }
+
     attributes.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
     attributes.put("message", "알 수 없는 오류입니다.");
     return attributes;
