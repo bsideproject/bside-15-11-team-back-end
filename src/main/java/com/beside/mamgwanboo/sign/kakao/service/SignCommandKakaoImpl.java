@@ -1,7 +1,7 @@
 package com.beside.mamgwanboo.sign.kakao.service;
 
 import com.beside.mamgwanboo.common.type.YnType;
-import com.beside.mamgwanboo.sign.common.service.AbstractSignService;
+import com.beside.mamgwanboo.sign.common.command.SignCommand;
 import com.beside.mamgwanboo.sign.kakao.model.KakaoApiResponse;
 import com.beside.mamgwanboo.sign.kakao.model.KakaoOauthRequest;
 import com.beside.mamgwanboo.sign.kakao.model.KakaoOauthResponse;
@@ -23,7 +23,7 @@ import protobuf.common.type.OauthServiceType;
 import reactor.core.publisher.Mono;
 
 @Service
-public class KakaoSignServiceImpl extends AbstractSignService {
+public class SignCommandKakaoImpl implements SignCommand {
   private final String oauthUri;
   private final String apiUri;
   private final String clientId;
@@ -32,7 +32,7 @@ public class KakaoSignServiceImpl extends AbstractSignService {
   private final UserRepository userRepository;
   private final WebClient webClient;
 
-  public KakaoSignServiceImpl(@Value("${oauth.kakao.uri}") String oauthUri,
+  public SignCommandKakaoImpl(@Value("${oauth.kakao.uri}") String oauthUri,
                               @Value("${api.kakao.uri}") String apiUri,
                               @Value("${oauth.kakao.clientId}") String clientId,
                               @Value("${oauth.kakao.redirectUri}") String redirectUri,
