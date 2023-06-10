@@ -1,4 +1,4 @@
-package com.beside.mamgwanboo.common.errorAttribute;
+package com.beside.mamgwanboo.common.errorattribute;
 
 import java.util.HashMap;
 import java.util.Map;
