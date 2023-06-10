@@ -99,7 +99,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+<!--                    <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>-->
                     <configLocation>${basedir}/google_checks.xml</configLocation>
                 </configuration>
             </plugin>
