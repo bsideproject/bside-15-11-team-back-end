@@ -59,7 +59,8 @@ public class SignCommandKakaoImpl implements SignCommand {
   @Override
   public Mono<String> getAccessToken(String code) {
     return webClient.post().uri(oauthUri)
-        .body(BodyInserters.fromFormData(makeOauthRequest(code).toFormData())).retrieve()
+        .body(BodyInserters.fromFormData(makeOauthRequest(code).toFormData()))
+        .retrieve()
         .bodyToMono(KakaoOauthResponse.class).map(KakaoOauthResponse::getAccessToken);
   }
 
@@ -69,7 +70,8 @@ public class SignCommandKakaoImpl implements SignCommand {
       String accessToken
   ) {
     return webClient.get().uri(apiUri)
-        .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", accessToken)).retrieve()
+        .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", accessToken))
+        .retrieve()
         .bodyToMono(KakaoApiResponse.class)
         .map(kakaoApiResponse -> toUserInformation(oauthServiceType, kakaoApiResponse));
   }
@@ -82,7 +84,8 @@ public class SignCommandKakaoImpl implements SignCommand {
   ) {
     return userRepository
         .findUserByUserInformation_OauthServiceTypeAndUserInformation_ServiceUserIdAndUseYn(
-            oauthServiceType, serviceUserId, useYn);
+            oauthServiceType, serviceUserId, useYn
+        );
   }
 
   @Override
@@ -91,8 +94,11 @@ public class SignCommandKakaoImpl implements SignCommand {
   }
 
   private KakaoOauthRequest makeOauthRequest(String authenticationCode) {
-    return KakaoOauthRequest.builder().clientId(clientId).redirectUri(redirectUri)
-        .clientSecret(clientSecret).code(authenticationCode).build();
+    return KakaoOauthRequest.builder()
+        .clientId(clientId)
+        .redirectUri(redirectUri)
+        .clientSecret(clientSecret)
+        .code(authenticationCode).build();
   }
 
   private UserInformation toUserInformation(
