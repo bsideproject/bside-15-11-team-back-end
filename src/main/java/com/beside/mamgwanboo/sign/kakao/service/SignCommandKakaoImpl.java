@@ -93,12 +93,12 @@ public class SignCommandKakaoImpl implements SignCommand {
     return userRepository.save(user);
   }
 
-  private KakaoOauthRequest makeOauthRequest(String authenticationCode) {
+  private KakaoOauthRequest makeOauthRequest(String code) {
     return KakaoOauthRequest.builder()
         .clientId(clientId)
         .redirectUri(redirectUri)
         .clientSecret(clientSecret)
-        .code(authenticationCode).build();
+        .code(code).build();
   }
 
   private UserInformation toUserInformation(
