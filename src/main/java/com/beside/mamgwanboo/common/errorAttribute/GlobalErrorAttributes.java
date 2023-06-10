@@ -12,8 +12,10 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 @Component
 public class GlobalErrorAttributes extends DefaultErrorAttributes {
   @Override
-  public Map<String, Object> getErrorAttributes(ServerRequest serverRequest,
-                                                ErrorAttributeOptions options) {
+  public Map<String, Object> getErrorAttributes(
+      ServerRequest serverRequest,
+      ErrorAttributeOptions options
+  ) {
     Map<String, Object> attributes = new HashMap<>();
 
     Throwable throwable = getError(serverRequest);

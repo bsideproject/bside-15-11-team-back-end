@@ -8,9 +8,10 @@ import java.io.IOException;
 
 public class KakaoGenderTypeDeserializer extends JsonDeserializer<KakaoGenderType> {
   @Override
-  public KakaoGenderType deserialize(JsonParser jsonParser,
-                                     DeserializationContext deserializationContext)
-      throws IOException {
+  public KakaoGenderType deserialize(
+      JsonParser jsonParser,
+      DeserializationContext deserializationContext
+  ) throws IOException {
     return KakaoGenderType.fromValue(jsonParser.getValueAsString());
   }
 }

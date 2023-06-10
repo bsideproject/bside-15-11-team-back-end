@@ -32,12 +32,14 @@ public class SignCommandKakaoImpl implements SignCommand {
   private final UserRepository userRepository;
   private final WebClient webClient;
 
-  public SignCommandKakaoImpl(@Value("${oauth.kakao.uri}") String oauthUri,
-                              @Value("${api.kakao.uri}") String apiUri,
-                              @Value("${oauth.kakao.clientId}") String clientId,
-                              @Value("${oauth.kakao.redirectUri}") String redirectUri,
-                              @Value("${oauth.kakao.clientSecret}") String clientSecret,
-                              UserRepository userRepository) {
+  public SignCommandKakaoImpl(
+      @Value("${oauth.kakao.uri}") String oauthUri,
+      @Value("${api.kakao.uri}") String apiUri,
+      @Value("${oauth.kakao.clientId}") String clientId,
+      @Value("${oauth.kakao.redirectUri}") String redirectUri,
+      @Value("${oauth.kakao.clientSecret}") String clientSecret,
+      UserRepository userRepository
+  ) {
     this.oauthUri = oauthUri;
     this.apiUri = apiUri;
     this.clientId = clientId;
@@ -62,8 +64,10 @@ public class SignCommandKakaoImpl implements SignCommand {
   }
 
   @Override
-  public Mono<UserInformation> getUserInformation(OauthServiceType oauthServiceType,
-                                                  String accessToken) {
+  public Mono<UserInformation> getUserInformation(
+      OauthServiceType oauthServiceType,
+      String accessToken
+  ) {
     return webClient.get().uri(apiUri)
         .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", accessToken)).retrieve()
         .bodyToMono(KakaoApiResponse.class)
@@ -71,7 +75,11 @@ public class SignCommandKakaoImpl implements SignCommand {
   }
 
   @Override
-  public Mono<User> getUser(OauthServiceType oauthServiceType, String serviceUserId, YnType useYn) {
+  public Mono<User> getUser(
+      OauthServiceType oauthServiceType,
+      String serviceUserId,
+      YnType useYn
+  ) {
     return userRepository
         .findUserByUserInformation_OauthServiceTypeAndUserInformation_ServiceUserIdAndUseYn(
             oauthServiceType, serviceUserId, useYn);
@@ -87,8 +95,10 @@ public class SignCommandKakaoImpl implements SignCommand {
         .clientSecret(clientSecret).code(authenticationCode).build();
   }
 
-  private UserInformation toUserInformation(OauthServiceType oauthServiceType,
-                                            KakaoApiResponse kakaoApiResponse) {
+  private UserInformation toUserInformation(
+      OauthServiceType oauthServiceType,
+      KakaoApiResponse kakaoApiResponse
+  ) {
     return UserInformation.builder().oauthServiceType(oauthServiceType)
         .serviceUserId(String.valueOf(kakaoApiResponse.getId()))
         .profileNickname(kakaoApiResponse.getKakaoAccount().getKakaoProfile().getNickname())
@@ -96,9 +106,11 @@ public class SignCommandKakaoImpl implements SignCommand {
         .sexType(kakaoApiResponse.getKakaoAccount().getKakaoGenderType().getSexType())
         .ageRangeType(kakaoApiResponse.getKakaoAccount().getKakaoAgeRangeType().getAgeRangeType())
         .birth(Birth.builder()
-            .isLunar(kakaoApiResponse.getKakaoAccount().getKakaoBirthdayType().getIsLunar()).date(
-                toLocalDate(kakaoApiResponse.getKakaoAccount().getBirthYear(),
-                    kakaoApiResponse.getKakaoAccount().getBirthDay())).build()).build();
+            .isLunar(kakaoApiResponse.getKakaoAccount().getKakaoBirthdayType().getIsLunar())
+            .date(toLocalDate(
+                kakaoApiResponse.getKakaoAccount().getBirthYear(),
+                kakaoApiResponse.getKakaoAccount().getBirthDay()
+            )).build()).build();
   }
 
   private LocalDate toLocalDate(Year year, MonthDay monthDay) {

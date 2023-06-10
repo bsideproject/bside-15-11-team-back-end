@@ -22,9 +22,11 @@ import reactor.core.publisher.Mono;
 @Component
 @Order(-2)
 public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
-  public GlobalExceptionHandler(GlobalErrorAttributes globalErrorAttributes,
-                                ApplicationContext applicationContext,
-                                ServerCodecConfigurer serverCodecConfigurer) {
+  public GlobalExceptionHandler(
+      GlobalErrorAttributes globalErrorAttributes,
+      ApplicationContext applicationContext,
+      ServerCodecConfigurer serverCodecConfigurer
+  ) {
     super(globalErrorAttributes, new WebProperties.Resources(), applicationContext);
     super.setMessageWriters(serverCodecConfigurer.getWriters());
     super.setMessageReaders(serverCodecConfigurer.getReaders());

@@ -11,7 +11,6 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 
 @Configuration
 public class SignRouterConfiguration {
-  // todo sign 패키지 리팩토링 필요 - 함수형 / 부작용 몰아넣기
   // todo 테스트 코드 작성 - 코어
   @Bean
   public RouterFunction<?> routeSign(SignHandler signHandler) {
