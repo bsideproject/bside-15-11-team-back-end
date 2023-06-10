@@ -12,6 +12,7 @@ import protobuf.sign.MamgwanbooJwtPayload;
 import protobuf.sign.SignRequest;
 import protobuf.sign.SignResponse;
 import reactor.core.publisher.Mono;
+import reactor.util.annotation.NonNull;
 
 @Component
 public class SignHandler implements HandlerFunction<ServerResponse> {
@@ -25,6 +26,7 @@ public class SignHandler implements HandlerFunction<ServerResponse> {
   }
 
   @Override
+  @NonNull
   public Mono<ServerResponse> handle(ServerRequest serverRequest) {
     return serverRequest.bodyToMono(String.class)
         .flatMap(body -> ProtocolBufferUtil.<SignRequest>parse(body, SignRequest.newBuilder()))

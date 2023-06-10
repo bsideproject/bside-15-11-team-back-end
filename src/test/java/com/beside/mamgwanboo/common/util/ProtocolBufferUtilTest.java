@@ -13,9 +13,10 @@ class ProtocolBufferUtilTest {
   @ParameterizedTest
   @ValueSource(strings = {
       "asdf",
-      "{\n" +
-          "  \"a\": \"a\"\n" +
-          "}"
+      """
+          {
+            "a": "a"
+          }"""
   })
   void parseWhenWrongBody(String body) {
     // given
@@ -30,11 +31,11 @@ class ProtocolBufferUtilTest {
   @Test
   void parse() {
     // given
-    String body =
-        "{\n" +
-            "  \"oauthServiceType\": \"KAKAO\",\n" +
-            "  \"code\": \"\"\n" +
-            "}";
+    String body = """
+        {
+          "oauthServiceType": "KAKAO",
+          "code": ""
+        }""";
     Message.Builder builder = SignRequest.newBuilder();
     Message expected = builder.build();
 
@@ -56,10 +57,11 @@ class ProtocolBufferUtilTest {
     // then
     assertThat(json)
         .isEqualTo(
-            "{\n" +
-                "  \"oauthServiceType\": \"KAKAO\",\n" +
-                "  \"code\": \"\"\n" +
-                "}"
+            """
+                {
+                  "oauthServiceType": "KAKAO",
+                  "code": ""
+                }"""
         );
   }
 }
