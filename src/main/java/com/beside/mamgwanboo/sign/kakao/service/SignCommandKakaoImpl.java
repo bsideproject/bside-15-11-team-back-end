@@ -84,7 +84,9 @@ public class SignCommandKakaoImpl implements SignCommand {
   ) {
     return userRepository
         .findUserByUserInformation_OauthServiceTypeAndUserInformation_ServiceUserIdAndUseYn(
-            oauthServiceType, serviceUserId, useYn
+            oauthServiceType,
+            serviceUserId,
+            useYn
         );
   }
 
