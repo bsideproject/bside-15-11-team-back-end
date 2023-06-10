@@ -36,7 +36,7 @@ jobs:
         # Checkstyle version
         checkstyle_version: 10.11.0
         # Working directory relative to the root directory.
-#         workdir: # optional, default is .
+        workdir: ./src/main/java/
         # Tool name to use for reviewdog reporter
 #         tool_name: # optional, default is reviewdog
         # Properties file relative to the root directory.
