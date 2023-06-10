@@ -100,7 +100,8 @@ public class SignCommandKakaoImpl implements SignCommand {
         .clientId(clientId)
         .redirectUri(redirectUri)
         .clientSecret(clientSecret)
-        .code(code).build();
+        .code(code)
+        .build();
   }
 
   private UserInformation toUserInformation(
@@ -118,7 +119,9 @@ public class SignCommandKakaoImpl implements SignCommand {
             .date(toLocalDate(
                 kakaoApiResponse.getKakaoAccount().getBirthYear(),
                 kakaoApiResponse.getKakaoAccount().getBirthDay()
-            )).build()).build();
+            ))
+            .build())
+        .build();
   }
 
   private LocalDate toLocalDate(Year year, MonthDay monthDay) {

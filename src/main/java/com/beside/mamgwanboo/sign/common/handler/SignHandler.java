@@ -34,7 +34,7 @@ public class SignHandler {
         )
         .map(signResult ->
             SignResponse.newBuilder()
-                .setJwt(jwtService.makeMamgwanbooJwt(MamgwanbooJwtPayload.newBuilder()
+                .setJwt(jwtService.packMamgwanbooJwt(MamgwanbooJwtPayload.newBuilder()
                     .setSequence(signResult.getUser().getSequence())
                     .build()))
                 .setIsNewUser(signResult.isNewUser())
