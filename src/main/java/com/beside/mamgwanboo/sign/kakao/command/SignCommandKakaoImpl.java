@@ -1,7 +1,7 @@
-package com.beside.mamgwanboo.sign.kakao.service;
+package com.beside.mamgwanboo.sign.kakao.command;
 
 import com.beside.mamgwanboo.common.type.YnType;
-import com.beside.mamgwanboo.sign.common.service.AbstractSignService;
+import com.beside.mamgwanboo.sign.common.command.SignCommand;
 import com.beside.mamgwanboo.sign.kakao.model.KakaoApiResponse;
 import com.beside.mamgwanboo.sign.kakao.model.KakaoOauthRequest;
 import com.beside.mamgwanboo.sign.kakao.model.KakaoOauthResponse;
@@ -23,7 +23,7 @@ import protobuf.common.type.OauthServiceType;
 import reactor.core.publisher.Mono;
 
 @Service
-public class KakaoSignService extends AbstractSignService {
+public class SignCommandKakaoImpl implements SignCommand {
   private final String oauthUri;
   private final String apiUri;
   private final String clientId;
@@ -32,12 +32,14 @@ public class KakaoSignService extends AbstractSignService {
   private final UserRepository userRepository;
   private final WebClient webClient;
 
-  public KakaoSignService(@Value("${oauth.kakao.uri}") String oauthUri,
-                          @Value("${api.kakao.uri}") String apiUri,
-                          @Value("${oauth.kakao.clientId}") String clientId,
-                          @Value("${oauth.kakao.redirectUri}") String redirectUri,
-                          @Value("${oauth.kakao.clientSecret}") String clientSecret,
-                          UserRepository userRepository) {
+  public SignCommandKakaoImpl(
+      @Value("${oauth.kakao.uri}") String oauthUri,
+      @Value("${api.kakao.uri}") String apiUri,
+      @Value("${oauth.kakao.clientId}") String clientId,
+      @Value("${oauth.kakao.redirectUri}") String redirectUri,
+      @Value("${oauth.kakao.clientSecret}") String clientSecret,
+      UserRepository userRepository
+  ) {
     this.oauthUri = oauthUri;
     this.apiUri = apiUri;
     this.clientId = clientId;
@@ -57,24 +59,35 @@ public class KakaoSignService extends AbstractSignService {
   @Override
   public Mono<String> getAccessToken(String code) {
     return webClient.post().uri(oauthUri)
-        .body(BodyInserters.fromFormData(makeOauthRequest(code).toFormData())).retrieve()
+        .body(BodyInserters.fromFormData(makeOauthRequest(code).toFormData()))
+        .retrieve()
         .bodyToMono(KakaoOauthResponse.class).map(KakaoOauthResponse::getAccessToken);
   }
 
   @Override
-  public Mono<UserInformation> getUserInformation(OauthServiceType oauthServiceType,
-                                                  String accessToken) {
+  public Mono<UserInformation> getUserInformation(
+      OauthServiceType oauthServiceType,
+      String accessToken
+  ) {
     return webClient.get().uri(apiUri)
-        .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", accessToken)).retrieve()
+        .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", accessToken))
+        .retrieve()
         .bodyToMono(KakaoApiResponse.class)
         .map(kakaoApiResponse -> toUserInformation(oauthServiceType, kakaoApiResponse));
   }
 
   @Override
-  public Mono<User> getUser(OauthServiceType oauthServiceType, String serviceUserId, YnType useYn) {
+  public Mono<User> getUser(
+      OauthServiceType oauthServiceType,
+      String serviceUserId,
+      YnType useYn
+  ) {
     return userRepository
         .findUserByUserInformation_OauthServiceTypeAndUserInformation_ServiceUserIdAndUseYn(
-            oauthServiceType, serviceUserId, useYn);
+            oauthServiceType,
+            serviceUserId,
+            useYn
+        );
   }
 
   @Override
@@ -82,13 +95,19 @@ public class KakaoSignService extends AbstractSignService {
     return userRepository.save(user);
   }
 
-  private KakaoOauthRequest makeOauthRequest(String authenticationCode) {
-    return KakaoOauthRequest.builder().clientId(clientId).redirectUri(redirectUri)
-        .clientSecret(clientSecret).code(authenticationCode).build();
+  private KakaoOauthRequest makeOauthRequest(String code) {
+    return KakaoOauthRequest.builder()
+        .clientId(clientId)
+        .redirectUri(redirectUri)
+        .clientSecret(clientSecret)
+        .code(code)
+        .build();
   }
 
-  private UserInformation toUserInformation(OauthServiceType oauthServiceType,
-                                            KakaoApiResponse kakaoApiResponse) {
+  private UserInformation toUserInformation(
+      OauthServiceType oauthServiceType,
+      KakaoApiResponse kakaoApiResponse
+  ) {
     return UserInformation.builder().oauthServiceType(oauthServiceType)
         .serviceUserId(String.valueOf(kakaoApiResponse.getId()))
         .profileNickname(kakaoApiResponse.getKakaoAccount().getKakaoProfile().getNickname())
@@ -96,9 +115,13 @@ public class KakaoSignService extends AbstractSignService {
         .sexType(kakaoApiResponse.getKakaoAccount().getKakaoGenderType().getSexType())
         .ageRangeType(kakaoApiResponse.getKakaoAccount().getKakaoAgeRangeType().getAgeRangeType())
         .birth(Birth.builder()
-            .isLunar(kakaoApiResponse.getKakaoAccount().getKakaoBirthdayType().getIsLunar()).date(
-                toLocalDate(kakaoApiResponse.getKakaoAccount().getBirthYear(),
-                    kakaoApiResponse.getKakaoAccount().getBirthDay())).build()).build();
+            .isLunar(kakaoApiResponse.getKakaoAccount().getKakaoBirthdayType().getIsLunar())
+            .date(toLocalDate(
+                kakaoApiResponse.getKakaoAccount().getBirthYear(),
+                kakaoApiResponse.getKakaoAccount().getBirthDay()
+            ))
+            .build())
+        .build();
   }
 
   private LocalDate toLocalDate(Year year, MonthDay monthDay) {

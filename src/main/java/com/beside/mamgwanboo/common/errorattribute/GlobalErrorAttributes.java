@@ -1,4 +1,4 @@
-package com.beside.mamgwanboo.common.errorAttribute;
+package com.beside.mamgwanboo.common.errorattribute;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,13 +12,27 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 @Component
 public class GlobalErrorAttributes extends DefaultErrorAttributes {
   @Override
-  public Map<String, Object> getErrorAttributes(ServerRequest serverRequest,
-                                                ErrorAttributeOptions options) {
+  public Map<String, Object> getErrorAttributes(
+      ServerRequest serverRequest,
+      ErrorAttributeOptions options
+  ) {
     Map<String, Object> attributes = new HashMap<>();
 
     Throwable throwable = getError(serverRequest);
 
     if (throwable instanceof WebClientResponseException.BadRequest) {
+      attributes.put("status", HttpStatus.BAD_REQUEST);
+      attributes.put("message", "잘못된 요청입니다.");
+      return attributes;
+    }
+
+    if (throwable instanceof UnsupportedOperationException) {
+      attributes.put("status", HttpStatus.BAD_REQUEST);
+      attributes.put("message", "아직 지원하지 않습니다.");
+      return attributes;
+    }
+
+    if (throwable instanceof IllegalArgumentException) {
       attributes.put("status", HttpStatus.BAD_REQUEST);
       attributes.put("message", "잘못된 요청입니다.");
       return attributes;

@@ -11,5 +11,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface UserRepository extends ReactiveMongoRepository<User, UUID> {
   Mono<User> findUserByUserInformation_OauthServiceTypeAndUserInformation_ServiceUserIdAndUseYn(
-      OauthServiceType oauthServiceType, String serviceUserId, YnType useYn);
+      OauthServiceType oauthServiceType, String serviceUserId, YnType useYn
+  );
 }

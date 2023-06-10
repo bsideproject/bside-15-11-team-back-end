@@ -8,9 +8,10 @@ import java.io.IOException;
 
 public class KakaoAgeRangeTypeDeserializer extends JsonDeserializer<KakaoAgeRangeType> {
   @Override
-  public KakaoAgeRangeType deserialize(JsonParser jsonParser,
-                                       DeserializationContext deserializationContext)
-      throws IOException {
+  public KakaoAgeRangeType deserialize(
+      JsonParser jsonParser,
+      DeserializationContext deserializationContext
+  ) throws IOException {
     return KakaoAgeRangeType.fromValue(jsonParser.getValueAsString());
   }
 }
