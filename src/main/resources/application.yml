@@ -48,6 +48,9 @@ spring:
 server:
   port: 80
 log:
-  path: /logs
+#  todo root 사용 그만해야될듯.
+  path: /root/logs
   filename: beside-15th-11team
   level: warn
+static:
+  path: /root/static

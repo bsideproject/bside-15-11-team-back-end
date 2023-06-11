@@ -32,6 +32,7 @@ public class WebFluxConfiguration implements WebFluxConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry
+        // todo 여기 임시임
         .addMapping("/**")
         .allowedOrigins(origins.toArray(String[]::new));
   }
