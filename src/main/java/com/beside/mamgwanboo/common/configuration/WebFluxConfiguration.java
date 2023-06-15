@@ -14,29 +14,16 @@ import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.reactive.config.CorsRegistry;
-import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
-import org.springframework.web.reactive.resource.PathResourceResolver;
 
 @Configuration
 public class WebFluxConfiguration implements WebFluxConfigurer {
-  private final String staticPath;
   private final List<String> origins;
 
   public WebFluxConfiguration(
-      @Value("${static.path}") String staticPath,
       @Value("${cors.origins}") List<String> origins
   ) {
-    this.staticPath = staticPath;
     this.origins = origins;
-  }
-
-  @Override
-  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/**")
-        .addResourceLocations("file:" + staticPath)
-        .resourceChain(true)
-        .addResolver(new PathResourceResolver());
   }
 
   @Override
