@@ -23,11 +23,6 @@ public class FriendService {
         this.friendRepository = friendRepository;
     }
 
-    public Mono<List<FriendDto>> findFriendAll(){
-        return friendRepository.findByUseYn(YnType.Y)
-                .flatMap(friend -> Mono.just(this.toResponseDto(friend)))
-                .collectList();
-    }
     public Mono<FriendDto> findFriend(String sequence){
         return findVerifiedFriend(sequence)
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
