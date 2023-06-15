@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.friend.FriendCreateDto;
-import protobuf.friend.FriendUpdateDto;
+import protobuf.friend.*;
 import reactor.core.publisher.Mono;
 
 
@@ -34,12 +34,24 @@ public class FriendHandler {
     }
 
     public Mono<ServerResponse> getFriends(ServerRequest request){
-        return friendService.findFriendAll()
+        FriendSearchCriteria.Builder friendSearchCriteriaBuilder = FriendSearchCriteria
+                .newBuilder();
+
+        request.queryParams().entrySet()
+                .forEach(entry -> {
+                    if (!ObjectUtils.isEmpty(FriendSearchCriteria.getDescriptor().findFieldByName(entry.getKey()))){
+                        friendSearchCriteriaBuilder.setField(
+                            FriendSearchCriteria.getDescriptor().findFieldByName(entry.getKey()),
+                            entry.getValue().stream().findFirst().orElse(""));
+                    }
+                });
+
+        return friendService.searchFriend(friendSearchCriteriaBuilder.build())
+                .collectList()
                 .log()
-                .flatMap(friendList ->
-                        ServerResponse.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(friendList)
+                .flatMap(friendDtoList -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(friendDtoList)
                 );
     }
 
@@ -82,7 +94,7 @@ public class FriendHandler {
                 .flatMap(friendDto ->
                         ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(friendDto.getSequence())
+                        .bodyValue(!ObjectUtils.isEmpty(friendDto.getSequence())? Boolean.TRUE : Boolean.FALSE)
                 );
     }
 

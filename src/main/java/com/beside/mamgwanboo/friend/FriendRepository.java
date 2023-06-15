@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 @Repository
-public interface FriendRepository extends ReactiveMongoRepository<Friend, UUID> {
+public interface FriendRepository extends ReactiveMongoRepository<Friend, UUID>, CustomFriendRepository {
     Mono<Friend> findBySequenceAndUseYn(String id, YnType useYn);
     Flux<Friend> findByUseYn(YnType useYn);
 }

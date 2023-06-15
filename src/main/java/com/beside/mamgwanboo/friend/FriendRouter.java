@@ -15,9 +15,9 @@ public class FriendRouter {
     @Bean
     public RouterFunction<?> routerFriend(){
         return RouterFunctions.route()
+                .GET("/api/friend/{sequence}", friendHandler::getFriend)
                 .GET("/api/friend", friendHandler::getFriends)
                 .POST("/api/friend",friendHandler::createFriend)
-                .GET("/api/friend/{sequence}", friendHandler::getFriend)
                 .PUT("/api/friend/{sequence}", friendHandler::updateFriend)
                 .DELETE("/api/friend/{sequence}", friendHandler::deleteFriend)
                 .build();

@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import protobuf.friend.FriendCreateDto;
 import protobuf.friend.FriendDto;
+import protobuf.friend.FriendSearchCriteria;
 import protobuf.friend.FriendUpdateDto;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -48,6 +50,11 @@ public class FriendService {
                 .flatMap(friend -> friendRepository.save(friend))
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
 
+    }
+
+    public Flux<FriendDto> searchFriend(FriendSearchCriteria friendSearchCriteria){
+        return friendRepository.searchFriend(friendSearchCriteria)
+                .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
     }
 
     private Mono<Friend> findVerifiedFriend(String sequence){
