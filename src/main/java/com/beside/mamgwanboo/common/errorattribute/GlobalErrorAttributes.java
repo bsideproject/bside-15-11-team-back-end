@@ -6,7 +6,6 @@ import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 @Component
@@ -19,18 +18,6 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
     Map<String, Object> attributes = new HashMap<>();
 
     Throwable throwable = getError(serverRequest);
-
-    if (throwable instanceof WebClientResponseException.BadRequest) {
-      attributes.put("status", HttpStatus.BAD_REQUEST);
-      attributes.put("message", "잘못된 요청입니다.");
-      return attributes;
-    }
-
-    if (throwable instanceof UnsupportedOperationException) {
-      attributes.put("status", HttpStatus.BAD_REQUEST);
-      attributes.put("message", "아직 지원하지 않습니다.");
-      return attributes;
-    }
 
     if (throwable instanceof IllegalArgumentException) {
       attributes.put("status", HttpStatus.BAD_REQUEST);

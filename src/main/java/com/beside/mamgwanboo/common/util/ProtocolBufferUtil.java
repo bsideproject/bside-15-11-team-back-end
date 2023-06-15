@@ -1,11 +1,16 @@
 package com.beside.mamgwanboo.common.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
+import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 
 public final class ProtocolBufferUtil {
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
   private ProtocolBufferUtil() {
   }
 
@@ -32,5 +37,23 @@ public final class ProtocolBufferUtil {
           String.format("message json 변환에 실패했습니다. message: %s", message.toString()),
           invalidProtocolBufferException);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T extends Message> Mono<T> from(
+      MultiValueMap<String, String> multiValueMap,
+      T.Builder messageBuilder
+  ) {
+    String jsonMultiValueMap = null;
+
+    try {
+      jsonMultiValueMap = OBJECT_MAPPER.writeValueAsString(multiValueMap);
+    } catch (JsonProcessingException jsonProcessingException) {
+      throw new IllegalArgumentException(
+          String.format("map을 json으로 만드는 데 실패했습니다. map: %s", messageBuilder),
+          jsonProcessingException);
+    }
+
+    return parse(jsonMultiValueMap, messageBuilder);
   }
 }
