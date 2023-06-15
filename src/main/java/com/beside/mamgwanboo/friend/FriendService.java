@@ -1,7 +1,6 @@
 package com.beside.mamgwanboo.friend;
 
 import com.beside.mamgwanboo.common.type.YnType;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import protobuf.friend.FriendCreateDto;
@@ -16,10 +15,13 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class FriendService {
 
     private final FriendRepository friendRepository;
+
+    public FriendService(FriendRepository friendRepository) {
+        this.friendRepository = friendRepository;
+    }
 
     public Mono<List<FriendDto>> findFriendAll(){
         return friendRepository.findByUseYn(YnType.Y)

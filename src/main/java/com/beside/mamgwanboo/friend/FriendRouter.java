@@ -1,16 +1,18 @@
 package com.beside.mamgwanboo.friend;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 
 @Configuration
-@RequiredArgsConstructor
 public class FriendRouter {
 
     private final FriendHandler friendHandler;
+
+    public FriendRouter(FriendHandler friendHandler) {
+        this.friendHandler = friendHandler;
+    }
 
     @Bean
     public RouterFunction<?> routerFriend(){

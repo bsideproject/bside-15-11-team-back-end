@@ -2,7 +2,6 @@ package com.beside.mamgwanboo.friend;
 
 import com.beside.mamgwanboo.common.util.ProtocolBufferUtil;
 import com.mongodb.DuplicateKeyException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -15,11 +14,15 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class FriendHandler {
 
     private final FriendService friendService;
     private final FriendValidator friendValidator;
+
+    public FriendHandler(FriendService friendService, FriendValidator friendValidator) {
+        this.friendService = friendService;
+        this.friendValidator = friendValidator;
+    }
 
     public Mono<ServerResponse> getFriend(ServerRequest request){
         String sequence = request.pathVariable("sequence");

@@ -1,7 +1,6 @@
 package com.beside.mamgwanboo.friend;
 
 import com.beside.mamgwanboo.common.type.YnType;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -10,8 +9,6 @@ import org.springframework.util.ObjectUtils;
 import protobuf.friend.FriendSearchCriteria;
 import reactor.core.publisher.Flux;
 
-
-@RequiredArgsConstructor
 public class CustomFriendRepositoryImpl implements CustomFriendRepository{
 
     private final String NICK_NAME_FILED = "nickname";
@@ -19,6 +16,9 @@ public class CustomFriendRepositoryImpl implements CustomFriendRepository{
     private final String RELATION_LEVEL_FILED = "levelInformation.level_";
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
+    public CustomFriendRepositoryImpl(ReactiveMongoTemplate reactiveMongoTemplate) {
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
+    }
 
     @Override
     public Flux<Friend> searchFriend(FriendSearchCriteria friendSearchCriteria) {
