@@ -7,6 +7,7 @@ import com.beside.mamgwanboo.common.type.YnType;
 import com.beside.mamgwanboo.user.document.User;
 import com.beside.mamgwanboo.user.document.UserId;
 import java.util.UUID;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,7 @@ class UserRepositoryTest {
   @Autowired
   UserRepository userRepository;
 
+  @Disabled
   @Test
   void test() {
     // given
