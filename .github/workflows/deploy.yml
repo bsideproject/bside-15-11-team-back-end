@@ -32,6 +32,7 @@ jobs:
           echo "${{ secrets.FRONT_INFO }}" > ./src/main/resources/secret/front-info.yml
           echo "${{ secrets.SLACK_INFO }}" > ./src/main/resources/secret/slack-info.yml
           echo "${{ secrets.JWT_INFO }}" > ./src/main/resources/secret/jwt-info.yml
+          echo "${{ secrets.OAUTH_INFO }}" > ./src/main/resources/secret/oauth-info.yml
       # Update Submodule - Protocol Buffer
       - name: Submodule Update
         run: git submodule update --init --remote
