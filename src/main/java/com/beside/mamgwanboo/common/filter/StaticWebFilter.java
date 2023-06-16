@@ -1,6 +1,7 @@
 package com.beside.mamgwanboo.common.filter;
 
 import com.google.common.base.Charsets;
+import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -15,22 +16,32 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
 @Component
 public class StaticWebFilter implements WebFilter {
+  private final List<String> indexWhiteList;
   private final String staticPath;
 
-  public StaticWebFilter(@Value("${static.path}") String staticPath) {
+  public StaticWebFilter(
+      @Value("${static.path}") String staticPath,
+      @Value("${oauth.redirectUri}") String redirectUri
+  ) {
     this.staticPath = staticPath;
+
+    this.indexWhiteList = List.of(
+        "/",
+        extractPath(redirectUri)
+    );
   }
 
   @Override
   public @NonNull Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
     String requestPath = UriUtils.decode(exchange.getRequest().getPath().value(), Charsets.UTF_8);
-    if ("/".equals(requestPath)) {
+    if (indexWhiteList.contains(requestPath)) {
       requestPath = "/index.html";
     }
 
@@ -70,5 +81,12 @@ public class StaticWebFilter implements WebFilter {
             String.format("static 파일을 주는데 이상한 상태입니다. request: %s", exchange.getRequest())
         )
     );
+  }
+
+  private String extractPath(String uri) {
+    return UriComponentsBuilder
+        .fromUriString(uri)
+        .build()
+        .getPath();
   }
 }
