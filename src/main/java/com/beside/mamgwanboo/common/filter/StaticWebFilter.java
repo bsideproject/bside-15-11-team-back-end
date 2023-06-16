@@ -28,13 +28,13 @@ public class StaticWebFilter implements WebFilter {
 
   public StaticWebFilter(
       @Value("${static.path}") String staticPath,
-      @Value("${oauth.redirectUri}") String redirectUri
+      @Value("${oauth.redirectUri}") String oauthRedirectUri
   ) {
     this.staticPath = staticPath;
 
     this.indexWhiteList = List.of(
         "/",
-        extractPath(redirectUri)
+        extractPath(oauthRedirectUri)
     );
   }
 
