@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
-    <springProperty name="SLACK_WEBHOOK_URI" source="slack.webhook.uri"/>
+    <springProperty name="SLACK_WEBHOOK_URI" source="slack.webHook.uri"/>
 
     <appender name="SLACK" class="com.github.maricn.logback.SlackAppender">
         <webhookUri>${SLACK_WEBHOOK_URI}</webhookUri>
