@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class SignWebFilter implements WebFilter {
-  private final String API_PATH_PREFIX = "/api";
+  private static final String API_PATH_PREFIX = "/api";
   private final List<String> whitePaths;
   private final String cookieName;
   private final JwtService jwtService;
