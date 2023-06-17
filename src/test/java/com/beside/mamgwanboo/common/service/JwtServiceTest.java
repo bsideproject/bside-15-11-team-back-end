@@ -1,7 +1,9 @@
 package com.beside.mamgwanboo.common.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.MalformedJwtException;
@@ -88,5 +90,46 @@ class JwtServiceTest {
     assertThat(mamgwanbooJwtPayload).isEqualTo(MamgwanbooJwtPayload.newBuilder()
         .setSequence("sequence")
         .build());
+  }
+
+  @Test
+  void isSignedWhenSigned() {
+    // given
+    String mamwanbooJwt =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.ewogICJzZXF1ZW5jZSI6ICJzZXF1ZW5jZSIKfQ.x0gx0U6N6XxAqdd2wyUT2h8MzyRAwhJGhFahHXisOwg";
+
+    // when
+    boolean result = jwtService.isSigned(mamwanbooJwt);
+
+    // then
+    assertTrue(result);
+  }
+
+  @Test
+  void isSignedWhenUnsigned() {
+    // given
+    String mamwanbooJwt =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXF1ZW5jZSI6ImFzZGYifQ.7xaBbcddICubDbnYRDhVbWWiyQ3XhwzB2-ry6xFJdws";
+
+    // when
+    boolean result = jwtService.isSigned(mamwanbooJwt);
+
+    // then
+    assertFalse(result);
+  }
+
+  @ParameterizedTest
+  @ValueSource(
+      strings = {
+          "asdf",
+          ""
+      }
+  )
+  void isSignedWhenInvalidJwt(String jwt) {
+    // when
+    boolean result = jwtService.isSigned(jwt);
+
+    // then
+    assertFalse(result);
   }
 }

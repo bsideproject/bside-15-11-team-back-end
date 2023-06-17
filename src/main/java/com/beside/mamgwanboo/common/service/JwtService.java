@@ -59,4 +59,17 @@ public class JwtService {
             ProtocolBufferUtil.parse(jsonString, MamgwanbooJwtPayload.newBuilder())
         );
   }
+
+  public Boolean isSigned(String jwt) {
+    try {
+      Jwts.parserBuilder()
+          .setSigningKey(Keys.hmacShaKeyFor(baseKey.getBytes(StandardCharsets.UTF_8)))
+          .build()
+          .parseClaimsJws(jwt);
+    } catch (RuntimeException runtimeException) {
+      return false;
+    }
+
+    return true;
+  }
 }
