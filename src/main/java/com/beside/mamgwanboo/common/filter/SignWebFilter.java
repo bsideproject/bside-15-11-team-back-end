@@ -4,6 +4,8 @@ import com.beside.mamgwanboo.common.service.JwtService;
 import com.google.common.base.Charsets;
 import com.mongodb.lang.NonNull;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import org.springframework.web.util.UriUtils;
+import protobuf.sign.MamgwanbooJwtPayload;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -22,15 +25,18 @@ public class SignWebFilter implements WebFilter {
   private static final String API_PATH_PREFIX = "/api";
   private final List<String> whitePaths;
   private final String cookieName;
+  private final String attributeName;
   private final JwtService jwtService;
 
   public SignWebFilter(
       @Value("${sign.whitePaths}") List<String> whitePaths,
-      @Value("${sign.cookie.name}") String cookieName,
+      @Value("${sign.cookieName}") String cookieName,
+      @Value("${sign.attributeName}") String attributeName,
       JwtService jwtService
   ) {
     this.whitePaths = whitePaths;
     this.cookieName = cookieName;
+    this.attributeName = attributeName;
     this.jwtService = jwtService;
   }
 
@@ -40,40 +46,48 @@ public class SignWebFilter implements WebFilter {
     String requestPath = UriUtils.decode(exchange.getRequest().getPath().value(), Charsets.UTF_8);
 
     if (!requestPath.startsWith(API_PATH_PREFIX)) {
-      chain.filter(exchange);
-      return Mono.empty();
+      return chain.filter(exchange);
     }
 
     if (whitePaths.contains(requestPath.replace(API_PATH_PREFIX, ""))) {
-      chain.filter(exchange);
-      return Mono.empty();
+      return chain.filter(exchange);
     }
 
-    if (isSignedRequest(exchange.getRequest())) {
-      chain.filter(exchange);
+    Optional<MamgwanbooJwtPayload> optionalMamgwanbooJwtPayload =
+        getJwtPayload(exchange.getRequest());
+    if (optionalMamgwanbooJwtPayload.isPresent()) {
+      exchange.getAttributes().put(
+          attributeName,
+          optionalMamgwanbooJwtPayload.get()
+      );
       return Mono.empty();
     }
 
     ServerHttpResponse serverHttpResponse = exchange.getResponse();
-    serverHttpResponse.setStatusCode(HttpStatus.FORBIDDEN);
+    serverHttpResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
     return serverHttpResponse
         .setComplete();
   }
 
-  private boolean isSignedRequest(ServerHttpRequest serverHttpRequest) {
+  private Optional<MamgwanbooJwtPayload> getJwtPayload(ServerHttpRequest serverHttpRequest) {
     MultiValueMap<String, HttpCookie> cookies = serverHttpRequest.getCookies();
 
     if (cookies.isEmpty() || !cookies.containsKey(cookieName)) {
-      return false;
+      return Optional.empty();
     }
 
     List<HttpCookie> jwtCookies = cookies.get(cookieName);
     for (HttpCookie jwtCookie : jwtCookies) {
-      if (jwtService.isSigned(jwtCookie.getValue())) {
-        return true;
+      try {
+        return Optional.of(
+            Objects.requireNonNull(
+                jwtService.getPayload(jwtCookie.getValue()).block()
+            )
+        );
+      } catch (IllegalArgumentException ignored) {
       }
     }
 
-    return false;
+    return Optional.empty();
   }
 }

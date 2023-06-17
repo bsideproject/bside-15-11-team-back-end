@@ -24,8 +24,8 @@ jwt:
     name: jwt
 sign:
   whitePaths: /sign, /users
-  cookie:
-    name: jwt
+  attributeName: jwt
+  cookieName: jwt
 
 ---
 
