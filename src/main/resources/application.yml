@@ -12,14 +12,20 @@ spring:
       database: beside
 cors:
   origins: '*'
+#  origins: 127.0.0.1, localhost, 223.130.136.211
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-#  origins: 127.0.0.1, localhost, 223.130.136.211
 jwt:
   baseKey: ${jwt.baseKey}
+  cookie:
+    name: jwt
+sign:
+  whitePaths: /sign, /users
+  cookie:
+    name: jwt
 
 ---
 

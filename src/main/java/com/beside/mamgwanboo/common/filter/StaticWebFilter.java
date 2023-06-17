@@ -41,6 +41,7 @@ public class StaticWebFilter implements WebFilter {
   @Override
   public @NonNull Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
     String requestPath = UriUtils.decode(exchange.getRequest().getPath().value(), Charsets.UTF_8);
+
     if (indexWhiteList.contains(requestPath)) {
       requestPath = "/index.html";
     }
