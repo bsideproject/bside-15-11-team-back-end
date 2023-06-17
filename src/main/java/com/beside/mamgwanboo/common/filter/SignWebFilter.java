@@ -69,6 +69,7 @@ public class SignWebFilter implements WebFilter {
         .setComplete();
   }
 
+  @SuppressWarnings("checkstyle:EmptyCatchBlock")
   private Optional<MamgwanbooJwtPayload> getJwtPayload(ServerHttpRequest serverHttpRequest) {
     MultiValueMap<String, HttpCookie> cookies = serverHttpRequest.getCookies();
 
