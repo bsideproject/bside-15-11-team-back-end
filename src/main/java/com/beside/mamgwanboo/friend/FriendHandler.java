@@ -27,7 +27,7 @@ public class FriendHandler {
     public Mono<ServerResponse> getFriend(ServerRequest request){
         String sequence = request.pathVariable("sequence");
 
-        return friendService.findFriend(sequence)
+        return friendService.getFriend(sequence)
                 .log()
                 .flatMap(friend ->
                         ServerResponse.ok()
@@ -36,7 +36,18 @@ public class FriendHandler {
                 );
     }
 
-    public Mono<ServerResponse> getFriends(ServerRequest request){
+    public Mono<ServerResponse> getFriendsByCriteria(ServerRequest request){
+        return makeCriteriaParams(request)
+                .flatMapMany(friendService::getFriendsByCriteria)
+                .collectList()
+                .log()
+                .flatMap(friendDtoList -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(friendDtoList)
+                );
+    }
+
+    private Mono<FriendSearchCriteria> makeCriteriaParams(ServerRequest request){
         FriendSearchCriteria.Builder friendSearchCriteriaBuilder = FriendSearchCriteria
                 .newBuilder();
 
@@ -89,10 +100,10 @@ public class FriendHandler {
                 );
     }
 
-    public Mono<ServerResponse> deleteFriend(ServerRequest request){
+    public Mono<ServerResponse> removeFriend(ServerRequest request){
         String sequence = request.pathVariable("sequence");
 
-        return friendService.deleteFriend(sequence)
+        return friendService.removeFriend(sequence)
                 .log()
                 .flatMap(friendDto ->
                         ServerResponse.ok()

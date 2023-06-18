@@ -8,5 +8,5 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface CustomFriendRepository {
 
-    Flux<Friend> searchFriend(FriendSearchCriteria keyword);
+    Flux<Friend> findFriendsByCriteria(FriendSearchCriteria keyword);
 }

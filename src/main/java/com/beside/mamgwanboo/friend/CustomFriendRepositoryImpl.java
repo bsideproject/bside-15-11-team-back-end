@@ -21,7 +21,7 @@ public class CustomFriendRepositoryImpl implements CustomFriendRepository{
     }
 
     @Override
-    public Flux<Friend> searchFriend(FriendSearchCriteria friendSearchCriteria) {
+    public Flux<Friend> findFriendsByCriteria(FriendSearchCriteria friendSearchCriteria) {
         String keywordReg = ".*" + friendSearchCriteria.getKeyword() + ".*";
 
         Query query = new Query(

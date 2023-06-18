@@ -23,8 +23,8 @@ public class FriendService {
         this.friendRepository = friendRepository;
     }
 
-    public Mono<FriendDto> findFriend(String sequence){
-        return findVerifiedFriend(sequence)
+    public Mono<FriendDto> getFriend(String sequence){
+        return getVerifiedFriend(sequence)
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
     }
 
@@ -35,26 +35,26 @@ public class FriendService {
     }
 
     public Mono<FriendDto> updateFriend(String sequence, FriendUpdateDto friendUpdateDto){
-        return findVerifiedFriend(sequence)
+        return getVerifiedFriend(sequence)
                 .flatMap(friend -> Mono.just(updateDtoToDocument(friend, friendUpdateDto)))
                 .flatMap(updateFrd -> friendRepository.save(updateFrd))
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
     }
 
-    public Mono<FriendDto> deleteFriend(String sequence) {
-        return findVerifiedFriend(sequence)
+    public Mono<FriendDto> removeFriend(String sequence) {
+        return getVerifiedFriend(sequence)
                 .flatMap(friend -> Mono.just(friend.notUseYn(friend)))
                 .flatMap(friend -> friendRepository.save(friend))
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
 
     }
 
-    public Flux<FriendDto> searchFriend(FriendSearchCriteria friendSearchCriteria){
-        return friendRepository.searchFriend(friendSearchCriteria)
+    public Flux<FriendDto> getFriendsByCriteria(FriendSearchCriteria friendSearchCriteria){
+        return friendRepository.findFriendsByCriteria(friendSearchCriteria)
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
     }
 
-    private Mono<Friend> findVerifiedFriend(String sequence){
+    private Mono<Friend> getVerifiedFriend(String sequence){
         return friendRepository.findBySequenceAndUseYn(sequence, YnType.Y)
                 .switchIfEmpty(
                         Mono.error(
