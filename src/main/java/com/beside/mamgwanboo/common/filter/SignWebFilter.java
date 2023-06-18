@@ -4,8 +4,6 @@ import com.beside.mamgwanboo.common.service.JwtService;
 import com.google.common.base.Charsets;
 import com.mongodb.lang.NonNull;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
@@ -53,42 +51,41 @@ public class SignWebFilter implements WebFilter {
       return chain.filter(exchange);
     }
 
-    Optional<MamgwanbooJwtPayload> optionalMamgwanbooJwtPayload =
-        getJwtPayload(exchange.getRequest());
-    if (optionalMamgwanbooJwtPayload.isPresent()) {
-      exchange.getAttributes().put(
-          attributeName,
-          optionalMamgwanbooJwtPayload.get()
-      );
-      return Mono.empty();
-    }
-
-    ServerHttpResponse serverHttpResponse = exchange.getResponse();
-    serverHttpResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
-    return serverHttpResponse
-        .setComplete();
+    return getJwtPayload(exchange.getRequest())
+        .flatMap(mamgwanbooJwtPayload -> {
+              exchange.getAttributes().put(
+                  attributeName,
+                  mamgwanbooJwtPayload
+              );
+              return Mono.empty();
+            }
+        )
+        .switchIfEmpty(
+            Mono.defer(() -> {
+              ServerHttpResponse serverHttpResponse = exchange.getResponse();
+              serverHttpResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
+              return serverHttpResponse.setComplete();
+            })
+        )
+        .then();
   }
 
   @SuppressWarnings("checkstyle:EmptyCatchBlock")
-  private Optional<MamgwanbooJwtPayload> getJwtPayload(ServerHttpRequest serverHttpRequest) {
+  private Mono<MamgwanbooJwtPayload> getJwtPayload(ServerHttpRequest serverHttpRequest) {
     MultiValueMap<String, HttpCookie> cookies = serverHttpRequest.getCookies();
 
     if (cookies.isEmpty() || !cookies.containsKey(cookieName)) {
-      return Optional.empty();
+      return Mono.empty();
     }
 
     List<HttpCookie> jwtCookies = cookies.get(cookieName);
     for (HttpCookie jwtCookie : jwtCookies) {
       try {
-        return Optional.of(
-            Objects.requireNonNull(
-                jwtService.getPayload(jwtCookie.getValue()).block()
-            )
-        );
+        return jwtService.getPayload(jwtCookie.getValue());
       } catch (IllegalArgumentException ignored) {
       }
     }
 
-    return Optional.empty();
+    return Mono.empty();
   }
 }
