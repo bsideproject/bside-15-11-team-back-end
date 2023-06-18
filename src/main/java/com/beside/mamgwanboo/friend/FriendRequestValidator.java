@@ -9,7 +9,7 @@ import protobuf.friend.FriendUpdateDto;
 
 @Slf4j
 @Component
-public class FriendValidator {
+public class FriendRequestValidator {
     public void createValidate(FriendCreateDto friendCreateDto){
         if(friendCreateDto.getNicknamesCount() == 0
                 || !friendCreateDto.hasRelationship())

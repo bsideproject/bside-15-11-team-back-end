@@ -17,9 +17,9 @@ import reactor.core.publisher.Mono;
 public class FriendHandler {
 
     private final FriendService friendService;
-    private final FriendValidator friendValidator;
+    private final FriendRequestValidator friendValidator;
 
-    public FriendHandler(FriendService friendService, FriendValidator friendValidator) {
+    public FriendHandler(FriendService friendService, FriendRequestValidator friendValidator) {
         this.friendService = friendService;
         this.friendValidator = friendValidator;
     }
@@ -55,18 +55,12 @@ public class FriendHandler {
                 .forEach(entry -> {
                     if (!ObjectUtils.isEmpty(FriendSearchCriteria.getDescriptor().findFieldByName(entry.getKey()))){
                         friendSearchCriteriaBuilder.setField(
-                            FriendSearchCriteria.getDescriptor().findFieldByName(entry.getKey()),
-                            entry.getValue().stream().findFirst().orElse(""));
+                                FriendSearchCriteria.getDescriptor().findFieldByName(entry.getKey()),
+                                entry.getValue().stream().findFirst().orElse(""));
                     }
                 });
 
-        return friendService.searchFriend(friendSearchCriteriaBuilder.build())
-                .collectList()
-                .log()
-                .flatMap(friendDtoList -> ServerResponse.ok()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(friendDtoList)
-                );
+        return Mono.just(friendSearchCriteriaBuilder.build());
     }
 
     public Mono<ServerResponse> createFriend(ServerRequest request){
@@ -108,8 +102,13 @@ public class FriendHandler {
                 .flatMap(friendDto ->
                         ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(!ObjectUtils.isEmpty(friendDto.getSequence())? Boolean.TRUE : Boolean.FALSE)
+                        .bodyValue(isDeleted(friendDto))
                 );
     }
 
+    private Boolean isDeleted(FriendDto friendDto){
+        return !ObjectUtils.isEmpty(friendDto.getSequence())
+                ? Boolean.TRUE
+                : Boolean.FALSE;
+    }
 }
