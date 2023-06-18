@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -22,25 +23,27 @@ import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
 @Component
+@Order(-1)
 public class StaticWebFilter implements WebFilter {
   private final List<String> indexWhiteList;
   private final String staticPath;
 
   public StaticWebFilter(
       @Value("${static.path}") String staticPath,
-      @Value("${oauth.kakao.redirectUri}") String kakaoRedirectUri
+      @Value("${oauth.redirectUri}") String oauthRedirectUri
   ) {
     this.staticPath = staticPath;
 
     this.indexWhiteList = List.of(
         "/",
-        extractPath(kakaoRedirectUri)
+        extractPath(oauthRedirectUri)
     );
   }
 
   @Override
   public @NonNull Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
     String requestPath = UriUtils.decode(exchange.getRequest().getPath().value(), Charsets.UTF_8);
+
     if (indexWhiteList.contains(requestPath)) {
       requestPath = "/index.html";
     }

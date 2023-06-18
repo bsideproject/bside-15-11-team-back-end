@@ -4,9 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.protobuf.Message;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import protobuf.sign.SignRequest;
 
 class ProtocolBufferUtilTest {
@@ -32,10 +35,8 @@ class ProtocolBufferUtilTest {
   void parse() {
     // given
     String body = """
-        {
-          "oauthServiceType": "KAKAO",
-          "code": ""
-        }""";
+        {"sequence": ""}
+        """;
     Message.Builder builder = SignRequest.newBuilder();
     Message expected = builder.build();
 
@@ -59,9 +60,24 @@ class ProtocolBufferUtilTest {
         .isEqualTo(
             """
                 {
-                  "oauthServiceType": "KAKAO",
-                  "code": ""
+                  "sequence": ""
                 }"""
         );
+  }
+
+  @Test
+  void from() {
+    // given
+    MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+    UUID uuid = UUID.randomUUID();
+    multiValueMap.add("sequence", uuid.toString());
+    SignRequest.Builder builder = SignRequest.newBuilder();
+
+    // when
+    SignRequest signRequest = ProtocolBufferUtil.<SignRequest>from(multiValueMap, builder).block();
+
+    // then
+    assertThat(signRequest.getSequence())
+        .isEqualTo(uuid.toString());
   }
 }

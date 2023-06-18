@@ -5,28 +5,27 @@ spring:
       - secret/front-info.yml
       - secret/slack-info.yml
       - secret/jwt-info.yml
-      - secret/kakao-info.yml
+      - secret/oauth-info.yml
   data:
     mongodb:
       uri: mongodb+srv://${mongodb.env.username}:${mongodb.env.password}@${mongodb.env.cluster}.mongodb.net/?retryWrites=true&w=majority
       database: beside
 cors:
   origins: '*'
+#  origins: 127.0.0.1, localhost, 223.130.136.211
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-
-#  origins: 127.0.0.1, localhost, 223.130.136.211
 jwt:
   baseKey: ${jwt.baseKey}
-oauth:
-  kakao:
-    uri: https://kauth.kakao.com/oauth/token
-api:
-  kakao:
-    uri: https://kapi.kakao.com/v2/user/me
+  cookie:
+    name: jwt
+sign:
+  whitePaths: /sign, /users
+  attributeName: jwt
+  cookieName: jwt
 
 ---
 
@@ -52,7 +51,7 @@ server:
 log:
 #  todo root 사용 그만해야될듯.
   path: /root/logs/
-  filename: beside-15th-11team
+  fileName: beside-15th-11team
   level: warn
 static:
   path: /root/static/

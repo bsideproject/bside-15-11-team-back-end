@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
     <springProperty scope="context" name="LOG_PATH" source="log.path"/>
-    <springProperty scope="context" name="LOG_FILENAME" source="log.filename"/>
+    <springProperty scope="context" name="LOG_FILENAME" source="log.fileName"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/${LOG_FILENAME}.log</file>

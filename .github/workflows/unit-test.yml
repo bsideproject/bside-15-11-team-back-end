@@ -19,7 +19,7 @@ jobs:
         echo "${{ secrets.FRONT_INFO }}" > ./src/main/resources/secret/front-info.yml
         echo "${{ secrets.SLACK_INFO }}" > ./src/main/resources/secret/slack-info.yml
         echo "${{ secrets.JWT_INFO }}" > ./src/main/resources/secret/jwt-info.yml
-        echo "${{ secrets.KAKAO_INFO }}" > ./src/main/resources/secret/kakao-info.yml
+        echo "${{ secrets.OAUTH_INFO }}" > ./src/main/resources/secret/oauth-info.yml
     - name: Submodule Update
       run: git submodule update --init --remote
     - name: Set up JDK 17
