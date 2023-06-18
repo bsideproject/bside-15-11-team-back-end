@@ -68,7 +68,7 @@ public class SignWebFilter implements WebFilter {
                   mamgwanbooJwtPayload
               );
 
-              return Mono.empty();
+              return chain.filter(exchange);
             });
       } catch (IllegalArgumentException ignored) {
       }
