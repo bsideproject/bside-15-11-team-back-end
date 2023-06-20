@@ -4,12 +4,11 @@ import com.beside.mamgwanboo.common.service.JwtService;
 import com.google.common.base.Charsets;
 import com.mongodb.lang.NonNull;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -50,18 +49,18 @@ public class SignWebFilter implements WebFilter {
       return chain.filter(exchange);
     }
 
-    MultiValueMap<String, HttpCookie> cookies = exchange.getRequest().getCookies();
+    List<String> authorizations = exchange.getRequest().getHeaders().get("Authorization");
 
-    if (cookies.isEmpty() || !cookies.containsKey(cookieName)) {
+    if (Objects.isNull(authorizations) || authorizations.isEmpty()) {
       ServerHttpResponse serverHttpResponse = exchange.getResponse();
       serverHttpResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
       return serverHttpResponse.setComplete();
     }
 
-    List<HttpCookie> jwtCookies = cookies.get(cookieName);
-    for (HttpCookie jwtCookie : jwtCookies) {
+
+    for (String authorization : authorizations) {
       try {
-        return jwtService.getPayload(jwtCookie.getValue())
+        return jwtService.getPayload(authorization)
             .flatMap(mamgwanbooJwtPayload -> {
               exchange.getAttributes().put(
                   attributeName,
