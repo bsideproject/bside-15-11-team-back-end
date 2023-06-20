@@ -122,6 +122,7 @@
                             <includeDirectories>
                                 <include>src/main/protobuf/common</include>
                                 <include>src/main/protobuf/common/type</include>
+                                <include>src/main/protobuf/friend</include>
                             </includeDirectories>
                             <type>java</type>
                         </configuration>

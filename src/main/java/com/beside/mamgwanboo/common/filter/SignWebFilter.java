@@ -36,6 +36,7 @@ public class SignWebFilter implements WebFilter {
     this.jwtService = jwtService;
   }
 
+  @SuppressWarnings("checkstyle:EmptyCatchBlock")
   @NonNull
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
