@@ -3,6 +3,7 @@ package com.beside.mamgwanboo.relationship.util;
 import com.beside.mamgwanboo.common.type.YnType;
 import com.beside.mamgwanboo.common.util.DateUtil;
 import com.beside.mamgwanboo.relationship.document.Relationship;
+import java.util.Objects;
 import protobuf.common.RelationshipRequestDto;
 import protobuf.common.RelationshipResponseDto;
 
@@ -11,6 +12,10 @@ public class RelationshipDtoUtil {
   }
 
   public static RelationshipResponseDto toRelationshipResponseDto(Relationship relationship) {
+    if (Objects.isNull(relationship)) {
+      return RelationshipResponseDto.newBuilder().build();
+    }
+
     return RelationshipResponseDto.newBuilder()
         .setSequence(relationship.getSequence())
         .setType(relationship.getType())
@@ -28,6 +33,10 @@ public class RelationshipDtoUtil {
       String userSequence,
       YnType useYn
   ) {
+    if (Objects.isNull(relationshipDto)) {
+      return null;
+    }
+
     return Relationship.builder()
         .userSequence(userSequence)
         .friendSequence(relationshipDto.getFriendSequence())

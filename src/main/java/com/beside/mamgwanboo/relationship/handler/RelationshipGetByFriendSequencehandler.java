@@ -8,6 +8,7 @@ import com.beside.mamgwanboo.relationship.util.RelationshipDtoUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import protobuf.relationship.RelationshipGetRequest;
@@ -19,10 +20,10 @@ public class RelationshipGetByFriendSequencehandler extends AbstractSignedHandle
   private final RelationshipRepository relationshipRepository;
 
   public RelationshipGetByFriendSequencehandler(
-      @Value("${sign.cookieName}") String cookieName,
+      @Value("${sign.attributeName}") String attributeName,
       RelationshipRepository relationshipRepository
   ) {
-    super(cookieName);
+    super(attributeName);
     this.relationshipRepository = relationshipRepository;
   }
 
@@ -33,6 +34,7 @@ public class RelationshipGetByFriendSequencehandler extends AbstractSignedHandle
             RelationshipGetRequest.newBuilder())
         .map(relationshipGetRequest ->
             RelationshipService.getByFriendSequence(
+                super.mamgwanbooJwtPayload.getSequence(),
                 relationshipGetRequest.getFriendSequence(),
                 relationshipGetRequest.getSort()
             )
@@ -41,6 +43,9 @@ public class RelationshipGetByFriendSequencehandler extends AbstractSignedHandle
             relationshipFindAllByFriendSequenceCommand.execute(relationshipRepository)
                 .map(RelationshipDtoUtil::toRelationshipResponseDto)
                 .collectList()
+        )
+        .filter(relationshipResponseDtos ->
+            !CollectionUtils.isEmpty(relationshipResponseDtos)
         )
         .map(relationshipResponseDtos ->
             RelationshipGetResponse.newBuilder()
@@ -53,6 +58,11 @@ public class RelationshipGetByFriendSequencehandler extends AbstractSignedHandle
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
+        )
+        .switchIfEmpty(
+            ServerResponse
+                .noContent()
+                .build()
         );
   }
 }

@@ -17,10 +17,10 @@ public class RelationshipDeleteHandler extends AbstractSignedHandler {
   private final RelationshipRepository relationshipRepository;
 
   public RelationshipDeleteHandler(
-      @Value("${sign.cookieName}") String cookieName,
+      @Value("${sign.attributeName}") String attributeName,
       RelationshipRepository relationshipRepository
   ) {
-    super(cookieName);
+    super(attributeName);
     this.relationshipRepository = relationshipRepository;
   }
 
@@ -29,7 +29,10 @@ public class RelationshipDeleteHandler extends AbstractSignedHandler {
     String sequence = serverRequest.pathVariable("sequence");
 
     return RelationshipService
-        .remove(sequence)
+        .removeByUserSequenceAndSequence(
+            super.mamgwanbooJwtPayload.getSequence(),
+            sequence
+        )
         .execute(relationshipRepository)
         .map(RelationshipDtoUtil::toRelationshipResponseDto)
         .map(ProtocolBufferUtil::print)

@@ -18,10 +18,10 @@ public class RelationshipGetBySequenceHandler extends AbstractSignedHandler {
   private final RelationshipRepository relationshipRepository;
 
   public RelationshipGetBySequenceHandler(
-      @Value("${sign.cookieName}") String cookieName,
+      @Value("${sign.attributeName}") String attributeName,
       RelationshipRepository relationshipRepository
   ) {
-    super(cookieName);
+    super(attributeName);
     this.relationshipRepository = relationshipRepository;
   }
 
@@ -30,7 +30,10 @@ public class RelationshipGetBySequenceHandler extends AbstractSignedHandler {
     String sequence = serverRequest.pathVariable("sequence");
 
     return RelationshipService
-        .getBySequence(sequence)
+        .getByUserSequenceAndSequence(
+            super.mamgwanbooJwtPayload.getSequence(),
+            sequence
+        )
         .execute(relationshipRepository)
         .map(RelationshipDtoUtil::toRelationshipResponseDto)
         .map(ProtocolBufferUtil::print)
@@ -39,6 +42,11 @@ public class RelationshipGetBySequenceHandler extends AbstractSignedHandler {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
+        )
+        .switchIfEmpty(
+            ServerResponse
+                .noContent()
+                .build()
         );
   }
 }

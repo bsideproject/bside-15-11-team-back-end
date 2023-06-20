@@ -1,7 +1,6 @@
 package com.beside.mamgwanboo.user.document;
 
 import com.beside.mamgwanboo.common.type.YnType;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,7 +16,7 @@ import protobuf.common.UserInformation;
 public class User {
   @Id
   UserId userId;
-  private final UUID sequence;
+  private final String sequence;
   private final UserInformation userInformation;
   private final LevelInformation levelInformation;
   private final YnType useYn;

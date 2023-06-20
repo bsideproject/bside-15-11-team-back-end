@@ -10,17 +10,19 @@ import protobuf.sign.MamgwanbooJwtPayload;
 import reactor.core.publisher.Mono;
 
 public abstract class AbstractSignedHandler implements HandlerFunction<ServerResponse> {
-  private final String cookieName;
   protected MamgwanbooJwtPayload mamgwanbooJwtPayload;
 
-  public AbstractSignedHandler(String cookieName) {
-    this.cookieName = cookieName;
+  private final String attributeName;
+
+  public AbstractSignedHandler(
+      String attributeName) {
+    this.attributeName = attributeName;
   }
 
   @NonNull
   @Override
   public Mono<ServerResponse> handle(ServerRequest request) {
-    Optional<Object> optionalMamgwanbooJwtPayload = request.attribute(cookieName);
+    Optional<Object> optionalMamgwanbooJwtPayload = request.attribute(attributeName);
     if (optionalMamgwanbooJwtPayload.isEmpty()) {
       return ServerResponse
           .status(HttpStatus.UNAUTHORIZED)
