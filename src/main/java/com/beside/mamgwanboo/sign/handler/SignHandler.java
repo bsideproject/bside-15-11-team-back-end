@@ -7,7 +7,6 @@ import com.beside.mamgwanboo.user.repository.UserRepository;
 import com.beside.mamgwanboo.user.service.UserService;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.HandlerFunction;
@@ -58,15 +57,7 @@ public class SignHandler implements HandlerFunction<ServerResponse> {
                       .flatMap(jwt ->
                           ServerResponse
                               .ok()
-                              .cookie(
-                                  ResponseCookie
-                                      .from(
-                                          "jwt",
-                                          jwt
-                                      )
-                                      .build()
-                              )
-                              .build()
+                              .bodyValue(jwt)
                       );
                 })
         )
