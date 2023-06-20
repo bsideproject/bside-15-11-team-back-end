@@ -3,46 +3,40 @@ package com.beside.mamgwanboo.relationship.util;
 import com.beside.mamgwanboo.common.type.YnType;
 import com.beside.mamgwanboo.common.util.DateUtil;
 import com.beside.mamgwanboo.relationship.document.Relationship;
-import protobuf.common.RelationshipDto;
+import protobuf.common.RelationshipRequestDto;
+import protobuf.common.RelationshipResponseDto;
 
 public class RelationshipDtoUtil {
   private RelationshipDtoUtil() {
   }
 
-  public static RelationshipDto toRelationshipDto(Relationship relationship) {
-    return RelationshipDto.newBuilder()
+  public static RelationshipResponseDto toRelationshipResponseDto(Relationship relationship) {
+    return RelationshipResponseDto.newBuilder()
         .setSequence(relationship.getSequence())
-        .setFriendSequence(relationship.getFriendSequence())
         .setType(relationship.getType())
         .setEvent(relationship.getEvent())
+        .setDate(DateUtil.toDate(relationship.getDate()))
         .setCreateDate(DateUtil.toDate(relationship.getCreateDate()))
         .setModifyDate(DateUtil.toDate(relationship.getModifyDate()))
-        .setItem(relationship.getItem())
+        .setItem(ItemUtil.toItemDto(relationship.getItem()))
         .setMemo(relationship.getMemo())
         .build();
   }
 
   public static Relationship toRelationship(
-      RelationshipDto relationshipDto,
+      RelationshipRequestDto relationshipDto,
       String userSequence,
       YnType useYn
   ) {
-    Relationship.RelationshipBuilder relationshipBuilder = Relationship.builder()
+    return Relationship.builder()
         .userSequence(userSequence)
         .friendSequence(relationshipDto.getFriendSequence())
         .type(relationshipDto.getType())
         .event(relationshipDto.getEvent())
-        .createDate(DateUtil.toLocalDateTime(relationshipDto.getCreateDate()))
-        .modifyDate(DateUtil.toLocalDateTime(relationshipDto.getModifyDate()))
-        .item(relationshipDto.getItem())
+        .date(DateUtil.toLocalDateTime(relationshipDto.getDate()))
+        .item(ItemUtil.toItem(relationshipDto.getItem()))
         .memo(relationshipDto.getMemo())
-        .useYn(useYn);
-
-    if (relationshipDto.hasField(RelationshipDto.getDescriptor().findFieldByName("sequence"))) {
-      relationshipBuilder.sequence(relationshipDto.getSequence());
-    }
-
-    return relationshipBuilder
+        .useYn(useYn)
         .build();
   }
 }

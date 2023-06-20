@@ -18,6 +18,7 @@ public class DateUtil {
 
   public static LocalDateTime toLocalDateTime(Date date) {
     LocalTime minLocalTime = LocalTime.MIN;
+
     return LocalDateTime.of(
         date.getYear(),
         date.getMonth(),

@@ -9,7 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
-import protobuf.common.Item;
 import protobuf.common.type.RelationshipType;
 
 @Builder
@@ -23,6 +22,7 @@ public class Relationship {
   private final String friendSequence;
   private final RelationshipType type;
   private final String event;
+  private final LocalDateTime date;
   @CreatedDate
   private final LocalDateTime createDate;
   @LastModifiedDate

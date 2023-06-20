@@ -1,19 +1,22 @@
 package com.beside.mamgwanboo.relationship.handler;
 
 import com.beside.mamgwanboo.common.handler.AbstractSignedHandler;
+import com.beside.mamgwanboo.common.util.ProtocolBufferUtil;
 import com.beside.mamgwanboo.relationship.repository.RelationshipRepository;
 import com.beside.mamgwanboo.relationship.service.RelationshipService;
+import com.beside.mamgwanboo.relationship.util.RelationshipDtoUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Component
-public class RelationshipCountHandler extends AbstractSignedHandler {
+public class RelationshipDeleteHandler extends AbstractSignedHandler {
   private final RelationshipRepository relationshipRepository;
 
-  public RelationshipCountHandler(
+  public RelationshipDeleteHandler(
       @Value("${sign.cookieName}") String cookieName,
       RelationshipRepository relationshipRepository
   ) {
@@ -23,12 +26,17 @@ public class RelationshipCountHandler extends AbstractSignedHandler {
 
   @Override
   protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
+    String sequence = serverRequest.pathVariable("sequence");
+
     return RelationshipService
-        .countByUserSequence(super.mamgwanbooJwtPayload.getSequence())
+        .remove(sequence)
         .execute(relationshipRepository)
-        .flatMap(count ->
+        .map(RelationshipDtoUtil::toRelationshipResponseDto)
+        .map(ProtocolBufferUtil::print)
+        .flatMap(body ->
             ServerResponse
                 .ok()
-                .bodyValue(count));
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body));
   }
 }
