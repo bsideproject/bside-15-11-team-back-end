@@ -25,7 +25,6 @@ jwt:
 sign:
   whitePaths: /sign, /users
   attributeName: jwt
-  cookieName: jwt
 
 ---
 

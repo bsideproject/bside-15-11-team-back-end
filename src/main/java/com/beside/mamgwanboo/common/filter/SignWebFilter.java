@@ -19,18 +19,15 @@ import reactor.core.publisher.Mono;
 public class SignWebFilter implements WebFilter {
   private static final String API_PATH_PREFIX = "/api";
   private final List<String> whitePaths;
-  private final String cookieName;
   private final String attributeName;
   private final JwtService jwtService;
 
   public SignWebFilter(
       @Value("${sign.whitePaths}") List<String> whitePaths,
-      @Value("${sign.cookieName}") String cookieName,
       @Value("${sign.attributeName}") String attributeName,
       JwtService jwtService
   ) {
     this.whitePaths = whitePaths;
-    this.cookieName = cookieName;
     this.attributeName = attributeName;
     this.jwtService = jwtService;
   }
