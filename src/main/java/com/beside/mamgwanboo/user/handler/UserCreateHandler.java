@@ -40,10 +40,10 @@ public class UserCreateHandler implements HandlerFunction<ServerResponse> {
             userCreateCommand.execute(userRepository)
         )
         .map(this::toUserResponse)
-        .flatMap(userGetResponse ->
+        .flatMap(userResponse ->
             ServerResponse
                 .ok()
-                .bodyValue(ProtocolBufferUtil.print(userGetResponse))
+                .bodyValue(ProtocolBufferUtil.print(userResponse))
         );
   }
 
@@ -55,7 +55,7 @@ public class UserCreateHandler implements HandlerFunction<ServerResponse> {
                 .serviceUserId(userPatchRequest.getServiceUserId())
                 .build()
         )
-        .sequence(UUID.randomUUID())
+        .sequence(UUID.randomUUID().toString())
         .userInformation(userPatchRequest.getUserInformation())
         .useYn(YnType.Y)
         .build();

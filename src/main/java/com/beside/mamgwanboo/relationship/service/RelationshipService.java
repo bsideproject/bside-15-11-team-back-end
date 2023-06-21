@@ -17,17 +17,20 @@ public class RelationshipService {
   }
 
   public static RelationshipFindAllByFriendSequenceCommand getByFriendSequence(
+      String userSequence,
       String friendSequence,
       SortOrderType sortOrderType
   ) {
     return new RelationshipFindAllByFriendSequenceCommand(
+        userSequence,
         friendSequence,
         SortOrderTypeUtil.toSort("date", sortOrderType)
     );
   }
 
-  public static RelationshipFindOneBySequenceCommand getBySequence(String sequence) {
-    return new RelationshipFindOneBySequenceCommand(sequence);
+  public static RelationshipFindOneBySequenceCommand getByUserSequenceAndSequence(
+      String userSequence, String sequence) {
+    return new RelationshipFindOneBySequenceCommand(userSequence, sequence);
   }
 
   public static RelationshipSaveAllCommand save(List<Relationship> relationships) {
@@ -38,7 +41,8 @@ public class RelationshipService {
     return new RelationshipSaveCommand(relationship);
   }
 
-  public static RelationshipDeleteCommand remove(String sequence) {
-    return new RelationshipDeleteCommand(sequence);
+  public static RelationshipDeleteCommand removeByUserSequenceAndSequence(String userSequence,
+                                                                          String sequence) {
+    return new RelationshipDeleteCommand(userSequence, sequence);
   }
 }

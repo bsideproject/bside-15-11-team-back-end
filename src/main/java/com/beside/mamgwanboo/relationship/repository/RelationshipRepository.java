@@ -13,13 +13,22 @@ import reactor.core.publisher.Mono;
 public interface RelationshipRepository extends ReactiveMongoRepository<Relationship, UUID> {
   Mono<Long> countAllByUserSequenceAndUseYn(String userSequence, YnType useYn);
 
-  Flux<Relationship> findAllByFriendSequenceAndUseYn(
+  Flux<Relationship> findAllByUserSequenceAndFriendSequenceAndUseYn(
+      String userSequence,
       String friendSequence,
       YnType useYn,
       Sort sort
   );
 
-  Mono<Relationship> findOneBySequenceAndUseYn(String sequence, YnType useYn);
+  Mono<Relationship> findOneByUserSequenceAndSequenceAndUseYn(
+      String userSequence,
+      String sequence,
+      YnType useYn
+  );
 
-  Mono<Relationship> deleteBySequenceAndUseYn(String sequence, YnType useYn);
+  Mono<Relationship> deleteByUserSequenceAndSequenceAndUseYn(
+      String userSequence,
+      String sequence,
+      YnType useYn
+  );
 }

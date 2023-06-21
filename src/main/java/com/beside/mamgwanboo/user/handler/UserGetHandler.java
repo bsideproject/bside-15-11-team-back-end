@@ -37,10 +37,15 @@ public class UserGetHandler implements HandlerFunction<ServerResponse> {
             userFindCommand.execute(userRepository)
         )
         .map(this::toUserResponse)
-        .flatMap(userGetResponse ->
+        .flatMap(userResponse ->
             ServerResponse
                 .ok()
-                .bodyValue(ProtocolBufferUtil.print(userGetResponse))
+                .bodyValue(ProtocolBufferUtil.print(userResponse))
+        )
+        .switchIfEmpty(
+            ServerResponse
+                .noContent()
+                .build()
         );
   }
 

@@ -25,7 +25,7 @@ class UserExistsCommandTest {
   @MethodSource("provideAllYnTypeBooleans")
   void execute(YnTypeBoolean ynTypeBoolean) {
     // given
-    UUID uuid = UUID.randomUUID();
+    String uuid = UUID.randomUUID().toString();
     YnType ynType = ynTypeBoolean.ynType;
     Mono<Boolean> expect = Mono.justOrEmpty(ynTypeBoolean.bool);
     UserExistsCommand userExistsCommand = new UserExistsCommand(uuid, ynType);

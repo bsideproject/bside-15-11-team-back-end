@@ -29,7 +29,7 @@ class UserRepositoryTest {
                 .serviceUserId("serviceUserId")
                 .build()
         )
-        .sequence(UUID.randomUUID())
+        .sequence(UUID.randomUUID().toString())
         .useYn(YnType.N)
         .build();
 

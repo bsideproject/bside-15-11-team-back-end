@@ -5,7 +5,6 @@ import com.beside.mamgwanboo.common.type.YnType;
 import com.beside.mamgwanboo.common.util.ProtocolBufferUtil;
 import com.beside.mamgwanboo.user.repository.UserRepository;
 import com.beside.mamgwanboo.user.service.UserService;
-import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -37,7 +36,6 @@ public class SignHandler implements HandlerFunction<ServerResponse> {
             )
         )
         .map(SignRequest::getSequence)
-        .map(UUID::fromString)
         .flatMap(sequence ->
             UserService
                 .existsUser(sequence, YnType.Y)
@@ -51,7 +49,7 @@ public class SignHandler implements HandlerFunction<ServerResponse> {
 
                   return jwtService.makeJwt(
                           MamgwanbooJwtPayload.newBuilder()
-                              .setSequence(sequence.toString())
+                              .setSequence(sequence)
                               .build()
                       )
                       .flatMap(jwt ->

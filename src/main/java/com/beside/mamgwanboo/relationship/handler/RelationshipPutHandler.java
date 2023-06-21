@@ -22,10 +22,10 @@ public class RelationshipPutHandler extends AbstractSignedHandler {
   private final RelationshipRepository relationshipRepository;
 
   public RelationshipPutHandler(
-      @Value("${sign.cookieName}") String cookieName,
+      @Value("${sign.attributeName}") String attributeName,
       RelationshipRepository relationshipRepository
   ) {
-    super(cookieName);
+    super(attributeName);
     this.relationshipRepository = relationshipRepository;
   }
 
@@ -51,6 +51,11 @@ public class RelationshipPutHandler extends AbstractSignedHandler {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
+        )
+        .switchIfEmpty(
+            ServerResponse
+                .noContent()
+                .build()
         );
   }
 

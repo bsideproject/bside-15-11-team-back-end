@@ -5,7 +5,6 @@ import com.beside.mamgwanboo.user.command.UserCreateCommand;
 import com.beside.mamgwanboo.user.command.UserExistsCommand;
 import com.beside.mamgwanboo.user.command.UserFindCommand;
 import com.beside.mamgwanboo.user.document.User;
-import java.util.UUID;
 import protobuf.common.type.OauthServiceType;
 
 public class UserService {
@@ -21,7 +20,7 @@ public class UserService {
     return new UserCreateCommand(user);
   }
 
-  public static UserExistsCommand existsUser(UUID sequence, YnType useYn) {
+  public static UserExistsCommand existsUser(String sequence, YnType useYn) {
     return new UserExistsCommand(sequence, useYn);
   }
 }

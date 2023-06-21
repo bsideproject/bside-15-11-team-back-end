@@ -14,10 +14,10 @@ public class RelationshipCountHandler extends AbstractSignedHandler {
   private final RelationshipRepository relationshipRepository;
 
   public RelationshipCountHandler(
-      @Value("${sign.cookieName}") String cookieName,
+      @Value("${sign.attributeName}") String attributeName,
       RelationshipRepository relationshipRepository
   ) {
-    super(cookieName);
+    super(attributeName);
     this.relationshipRepository = relationshipRepository;
   }
 

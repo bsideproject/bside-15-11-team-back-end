@@ -20,7 +20,7 @@ import protobuf.common.type.OauthServiceType;
 class UserServiceTest {
   @ParameterizedTest
   @MethodSource("provideAllOauthServiceTypesAndYnTypes")
-  void getUser(OauthServiceTypeYnType oauthServiceTypeYnType) throws IllegalAccessException {
+  void getUser(OauthServiceTypeYnType oauthServiceTypeYnType) {
     // given
     OauthServiceType oauthServiceType = oauthServiceTypeYnType.oauthServiceType;
     String serviceUserId = "serviceUserId";
@@ -58,7 +58,7 @@ class UserServiceTest {
   )
   void existsUser(YnType ynType) {
     // given
-    UUID uuid = UUID.randomUUID();
+    String uuid = UUID.randomUUID().toString();
 
     // when
     UserExistsCommand actual = UserService.existsUser(uuid, ynType);
