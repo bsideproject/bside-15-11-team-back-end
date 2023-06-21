@@ -9,7 +9,6 @@ import com.beside.mamgwanboo.user.command.UserFindCommand;
 import com.beside.mamgwanboo.user.document.User;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,7 +19,7 @@ import protobuf.common.type.OauthServiceType;
 class UserServiceTest {
   @ParameterizedTest
   @MethodSource("provideAllOauthServiceTypesAndYnTypes")
-  void getUser(OauthServiceTypeYnType oauthServiceTypeYnType) throws IllegalAccessException {
+  void getUser(OauthServiceTypeYnType oauthServiceTypeYnType) {
     // given
     OauthServiceType oauthServiceType = oauthServiceTypeYnType.oauthServiceType;
     String serviceUserId = "serviceUserId";
@@ -58,7 +57,7 @@ class UserServiceTest {
   )
   void existsUser(YnType ynType) {
     // given
-    UUID uuid = UUID.randomUUID();
+    String uuid = "uuid";
 
     // when
     UserExistsCommand actual = UserService.existsUser(uuid, ynType);

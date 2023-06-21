@@ -7,7 +7,6 @@ import com.beside.mamgwanboo.common.type.YnType;
 import com.beside.mamgwanboo.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,7 +24,7 @@ class UserExistsCommandTest {
   @MethodSource("provideAllYnTypeBooleans")
   void execute(YnTypeBoolean ynTypeBoolean) {
     // given
-    UUID uuid = UUID.randomUUID();
+    String uuid = "uuid";
     YnType ynType = ynTypeBoolean.ynType;
     Mono<Boolean> expect = Mono.justOrEmpty(ynTypeBoolean.bool);
     UserExistsCommand userExistsCommand = new UserExistsCommand(uuid, ynType);

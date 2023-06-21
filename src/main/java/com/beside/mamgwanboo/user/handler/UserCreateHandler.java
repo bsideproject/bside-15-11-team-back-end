@@ -55,7 +55,7 @@ public class UserCreateHandler implements HandlerFunction<ServerResponse> {
                 .serviceUserId(userPatchRequest.getServiceUserId())
                 .build()
         )
-        .sequence(UUID.randomUUID())
+        .sequence(UUID.randomUUID().toString())
         .userInformation(userPatchRequest.getUserInformation())
         .useYn(YnType.Y)
         .build();
