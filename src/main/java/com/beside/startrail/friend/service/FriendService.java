@@ -1,8 +1,11 @@
-package com.beside.startrail.friend;
+package com.beside.startrail.friend.service;
 
 import com.beside.startrail.common.type.YnType;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.beside.startrail.friend.document.Friend;
+import com.beside.startrail.friend.repository.FriendRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import protobuf.friend.FriendCreateDto;
@@ -22,39 +25,39 @@ public class FriendService {
         this.friendRepository = friendRepository;
     }
 
-    public Mono<FriendDto> getFriend(String sequence){
-        return getVerifiedFriend(sequence)
+    public Mono<FriendDto> getFriendBySequence(String userSequence, String sequence){
+        return getVerifiedFriend(userSequence, sequence)
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
     }
 
-    public Mono<List<FriendDto>> createFriend(FriendCreateDto friendCreateDto){
-        return friendRepository.saveAll(createDtoToDocuments(friendCreateDto))
+    public Mono<List<FriendDto>> createFriend(String userSequence, FriendCreateDto friendCreateDto){
+        return friendRepository.saveAll(createDtoToDocuments(userSequence, friendCreateDto))
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)))
                 .collectList();
     }
 
-    public Mono<FriendDto> updateFriend(String sequence, FriendUpdateDto friendUpdateDto){
-        return getVerifiedFriend(sequence)
+    public Mono<FriendDto> updateFriend(String userSequence, String sequence, FriendUpdateDto friendUpdateDto){
+        return getVerifiedFriend(userSequence, sequence)
                 .flatMap(friend -> Mono.just(updateDtoToDocument(friend, friendUpdateDto)))
                 .flatMap(updateFrd -> friendRepository.save(updateFrd))
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
     }
 
-    public Mono<FriendDto> removeFriend(String sequence) {
-        return getVerifiedFriend(sequence)
+    public Mono<FriendDto> removeFriend(String userSequence, String sequence) {
+        return getVerifiedFriend(userSequence, sequence)
                 .flatMap(friend -> Mono.just(friend.notUseYn(friend)))
                 .flatMap(friend -> friendRepository.save(friend))
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
 
     }
 
-    public Flux<FriendDto> getFriendsByCriteria(FriendSearchCriteria friendSearchCriteria){
-        return friendRepository.findFriendsByCriteria(friendSearchCriteria)
+    public Flux<FriendDto> getFriendsByCriteria(String userSequence, FriendSearchCriteria friendSearchCriteria){
+        return friendRepository.findFriendsByCriteria(userSequence, friendSearchCriteria)
                 .flatMap(friend -> Mono.just(this.toResponseDto(friend)));
     }
 
-    private Mono<Friend> getVerifiedFriend(String sequence){
-        return friendRepository.findBySequenceAndUseYn(sequence, YnType.Y)
+    private Mono<Friend> getVerifiedFriend(String userSequence, String sequence){
+        return friendRepository.findByUserSequenceAndSequenceAndUseYn(userSequence, sequence, YnType.Y)
                 .switchIfEmpty(
                         Mono.error(
                                 new IllegalArgumentException("Not Found Friend")
@@ -73,10 +76,10 @@ public class FriendService {
                 .build();
     }
 
-    private List<Friend> createDtoToDocuments(FriendCreateDto friendCreateDto){
+    private List<Friend> createDtoToDocuments(String userSequence, FriendCreateDto friendCreateDto){
         return friendCreateDto.getNicknamesList().stream()
                 .map(nickname -> Friend.builder()
-                        .userSequence("TEST")
+                        .userSequence(userSequence)
                         .nickname(nickname)
                         .relationship(friendCreateDto.getRelationship())
                         .birth(friendCreateDto.getBirth())

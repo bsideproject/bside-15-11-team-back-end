@@ -1,4 +1,4 @@
-package com.beside.startrail.friend;
+package com.beside.startrail.friend.document;
 
 import com.beside.startrail.common.type.YnType;
 import java.time.LocalDateTime;

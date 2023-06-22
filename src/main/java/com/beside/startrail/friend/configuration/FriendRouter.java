@@ -1,5 +1,6 @@
-package com.beside.startrail.friend;
+package com.beside.startrail.friend.configuration;
 
+import com.beside.startrail.friend.handler.FriendHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -17,7 +18,7 @@ public class FriendRouter {
     @Bean
     public RouterFunction<?> routerFriend(){
         return RouterFunctions.route()
-                .GET("/api/friend/{sequence}", friendHandler::getFriend)
+                .GET("/api/friend/{sequence}", friendHandler::getFriendBySequence)
                 .GET("/api/friend", friendHandler::getFriendsByCriteria)
                 .POST("/api/friend",friendHandler::createFriend)
                 .PUT("/api/friend/{sequence}", friendHandler::updateFriend)
