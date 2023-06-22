@@ -30,8 +30,7 @@ public class CustomFriendRepositoryImpl implements CustomFriendRepository{
             Criteria.where("useYn").is(YnType.Y)
                     .andOperator(Criteria.where(USER_SEQUENCE_FILED).is(userSequence))
                     .orOperator(
-                            Criteria.where(NICK_NAME_FILED).regex(keywordReg),
-                            Criteria.where(RELATION_FIELD).regex(keywordReg)
+                            Criteria.where(NICK_NAME_FILED).regex(keywordReg)
                     )
         ).with(Sort.by(getSortByName(friendSearchCriteria.getSort())));
 
