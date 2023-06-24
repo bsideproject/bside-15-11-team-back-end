@@ -1,6 +1,6 @@
 package com.beside.startrail.relationship.handler;
 
-import com.beside.startrail.common.handler.AbstractSignedHandler;
+import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.common.DateProtoUtil;
 import com.beside.startrail.common.protocolbuffer.common.ItemProtoUtil;
@@ -20,7 +20,7 @@ import protobuf.relationship.RelationshipPutResponseProto;
 import reactor.core.publisher.Mono;
 
 @Component
-public class RelationshipPutHandler extends AbstractSignedHandler {
+public class RelationshipPutHandler extends AbstractSignedTransactionalHandler {
   private final RelationshipRepository relationshipRepository;
 
   public RelationshipPutHandler(
@@ -32,7 +32,7 @@ public class RelationshipPutHandler extends AbstractSignedHandler {
   }
 
   @Override
-  protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
+  protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
     return serverRequest
         .bodyToMono(String.class)
         .flatMap(body ->
