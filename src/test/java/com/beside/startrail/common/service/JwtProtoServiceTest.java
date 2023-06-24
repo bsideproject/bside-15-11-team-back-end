@@ -10,15 +10,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import protobuf.sign.JwtPayload;
+import protobuf.sign.JwtPayloadProto;
 
-class JwtServiceTest {
+class JwtProtoServiceTest {
   private static final String baseKey = "baseKeybaseKeybaseKeybaseKeybaseKey";
-  private JwtService jwtService;
+  private JwtProtoService jwtProtoService;
 
   @BeforeEach
   void init() {
-    jwtService = new JwtService(baseKey, new ObjectMapper());
+    jwtProtoService = new JwtProtoService(baseKey, new ObjectMapper());
   }
 
   @Test
@@ -26,25 +26,25 @@ class JwtServiceTest {
     // given
     String sequence = "sequence";
 
-    JwtPayload jwtPayload = JwtPayload.newBuilder()
+    JwtPayloadProto jwtPayloadProto = JwtPayloadProto.newBuilder()
         .setSequence(sequence)
         .build();
 
     // when
-    String mamwagnbooJwt = jwtService.makeJwt(jwtPayload)
+    String jwt = jwtProtoService.makeJwtProto(jwtPayloadProto)
         .block();
 
     // then
-    assertThat(mamwagnbooJwt).isEqualTo(
+    assertThat(jwt).isEqualTo(
         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.ewogICJzZXF1ZW5jZSI6ICJzZXF1ZW5jZSIKfQ.x0gx0U6N6XxAqdd2wyUT2h8MzyRAwhJGhFahHXisOwg");
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"asdf", "asdf.asdf"})
-  void getPayloadWhenWrongFormatJwt(String mamgwanbooJwt) {
+  void getPayloadWhenWrongFormatJwt(String jwt) {
     // when
     // then
-    assertThrows(MalformedJwtException.class, () -> jwtService.getPayload(mamgwanbooJwt).block());
+    assertThrows(MalformedJwtException.class, () -> jwtProtoService.getPayload(jwt).block());
   }
 
   @ParameterizedTest
@@ -54,11 +54,11 @@ class JwtServiceTest {
           "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkZXZlaWwiOiJkZXZpbCJ9.CWgHf3CiBkwsomhzYnubvkDRl6BbbmtPCq0ZseWNBVs"
       }
   )
-  void getPayloadWhenWrongPayloadJwt(String mamgwanbooJwt) {
+  void getPayloadWhenWrongPayloadJwt(String jwt) {
     // when
     // then
     assertThrows(IllegalArgumentException.class,
-        () -> jwtService.getPayload(mamgwanbooJwt).block());
+        () -> jwtProtoService.getPayload(jwt).block());
   }
 
   @ParameterizedTest
@@ -68,24 +68,24 @@ class JwtServiceTest {
           "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzZXF1ZW5jZSI6InNlcXVlbmNlIn0.YlfNHAbVQ6sCLQVUWuCQ_2FtNhFt4N-PPuGxGyczMNo"
       }
   )
-  void getPayloadWhenWrongSignedMamgwanbooJwt(String mamgwanbooJwt) {
+  void getPayloadWhenWrongSignedMamgwanbooJwt(String jwt) {
     // when
     // then
-    assertThrows(SignatureException.class, () -> jwtService.getPayload(mamgwanbooJwt).block());
+    assertThrows(SignatureException.class, () -> jwtProtoService.getPayload(jwt).block());
   }
 
   @Test
   void getPayload() {
     // given
-    String mamwanbooJwt =
+    String jwt =
         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.ewogICJzZXF1ZW5jZSI6ICJzZXF1ZW5jZSIKfQ.x0gx0U6N6XxAqdd2wyUT2h8MzyRAwhJGhFahHXisOwg";
 
     // when
-    JwtPayload jwtPayload = jwtService.getPayload(mamwanbooJwt)
+    JwtPayloadProto jwtPayloadProto = jwtProtoService.getPayload(jwt)
         .block();
 
     // then
-    assertThat(jwtPayload).isEqualTo(JwtPayload.newBuilder()
+    assertThat(jwtPayloadProto).isEqualTo(JwtPayloadProto.newBuilder()
         .setSequence("sequence")
         .build());
   }

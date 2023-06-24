@@ -6,16 +6,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.HandlerFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.sign.JwtPayload;
+import protobuf.sign.JwtPayloadProto;
 import reactor.core.publisher.Mono;
 
 public abstract class AbstractSignedHandler implements HandlerFunction<ServerResponse> {
-  protected JwtPayload jwtPayload;
+  protected JwtPayloadProto jwtPayloadProto;
 
   private final String attributeName;
 
-  public AbstractSignedHandler(
-      String attributeName) {
+  public AbstractSignedHandler(String attributeName) {
     this.attributeName = attributeName;
   }
 
@@ -29,7 +28,7 @@ public abstract class AbstractSignedHandler implements HandlerFunction<ServerRes
           .build();
     }
 
-    jwtPayload = (JwtPayload) optionalJwtPayload.get();
+    jwtPayloadProto = (JwtPayloadProto) optionalJwtPayload.get();
 
     return signedHandle(request);
   }

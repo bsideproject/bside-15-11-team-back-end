@@ -1,9 +1,9 @@
 package com.beside.startrail.user.document;
 
+import com.beside.startrail.user.type.OauthServiceType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import protobuf.common.type.OauthServiceType;
 
 @Builder
 @Getter

@@ -1,4 +1,4 @@
-package com.beside.startrail.common.util;
+package com.beside.startrail.common.protocolbuffer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

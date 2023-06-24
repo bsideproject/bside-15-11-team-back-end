@@ -1,6 +1,5 @@
 package com.beside.startrail.relationship.service;
 
-import com.beside.startrail.common.util.SortOrderTypeUtil;
 import com.beside.startrail.relationship.command.RelationshipCountCommand;
 import com.beside.startrail.relationship.command.RelationshipDeleteCommand;
 import com.beside.startrail.relationship.command.RelationshipFindAllByFriendSequenceCommand;
@@ -8,8 +7,8 @@ import com.beside.startrail.relationship.command.RelationshipFindOneBySequenceCo
 import com.beside.startrail.relationship.command.RelationshipSaveAllCommand;
 import com.beside.startrail.relationship.command.RelationshipSaveCommand;
 import com.beside.startrail.relationship.document.Relationship;
+import com.beside.startrail.relationship.type.SortOrderType;
 import java.util.List;
-import protobuf.common.type.SortOrderType;
 
 public class RelationshipService {
   public static RelationshipCountCommand countByUserSequence(String userSequence) {
@@ -24,7 +23,7 @@ public class RelationshipService {
     return new RelationshipFindAllByFriendSequenceCommand(
         userSequence,
         friendSequence,
-        SortOrderTypeUtil.toSort("date", sortOrderType)
+        sortOrderType.getSort("date")
     );
   }
 
@@ -41,8 +40,10 @@ public class RelationshipService {
     return new RelationshipSaveCommand(relationship);
   }
 
-  public static RelationshipDeleteCommand removeByUserSequenceAndSequence(String userSequence,
-                                                                          String sequence) {
+  public static RelationshipDeleteCommand removeByUserSequenceAndSequence(
+      String userSequence,
+      String sequence
+  ) {
     return new RelationshipDeleteCommand(userSequence, sequence);
   }
 }

@@ -1,8 +1,8 @@
 package com.beside.startrail.sign.handler;
 
-import com.beside.startrail.common.service.JwtService;
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
+import com.beside.startrail.common.service.JwtProtoService;
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.common.util.ProtocolBufferUtil;
 import com.beside.startrail.user.repository.UserRepository;
 import com.beside.startrail.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -11,16 +11,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.HandlerFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.sign.JwtPayload;
-import protobuf.sign.SignRequest;
+import protobuf.sign.JwtPayloadProto;
+import protobuf.sign.SignRequestProto;
 import reactor.core.publisher.Mono;
 
 @Component
 public class SignHandler implements HandlerFunction<ServerResponse> {
   private final UserRepository userRepository;
-  private final JwtService jwtService;
+  private final JwtProtoService jwtService;
 
-  public SignHandler(UserRepository userRepository, JwtService jwtService) {
+  public SignHandler(UserRepository userRepository, JwtProtoService jwtService) {
     this.userRepository = userRepository;
     this.jwtService = jwtService;
   }
@@ -30,12 +30,12 @@ public class SignHandler implements HandlerFunction<ServerResponse> {
     return serverRequest
         .bodyToMono(String.class)
         .flatMap(body ->
-            ProtocolBufferUtil.<SignRequest>parse(
+            ProtocolBufferUtil.<SignRequestProto>parse(
                 body,
-                SignRequest.newBuilder()
+                SignRequestProto.newBuilder()
             )
         )
-        .map(SignRequest::getSequence)
+        .map(SignRequestProto::getSequence)
         .flatMap(sequence ->
             UserService
                 .existsUser(sequence, YnType.Y)
@@ -47,8 +47,8 @@ public class SignHandler implements HandlerFunction<ServerResponse> {
                         .build();
                   }
 
-                  return jwtService.makeJwt(
-                          JwtPayload.newBuilder()
+                  return jwtService.makeJwtProto(
+                          JwtPayloadProto.newBuilder()
                               .setSequence(sequence)
                               .build()
                       )

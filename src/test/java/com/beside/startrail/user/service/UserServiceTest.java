@@ -7,6 +7,7 @@ import com.beside.startrail.user.command.UserCreateCommand;
 import com.beside.startrail.user.command.UserExistsCommand;
 import com.beside.startrail.user.command.UserFindCommand;
 import com.beside.startrail.user.document.User;
+import com.beside.startrail.user.type.OauthServiceType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import protobuf.common.type.OauthServiceType;
 
 class UserServiceTest {
   @ParameterizedTest

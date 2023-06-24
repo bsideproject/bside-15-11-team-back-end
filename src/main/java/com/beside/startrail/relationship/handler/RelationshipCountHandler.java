@@ -24,7 +24,7 @@ public class RelationshipCountHandler extends AbstractSignedHandler {
   @Override
   protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
     return RelationshipService
-        .countByUserSequence(super.jwtPayload.getSequence())
+        .countByUserSequence(super.jwtPayloadProto.getSequence())
         .execute(relationshipRepository)
         .flatMap(count ->
             ServerResponse

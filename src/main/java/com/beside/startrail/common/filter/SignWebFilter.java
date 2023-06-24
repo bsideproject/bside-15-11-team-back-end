@@ -1,8 +1,9 @@
 package com.beside.startrail.common.filter;
 
-import com.beside.startrail.common.service.JwtService;
+import com.beside.startrail.common.service.JwtProtoService;
 import com.google.common.base.Charsets;
 import com.mongodb.lang.NonNull;
+import io.jsonwebtoken.security.SignatureException;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,12 +21,12 @@ public class SignWebFilter implements WebFilter {
   private static final String API_PATH_PREFIX = "/api";
   private final List<String> whitePaths;
   private final String attributeName;
-  private final JwtService jwtService;
+  private final JwtProtoService jwtService;
 
   public SignWebFilter(
       @Value("${sign.whitePaths}") List<String> whitePaths,
       @Value("${sign.attributeName}") String attributeName,
-      JwtService jwtService
+      JwtProtoService jwtService
   ) {
     this.whitePaths = whitePaths;
     this.attributeName = attributeName;
@@ -66,7 +67,7 @@ public class SignWebFilter implements WebFilter {
 
               return chain.filter(exchange);
             });
-      } catch (IllegalArgumentException ignored) {
+      } catch (IllegalArgumentException | SignatureException ignored) {
       }
     }
 

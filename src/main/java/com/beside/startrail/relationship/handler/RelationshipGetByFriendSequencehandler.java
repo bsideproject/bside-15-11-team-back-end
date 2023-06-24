@@ -1,17 +1,18 @@
 package com.beside.startrail.relationship.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedHandler;
-import com.beside.startrail.common.util.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.relationship.RelationshipProtoUtil;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationship.service.RelationshipService;
-import com.beside.startrail.relationship.util.RelationshipDtoUtil;
+import com.beside.startrail.relationship.type.SortOrderType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.relationship.RelationshipGetRequest;
+import protobuf.relationship.RelationshipGetRequestProto;
 import protobuf.relationship.RelationshipGetResponse;
 import reactor.core.publisher.Mono;
 
@@ -30,26 +31,26 @@ public class RelationshipGetByFriendSequencehandler extends AbstractSignedHandle
   @Override
   protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
     return ProtocolBufferUtil
-        .<RelationshipGetRequest>from(serverRequest.queryParams(),
-            RelationshipGetRequest.newBuilder())
-        .map(relationshipGetRequest ->
+        .<RelationshipGetRequestProto>from(serverRequest.queryParams(),
+            RelationshipGetRequestProto.newBuilder())
+        .map(relationshipGetRequestProto ->
             RelationshipService.getByFriendSequence(
-                super.jwtPayload.getSequence(),
-                relationshipGetRequest.getFriendSequence(),
-                relationshipGetRequest.getSort()
+                super.jwtPayloadProto.getSequence(),
+                relationshipGetRequestProto.getFriendSequence(),
+                SortOrderType.valueOf(relationshipGetRequestProto.getSort().name())
             )
         )
         .flatMap(relationshipFindAllByFriendSequenceCommand ->
             relationshipFindAllByFriendSequenceCommand.execute(relationshipRepository)
-                .map(RelationshipDtoUtil::toRelationshipResponseDto)
+                .map(RelationshipProtoUtil::toRelationshipResponseProto)
                 .collectList()
         )
-        .filter(relationshipResponseDtos ->
-            !CollectionUtils.isEmpty(relationshipResponseDtos)
+        .filter(relationshipResponseProtos ->
+            !CollectionUtils.isEmpty(relationshipResponseProtos)
         )
-        .map(relationshipResponseDtos ->
+        .map(relationshipResrelationshipResponseProtosonseDtos ->
             RelationshipGetResponse.newBuilder()
-                .addAllRelationships(relationshipResponseDtos)
+                .addAllRelationships(relationshipResrelationshipResponseProtosonseDtos)
                 .build()
         )
         .map(ProtocolBufferUtil::print)

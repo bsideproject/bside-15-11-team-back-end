@@ -1,18 +1,18 @@
 package com.beside.startrail.relationship.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedHandler;
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.relationship.RelationshipProtoUtil;
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.common.util.ProtocolBufferUtil;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationship.service.RelationshipService;
-import com.beside.startrail.relationship.util.RelationshipDtoUtil;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.relationship.RelationshipPostRequest;
+import protobuf.relationship.RelationshipPostRequestProto;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -32,18 +32,18 @@ public class RelationshipPostHandler extends AbstractSignedHandler {
     return serverRequest
         .bodyToMono(String.class)
         .flatMap(body ->
-            ProtocolBufferUtil.<RelationshipPostRequest>parse(
+            ProtocolBufferUtil.<RelationshipPostRequestProto>parse(
                 body,
-                RelationshipPostRequest.newBuilder()
+                RelationshipPostRequestProto.newBuilder()
             )
         )
-        .map(RelationshipPostRequest::getRelationshipsList)
-        .map(relationshipDtos ->
-            relationshipDtos.stream()
+        .map(RelationshipPostRequestProto::getRelationshipsList)
+        .map(relationshipRequestProtos ->
+            relationshipRequestProtos.stream()
                 .map(relationshipDto ->
-                    RelationshipDtoUtil.toRelationship(
+                    RelationshipProtoUtil.toRelationship(
                         relationshipDto,
-                        super.jwtPayload.getSequence(),
+                        super.jwtPayloadProto.getSequence(),
                         YnType.Y
                     )
                 )
@@ -51,7 +51,7 @@ public class RelationshipPostHandler extends AbstractSignedHandler {
         )
         .flatMap(relationships -> RelationshipService.save(relationships)
             .execute(relationshipRepository)
-            .map(RelationshipDtoUtil::toRelationshipResponseDto)
+            .map(RelationshipProtoUtil::toRelationshipResponseProto)
             .map(ProtocolBufferUtil::print)
             .collect(Collectors.joining())
         )

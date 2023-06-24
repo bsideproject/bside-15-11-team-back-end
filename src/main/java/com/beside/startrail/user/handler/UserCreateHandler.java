@@ -1,19 +1,22 @@
 package com.beside.startrail.user.handler;
 
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.common.UserInformationProtoUtil;
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.common.util.ProtocolBufferUtil;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.document.UserId;
 import com.beside.startrail.user.repository.UserRepository;
 import com.beside.startrail.user.service.UserService;
+import com.beside.startrail.user.type.OauthServiceType;
 import java.util.UUID;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.HandlerFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.user.UserPatchRequest;
-import protobuf.user.UserResponse;
+import protobuf.common.type.OauthServiceTypeProto;
+import protobuf.user.UserPatchRequestProto;
+import protobuf.user.UserResponseProto;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -29,9 +32,9 @@ public class UserCreateHandler implements HandlerFunction<ServerResponse> {
     return serverRequest
         .bodyToMono(String.class)
         .flatMap(body ->
-            ProtocolBufferUtil.<UserPatchRequest>parse(
+            ProtocolBufferUtil.<UserPatchRequestProto>parse(
                 body,
-                UserPatchRequest.newBuilder()
+                UserPatchRequestProto.newBuilder()
             )
         )
         .map(this::makeUser)
@@ -39,33 +42,45 @@ public class UserCreateHandler implements HandlerFunction<ServerResponse> {
         .flatMap(userCreateCommand ->
             userCreateCommand.execute(userRepository)
         )
-        .map(this::toUserResponse)
-        .flatMap(userResponse ->
+        .map(this::toUserResponseProto)
+        .flatMap(userResponseProto ->
             ServerResponse
                 .ok()
-                .bodyValue(ProtocolBufferUtil.print(userResponse))
+                .bodyValue(ProtocolBufferUtil.print(userResponseProto))
         );
   }
 
-  private User makeUser(UserPatchRequest userPatchRequest) {
+  private User makeUser(UserPatchRequestProto userPatchRequest) {
     return User.builder()
         .userId(
             UserId.builder()
-                .oauthServiceType(userPatchRequest.getOauthServiceType())
+                .oauthServiceType(
+                    OauthServiceType.valueOf(
+                        userPatchRequest.getOauthServiceType().name()
+                    )
+                )
                 .serviceUserId(userPatchRequest.getServiceUserId())
                 .build()
         )
         .sequence(UUID.randomUUID().toString())
-        .userInformation(userPatchRequest.getUserInformation())
+        .userInformation(
+            UserInformationProtoUtil.toUserInformation(userPatchRequest.getUserInformation())
+        )
         .useYn(YnType.Y)
         .build();
   }
 
-  private UserResponse toUserResponse(User user) {
-    return UserResponse.newBuilder()
+  private UserResponseProto toUserResponseProto(User user) {
+    return UserResponseProto.newBuilder()
         .setSequence(String.valueOf(user.getSequence()))
-        .setOauthServiceType(user.getUserId().getOauthServiceType())
-        .setUserInformation(user.getUserInformation())
+        .setOauthServiceType(
+            OauthServiceTypeProto.valueOf(
+                user.getUserId().getOauthServiceType().name()
+            )
+        )
+        .setUserInformation(
+            UserInformationProtoUtil.toUserInformationProto(user.getUserInformation())
+        )
         .build();
   }
 }

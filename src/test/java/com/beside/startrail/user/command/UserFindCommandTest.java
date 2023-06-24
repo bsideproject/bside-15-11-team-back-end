@@ -7,6 +7,7 @@ import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.document.UserId;
 import com.beside.startrail.user.repository.UserRepository;
+import com.beside.startrail.user.type.OauthServiceType;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import protobuf.common.type.OauthServiceType;
 import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,20 +1,22 @@
 package com.beside.startrail.relationship.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedHandler;
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.common.DateProtoUtil;
+import com.beside.startrail.common.protocolbuffer.common.ItemProtoUtil;
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.common.util.DateUtil;
-import com.beside.startrail.common.util.ProtocolBufferUtil;
 import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationship.service.RelationshipService;
-import com.beside.startrail.relationship.util.ItemUtil;
+import com.beside.startrail.relationship.type.RelationshipType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.relationship.RelationshipPutRequest;
-import protobuf.relationship.RelationshipPutResponse;
+import protobuf.common.type.RelationshipTypeProto;
+import protobuf.relationship.RelationshipPutRequestProto;
+import protobuf.relationship.RelationshipPutResponseProto;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -34,9 +36,9 @@ public class RelationshipPutHandler extends AbstractSignedHandler {
     return serverRequest
         .bodyToMono(String.class)
         .flatMap(body ->
-            ProtocolBufferUtil.<RelationshipPutRequest>parse(
+            ProtocolBufferUtil.<RelationshipPutRequestProto>parse(
                 body,
-                RelationshipPutRequest.newBuilder()
+                RelationshipPutRequestProto.newBuilder()
             )
         )
         .map(this::toRelationship)
@@ -44,7 +46,7 @@ public class RelationshipPutHandler extends AbstractSignedHandler {
         .flatMap(relationshipSaveCommand ->
             relationshipSaveCommand.execute(relationshipRepository)
         )
-        .map(this::toRelationshipPutResponse)
+        .map(this::toRelationshipPutResponseProto)
         .map(ProtocolBufferUtil::print)
         .flatMap(body ->
             ServerResponse
@@ -59,26 +61,30 @@ public class RelationshipPutHandler extends AbstractSignedHandler {
         );
   }
 
-  private Relationship toRelationship(RelationshipPutRequest relationshipPutRequest) {
+  private Relationship toRelationship(RelationshipPutRequestProto relationshipPutRequestProto) {
     return Relationship.builder()
-        .userSequence(super.jwtPayload.getSequence())
-        .sequence(relationshipPutRequest.getSequence())
-        .type(relationshipPutRequest.getType())
-        .event(relationshipPutRequest.getEvent())
-        .date(DateUtil.toLocalDateTime(relationshipPutRequest.getDate()))
-        .item(ItemUtil.toItem(relationshipPutRequest.getItem()))
-        .memo(relationshipPutRequest.getMemo())
+        .userSequence(super.jwtPayloadProto.getSequence())
+        .sequence(relationshipPutRequestProto.getSequence())
+        .type(
+            RelationshipType.valueOf(relationshipPutRequestProto.getType().name())
+        )
+        .event(relationshipPutRequestProto.getEvent())
+        .date(DateProtoUtil.toLocalDateTime(relationshipPutRequestProto.getDate()))
+        .item(ItemProtoUtil.toItem(relationshipPutRequestProto.getItem()))
+        .memo(relationshipPutRequestProto.getMemo())
         .useYn(YnType.Y)
         .build();
   }
 
-  private RelationshipPutResponse toRelationshipPutResponse(Relationship relationship) {
-    return RelationshipPutResponse.newBuilder()
+  private RelationshipPutResponseProto toRelationshipPutResponseProto(Relationship relationship) {
+    return RelationshipPutResponseProto.newBuilder()
         .setSequence(relationship.getSequence())
-        .setType(relationship.getType())
+        .setType(
+            RelationshipTypeProto.valueOf(relationship.getType().name())
+        )
         .setEvent(relationship.getEvent())
-        .setDate(DateUtil.toDate(relationship.getDate()))
-        .setItem(ItemUtil.toItemDto(relationship.getItem()))
+        .setDate(DateProtoUtil.toDate(relationship.getDate()))
+        .setItem(ItemProtoUtil.toItemProto(relationship.getItem()))
         .setMemo(relationship.getMemo())
         .build();
   }

@@ -1,6 +1,6 @@
 package com.beside.startrail.common.service;
 
-import com.beside.startrail.common.util.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Header;
@@ -9,24 +9,24 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import protobuf.sign.JwtPayload;
+import protobuf.sign.JwtPayloadProto;
 import reactor.core.publisher.Mono;
 
 @Service
-public class JwtService {
+public class JwtProtoService {
   private static final String HEADER_ALGORITHM_KEY = "alg";
   private static final String HEADER_ALGORITHM_HS256 = "HS256";
   private final String baseKey;
   private final ObjectMapper objectMapper;
 
-  public JwtService(@Value("${jwt.baseKey}") String baseKey, ObjectMapper objectMapper) {
+  public JwtProtoService(@Value("${jwt.baseKey}") String baseKey, ObjectMapper objectMapper) {
     this.baseKey = baseKey;
     this.objectMapper = objectMapper;
   }
 
-  public Mono<String> makeJwt(JwtPayload jwtPayload) {
+  public Mono<String> makeJwtProto(JwtPayloadProto jwtPayloadProto) {
     return Mono.just(
-            ProtocolBufferUtil.print(jwtPayload)
+            ProtocolBufferUtil.print(jwtPayloadProto)
         )
         .map(payload ->
             Jwts.builder()
@@ -37,12 +37,12 @@ public class JwtService {
                 .compact());
   }
 
-  public Mono<JwtPayload> getPayload(String mamgwanbooJwt) {
+  public Mono<JwtPayloadProto> getPayload(String jwt) {
     return Mono.just(
             Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(baseKey.getBytes(StandardCharsets.UTF_8)))
                 .build()
-                .parseClaimsJws(mamgwanbooJwt)
+                .parseClaimsJws(jwt)
                 .getBody()
         )
         .<String>handle((claims, sink) -> {
@@ -55,8 +55,8 @@ public class JwtService {
             ));
           }
         })
-        .flatMap(jsonString ->
-            ProtocolBufferUtil.parse(jsonString, JwtPayload.newBuilder())
+        .flatMap(json ->
+            ProtocolBufferUtil.parse(json, JwtPayloadProto.newBuilder())
         );
   }
 }

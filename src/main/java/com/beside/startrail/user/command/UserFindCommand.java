@@ -3,9 +3,9 @@ package com.beside.startrail.user.command;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
+import com.beside.startrail.user.type.OauthServiceType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import protobuf.common.type.OauthServiceType;
 import reactor.core.publisher.Mono;
 
 @EqualsAndHashCode

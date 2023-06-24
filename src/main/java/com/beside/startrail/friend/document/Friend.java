@@ -10,7 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
-import protobuf.common.LevelInformation;
+import protobuf.common.LevelInformationProto;
 import protobuf.friend.Birth;
 
 @Builder
@@ -29,7 +29,7 @@ public class Friend {
     private String memo;
 
     @Builder.Default
-    private LevelInformation levelInformation = LevelInformation.newBuilder().build();
+    private LevelInformationProto levelInformation = LevelInformationProto.newBuilder().build();
     @Builder.Default
     private YnType useYn = YnType.Y;
 

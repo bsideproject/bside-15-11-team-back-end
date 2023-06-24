@@ -1,10 +1,10 @@
 package com.beside.startrail.relationship.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedHandler;
-import com.beside.startrail.common.util.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.relationship.RelationshipProtoUtil;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationship.service.RelationshipService;
-import com.beside.startrail.relationship.util.RelationshipDtoUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -31,11 +31,11 @@ public class RelationshipGetBySequenceHandler extends AbstractSignedHandler {
 
     return RelationshipService
         .getByUserSequenceAndSequence(
-            super.jwtPayload.getSequence(),
+            super.jwtPayloadProto.getSequence(),
             sequence
         )
         .execute(relationshipRepository)
-        .map(RelationshipDtoUtil::toRelationshipResponseDto)
+        .map(RelationshipProtoUtil::toRelationshipResponseProto)
         .map(ProtocolBufferUtil::print)
         .flatMap(body ->
             ServerResponse

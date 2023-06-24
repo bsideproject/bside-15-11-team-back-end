@@ -1,6 +1,6 @@
 package com.beside.startrail.friend.handler;
 
-import com.beside.startrail.common.util.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.friend.service.FriendService;
 import com.mongodb.DuplicateKeyException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import protobuf.friend.FriendCreateDto;
 import protobuf.friend.FriendDto;
 import protobuf.friend.FriendSearchCriteria;
 import protobuf.friend.FriendUpdateDto;
-import protobuf.sign.JwtPayload;
+import protobuf.sign.JwtPayloadProto;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -34,10 +34,10 @@ public class FriendHandler {
     }
 
     public Mono<ServerResponse> getFriendBySequence(ServerRequest request){
-        JwtPayload jwtPayload = (JwtPayload) request.attribute(attributeName).orElseThrow();
+        JwtPayloadProto jwtPayloadProto = (JwtPayloadProto) request.attribute(attributeName).orElseThrow();
         String sequence = request.pathVariable("sequence");
 
-        return friendService.getFriendBySequence(jwtPayload.getSequence(), sequence)
+        return friendService.getFriendBySequence(jwtPayloadProto.getSequence(), sequence)
                 .log()
                 .flatMap(friend ->
                         ServerResponse.ok()
@@ -47,10 +47,10 @@ public class FriendHandler {
     }
 
     public Mono<ServerResponse> getFriendsByCriteria(ServerRequest request){
-        JwtPayload jwtPayload = (JwtPayload) request.attribute(attributeName).orElseThrow();
+        JwtPayloadProto jwtPayloadProto = (JwtPayloadProto) request.attribute(attributeName).orElseThrow();
 
         return makeCriteriaParams(request)
-                .flatMapMany(friendSearchCriteria -> friendService.getFriendsByCriteria(jwtPayload.getSequence(), friendSearchCriteria))
+                .flatMapMany(friendSearchCriteria -> friendService.getFriendsByCriteria(jwtPayloadProto.getSequence(), friendSearchCriteria))
                 .collectList()
                 .log()
                 .flatMap(friendDtoList -> ServerResponse.ok()
@@ -61,12 +61,12 @@ public class FriendHandler {
 
 
     public Mono<ServerResponse> createFriend(ServerRequest request){
-        JwtPayload jwtPayload = (JwtPayload) request.attribute(attributeName).orElseThrow();
+        JwtPayloadProto jwtPayloadProto = (JwtPayloadProto) request.attribute(attributeName).orElseThrow();
         return request.bodyToMono(String.class)
                 .flatMap(body -> ProtocolBufferUtil.<FriendCreateDto>parse(body, FriendCreateDto.newBuilder()))
                 .log()
                 .doOnNext(friendValidator::createValidate)
-                .flatMap(friendDto -> friendService.createFriend(jwtPayload.getSequence(), friendDto))
+                .flatMap(friendDto -> friendService.createFriend(jwtPayloadProto.getSequence(), friendDto))
                 .onErrorMap(
                         DuplicateKeyException.class,
                         ex -> new IllegalArgumentException("Duplicate key, Friend sequence")
@@ -79,14 +79,14 @@ public class FriendHandler {
     }
 
     public Mono<ServerResponse> updateFriend(ServerRequest request){
-        JwtPayload jwtPayload = (JwtPayload) request.attribute(attributeName).orElseThrow();
+        JwtPayloadProto jwtPayloadProto = (JwtPayloadProto) request.attribute(attributeName).orElseThrow();
         String sequence = request.pathVariable("sequence");
 
         return request.bodyToMono(String.class)
                 .flatMap(body -> ProtocolBufferUtil.<FriendUpdateDto>parse(body, FriendUpdateDto.newBuilder()))
                 .log()
                 .doOnNext(friendValidator::updateValidate)
-                .flatMap(body -> friendService.updateFriend(jwtPayload.getSequence(), sequence, body))
+                .flatMap(body -> friendService.updateFriend(jwtPayloadProto.getSequence(), sequence, body))
                 .flatMap(friendDto ->
                         ServerResponse.ok()
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -95,10 +95,10 @@ public class FriendHandler {
     }
 
     public Mono<ServerResponse> removeFriend(ServerRequest request){
-        JwtPayload jwtPayload = (JwtPayload) request.attribute(attributeName).orElseThrow();
+        JwtPayloadProto jwtPayloadProto = (JwtPayloadProto) request.attribute(attributeName).orElseThrow();
         String sequence = request.pathVariable("sequence");
 
-        return friendService.removeFriend(jwtPayload.getSequence(), sequence)
+        return friendService.removeFriend(jwtPayloadProto.getSequence(), sequence)
                 .log()
                 .flatMap(friendDto ->
                         ServerResponse.ok()
@@ -111,14 +111,14 @@ public class FriendHandler {
         FriendSearchCriteria.Builder friendSearchCriteriaBuilder = FriendSearchCriteria
                 .newBuilder();
 
-        request.queryParams().entrySet()
-                .forEach(entry -> {
-                    if (!ObjectUtils.isEmpty(FriendSearchCriteria.getDescriptor().findFieldByName(entry.getKey()))){
-                        friendSearchCriteriaBuilder.setField(
-                                FriendSearchCriteria.getDescriptor().findFieldByName(entry.getKey()),
-                                entry.getValue().stream().findFirst().orElse(""));
-                    }
-                });
+        request.queryParams()
+            .forEach((key, value) -> {
+            if (!ObjectUtils.isEmpty(FriendSearchCriteria.getDescriptor().findFieldByName(key))) {
+                friendSearchCriteriaBuilder.setField(
+                    FriendSearchCriteria.getDescriptor().findFieldByName(key),
+                    value.stream().findFirst().orElse(""));
+            }
+        });
 
         return Mono.just(friendSearchCriteriaBuilder.build());
     }

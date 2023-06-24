@@ -1,13 +1,12 @@
 package com.beside.startrail.user.document;
 
 import com.beside.startrail.common.type.YnType;
+import com.beside.startrail.user.model.UserInformation;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import protobuf.common.LevelInformation;
-import protobuf.common.UserInformation;
 
 @Builder
 @Getter
@@ -18,6 +17,5 @@ public class User {
   UserId userId;
   private final String sequence;
   private final UserInformation userInformation;
-  private final LevelInformation levelInformation;
   private final YnType useYn;
 }

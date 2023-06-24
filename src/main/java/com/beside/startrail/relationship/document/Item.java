@@ -1,9 +1,9 @@
 package com.beside.startrail.relationship.document;
 
+import com.beside.startrail.relationship.type.ItemType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import protobuf.common.type.ItemType;
 
 @Builder
 @Getter

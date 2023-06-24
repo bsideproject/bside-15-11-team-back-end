@@ -5,7 +5,7 @@ import com.beside.startrail.user.command.UserCreateCommand;
 import com.beside.startrail.user.command.UserExistsCommand;
 import com.beside.startrail.user.command.UserFindCommand;
 import com.beside.startrail.user.document.User;
-import protobuf.common.type.OauthServiceType;
+import com.beside.startrail.user.type.OauthServiceType;
 
 public class UserService {
   public static UserFindCommand getUser(

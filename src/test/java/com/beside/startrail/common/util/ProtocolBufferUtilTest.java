@@ -3,6 +3,7 @@ package com.beside.startrail.common.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.google.protobuf.Message;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import protobuf.sign.SignRequest;
+import protobuf.sign.SignRequestProto;
 
 class ProtocolBufferUtilTest {
   @ParameterizedTest
@@ -23,7 +24,7 @@ class ProtocolBufferUtilTest {
   })
   void parseWhenWrongBody(String body) {
     // given
-    Message.Builder builder = SignRequest.newBuilder();
+    Message.Builder builder = SignRequestProto.newBuilder();
 
     // when
     // then
@@ -37,7 +38,7 @@ class ProtocolBufferUtilTest {
     String body = """
         {"sequence": ""}
         """;
-    Message.Builder builder = SignRequest.newBuilder();
+    Message.Builder builder = SignRequestProto.newBuilder();
     Message expected = builder.build();
 
     // when
@@ -50,7 +51,7 @@ class ProtocolBufferUtilTest {
   @Test
   void print() {
     // given
-    Message message = SignRequest.newBuilder().build();
+    Message message = SignRequestProto.newBuilder().build();
 
     // when
     String json = ProtocolBufferUtil.print(message);
@@ -71,13 +72,14 @@ class ProtocolBufferUtilTest {
     MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
     UUID uuid = UUID.randomUUID();
     multiValueMap.add("sequence", uuid.toString());
-    SignRequest.Builder builder = SignRequest.newBuilder();
+    SignRequestProto.Builder builder = SignRequestProto.newBuilder();
 
     // when
-    SignRequest signRequest = ProtocolBufferUtil.<SignRequest>from(multiValueMap, builder).block();
+    SignRequestProto SignRequestProto =
+        ProtocolBufferUtil.<SignRequestProto>from(multiValueMap, builder).block();
 
     // then
-    assertThat(signRequest.getSequence())
+    assertThat(SignRequestProto.getSequence())
         .isEqualTo(uuid.toString());
   }
 }
