@@ -48,9 +48,9 @@ public class RelationshipGetByFriendSequencehandler extends AbstractSignedHandle
         .filter(relationshipResponseProtos ->
             !CollectionUtils.isEmpty(relationshipResponseProtos)
         )
-        .map(relationshipResrelationshipResponseProtosonseDtos ->
+        .map(relationshipResponseProtos ->
             RelationshipGetResponse.newBuilder()
-                .addAllRelationships(relationshipResrelationshipResponseProtosonseDtos)
+                .addAllRelationships(relationshipResponseProtos)
                 .build()
         )
         .map(ProtocolBufferUtil::print)
