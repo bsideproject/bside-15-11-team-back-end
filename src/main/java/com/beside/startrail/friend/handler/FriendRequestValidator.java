@@ -4,20 +4,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-import protobuf.friend.FriendCreateDto;
-import protobuf.friend.FriendUpdateDto;
+import protobuf.friend.FriendPostProto;
+import protobuf.friend.FriendPutProto;
 
 @Slf4j
 @Component
 public class FriendRequestValidator {
-    public void createValidate(FriendCreateDto friendCreateDto){
-        if(friendCreateDto.getNicknamesCount() == 0
-                || !friendCreateDto.hasRelationship())
+    public void createValidate(FriendPostProto friendPostProto){
+        if(friendPostProto.getNicknamesCount() == 0
+                || !friendPostProto.hasRelationship())
             onValidateErrors();
     }
 
-    public void updateValidate(FriendUpdateDto friendUpdateDto){
-        if(!friendUpdateDto.hasNickname() || !friendUpdateDto.hasRelationship())
+    public void updateValidate(FriendPutProto friendPutProto){
+        if(!friendPutProto.hasNickname() || !friendPutProto.hasRelationship())
             onValidateErrors();
     }
 

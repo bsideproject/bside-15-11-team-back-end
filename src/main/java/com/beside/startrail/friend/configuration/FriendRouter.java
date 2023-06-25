@@ -12,10 +12,10 @@ public class FriendRouter {
     private final FriendPutHandler friendPutHandler;
     private final FriendDeleteHandler friendDeleteHandler;
     private final FriendGetBySequenceHandler friendGetBySequenceHandler;
-    private final FriendGetByCriteria friendGetByCriteria;
+    private final FriendGetByCriteriaHandler friendGetByCriteria;
 
     public FriendRouter(FriendGetBySequenceHandler friendGetBySequenceHandler,
-                        FriendGetByCriteria friendGetByCriteria,
+                        FriendGetByCriteriaHandler friendGetByCriteria,
                         FriendPostHandler friendPostHandler,
                         FriendPutHandler friendPutHandler,
                         FriendDeleteHandler friendDeleteHandler) {

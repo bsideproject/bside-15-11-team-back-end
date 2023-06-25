@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.friend.FriendDto;
+import protobuf.friend.FriendResponseProto;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -28,15 +28,15 @@ public class FriendDeleteHandler extends AbstractSignedTransactionalHandler {
 
         return friendService.removeFriend(super.jwtPayloadProto.getSequence(), sequence)
                 .log()
-                .flatMap(friendDto ->
+                .flatMap(friendResponseProto ->
                         ServerResponse.ok()
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(isDeleted(friendDto))
+                                .bodyValue(isDeleted(friendResponseProto))
                 );
     }
 
-    private Boolean isDeleted(FriendDto friendDto){
-        return !ObjectUtils.isEmpty(friendDto.getSequence())
+    private Boolean isDeleted(FriendResponseProto friendResponseProto){
+        return !ObjectUtils.isEmpty(friendResponseProto.getSequence())
                 ? Boolean.TRUE
                 : Boolean.FALSE;
     }

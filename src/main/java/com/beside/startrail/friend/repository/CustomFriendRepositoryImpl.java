@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.ObjectUtils;
-import protobuf.friend.FriendSearchCriteria;
+import protobuf.friend.FriendGetCriteriaProto;
 import reactor.core.publisher.Flux;
 
 public class CustomFriendRepositoryImpl implements CustomFriendRepository{
@@ -23,8 +23,8 @@ public class CustomFriendRepositoryImpl implements CustomFriendRepository{
     }
 
     @Override
-    public Flux<Friend> findFriendsByCriteria(String userSequence, FriendSearchCriteria friendSearchCriteria) {
-        String keywordReg = ".*" + friendSearchCriteria.getKeyword() + ".*";
+    public Flux<Friend> findFriendsByCriteria(String userSequence, FriendGetCriteriaProto friendGetCriteriaProto) {
+        String keywordReg = ".*" + friendGetCriteriaProto.getKeyword() + ".*";
 
         Query query = new Query(
             Criteria.where("useYn").is(YnType.Y)
@@ -32,10 +32,10 @@ public class CustomFriendRepositoryImpl implements CustomFriendRepository{
                     .orOperator(
                             Criteria.where(NICK_NAME_FILED).regex(keywordReg)
                     )
-        ).with(Sort.by(getSortByName(friendSearchCriteria.getSort())));
+        ).with(Sort.by(getSortByName(friendGetCriteriaProto.getSort())));
 
-        if(!ObjectUtils.isEmpty(friendSearchCriteria.getRelFilter())){
-            query.addCriteria(Criteria.where(RELATION_FIELD).is(friendSearchCriteria.getRelFilter()));
+        if(!ObjectUtils.isEmpty(friendGetCriteriaProto.getRelFilter())){
+            query.addCriteria(Criteria.where(RELATION_FIELD).is(friendGetCriteriaProto.getRelFilter()));
         }
 
         Flux<Friend> friendFlux = reactiveMongoTemplate.find(query, Friend.class);
