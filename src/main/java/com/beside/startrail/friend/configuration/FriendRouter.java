@@ -1,6 +1,6 @@
 package com.beside.startrail.friend.configuration;
 
-import com.beside.startrail.friend.handler.FriendHandler;
+import com.beside.startrail.friend.handler.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -8,21 +8,32 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 
 @Configuration
 public class FriendRouter {
+    private final FriendPostHandler friendPostHandler;
+    private final FriendPutHandler friendPutHandler;
+    private final FriendDeleteHandler friendDeleteHandler;
+    private final FriendGetBySequenceHandler friendGetBySequenceHandler;
+    private final FriendGetByCriteria friendGetByCriteria;
 
-    private final FriendHandler friendHandler;
-
-    public FriendRouter(FriendHandler friendHandler) {
-        this.friendHandler = friendHandler;
+    public FriendRouter(FriendGetBySequenceHandler friendGetBySequenceHandler,
+                        FriendGetByCriteria friendGetByCriteria,
+                        FriendPostHandler friendPostHandler,
+                        FriendPutHandler friendPutHandler,
+                        FriendDeleteHandler friendDeleteHandler) {
+        this.friendGetBySequenceHandler = friendGetBySequenceHandler;
+        this.friendGetByCriteria = friendGetByCriteria;
+        this.friendPostHandler = friendPostHandler;
+        this.friendPutHandler = friendPutHandler;
+        this.friendDeleteHandler = friendDeleteHandler;
     }
 
     @Bean
     public RouterFunction<?> routerFriend(){
         return RouterFunctions.route()
-                .GET("/api/friend/{sequence}", friendHandler::getFriendBySequence)
-                .GET("/api/friend", friendHandler::getFriendsByCriteria)
-                .POST("/api/friend",friendHandler::createFriend)
-                .PUT("/api/friend/{sequence}", friendHandler::updateFriend)
-                .DELETE("/api/friend/{sequence}", friendHandler::removeFriend)
+                .GET("/api/friend/{sequence}", friendGetBySequenceHandler)
+                .GET("/api/friend", friendGetByCriteria)
+                .POST("/api/friend",friendPostHandler)
+                .PUT("/api/friend/{sequence}", friendPutHandler)
+                .DELETE("/api/friend/{sequence}", friendDeleteHandler)
                 .build();
     }
 }
