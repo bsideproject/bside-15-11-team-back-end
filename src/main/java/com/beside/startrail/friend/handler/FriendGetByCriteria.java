@@ -14,14 +14,11 @@ import reactor.core.publisher.Mono;
 @Component
 public class FriendGetByCriteria extends AbstractSignedHandler {
     private final FriendService friendService;
-    private final FriendRequestValidator friendValidator;
 
     public FriendGetByCriteria(@Value("${sign.attributeName}") String attributeName,
-                                      FriendService friendService,
-                                      FriendRequestValidator friendRequestValidator) {
+                                      FriendService friendService) {
         super(attributeName);
         this.friendService = friendService;
-        this.friendValidator = friendRequestValidator;
     }
 
 

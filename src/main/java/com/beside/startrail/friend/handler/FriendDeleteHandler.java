@@ -14,14 +14,11 @@ import reactor.core.publisher.Mono;
 @Component
 public class FriendDeleteHandler extends AbstractSignedTransactionalHandler {
     private final FriendService friendService;
-    private final FriendRequestValidator friendValidator;
 
     public FriendDeleteHandler(@Value("${sign.attributeName}") String attributeName,
-                            FriendService friendService,
-                            FriendRequestValidator friendRequestValidator) {
+                            FriendService friendService) {
         super(attributeName);
         this.friendService = friendService;
-        this.friendValidator = friendRequestValidator;
     }
 
 

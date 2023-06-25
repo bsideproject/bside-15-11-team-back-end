@@ -1,6 +1,5 @@
 package com.beside.startrail.friend.handler;
 
-import com.beside.startrail.common.handler.AbstractSignedHandler;
 import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.friend.service.FriendService;

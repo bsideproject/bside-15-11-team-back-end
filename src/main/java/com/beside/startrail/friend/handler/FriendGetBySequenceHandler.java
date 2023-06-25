@@ -12,14 +12,11 @@ import reactor.core.publisher.Mono;
 @Component
 public class FriendGetBySequenceHandler extends AbstractSignedHandler {
     private final FriendService friendService;
-    private final FriendRequestValidator friendValidator;
 
     public FriendGetBySequenceHandler(@Value("${sign.attributeName}") String attributeName,
-                               FriendService friendService,
-                               FriendRequestValidator friendRequestValidator) {
+                               FriendService friendService) {
         super(attributeName);
         this.friendService = friendService;
-        this.friendValidator = friendRequestValidator;
     }
 
     @Override
