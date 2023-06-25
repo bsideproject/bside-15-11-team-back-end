@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.friend.FriendSearchCriteria;
+import protobuf.friend.FriendGetCriteriaProto;
 import reactor.core.publisher.Mono;
 
 @Component
-public class FriendGetByCriteria extends AbstractSignedHandler {
+public class FriendGetByCriteriaHandler extends AbstractSignedHandler {
     private final FriendService friendService;
 
-    public FriendGetByCriteria(@Value("${sign.attributeName}") String attributeName,
+    public FriendGetByCriteriaHandler(@Value("${sign.attributeName}") String attributeName,
                                       FriendService friendService) {
         super(attributeName);
         this.friendService = friendService;
@@ -34,15 +34,15 @@ public class FriendGetByCriteria extends AbstractSignedHandler {
                 );
     }
 
-    private Mono<FriendSearchCriteria> makeCriteriaParams(ServerRequest request){
-        FriendSearchCriteria.Builder friendSearchCriteriaBuilder = FriendSearchCriteria
+    private Mono<FriendGetCriteriaProto> makeCriteriaParams(ServerRequest request){
+        FriendGetCriteriaProto.Builder friendSearchCriteriaBuilder = FriendGetCriteriaProto
                 .newBuilder();
 
         request.queryParams()
                 .forEach((key, value) -> {
-                    if (!ObjectUtils.isEmpty(FriendSearchCriteria.getDescriptor().findFieldByName(key))) {
+                    if (!ObjectUtils.isEmpty(FriendGetCriteriaProto.getDescriptor().findFieldByName(key))) {
                         friendSearchCriteriaBuilder.setField(
-                                FriendSearchCriteria.getDescriptor().findFieldByName(key),
+                                FriendGetCriteriaProto.getDescriptor().findFieldByName(key),
                                 value.stream().findFirst().orElse(""));
                     }
                 });

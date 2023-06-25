@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.friend.FriendCreateDto;
+import protobuf.friend.FriendPostProto;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -28,7 +28,7 @@ public class FriendPostHandler extends AbstractSignedTransactionalHandler {
     @Override
     protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(String.class)
-                .flatMap(body -> ProtocolBufferUtil.<FriendCreateDto>parse(body, FriendCreateDto.newBuilder()))
+                .flatMap(body -> ProtocolBufferUtil.<FriendPostProto>parse(body, FriendPostProto.newBuilder()))
                 .log()
                 .doOnNext(friendValidator::createValidate)
                 .flatMap(friendDto -> friendService.createFriend(super.jwtPayloadProto.getSequence(), friendDto))

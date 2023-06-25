@@ -10,8 +10,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import protobuf.common.BirthProto;
 import protobuf.common.LevelInformationProto;
-import protobuf.friend.Birth;
 
 @Builder
 @Getter
@@ -25,7 +25,7 @@ public class Friend {
 
     private String nickname;
     private String relationship;
-    private Birth birth;
+    private BirthProto birth;
     private String memo;
 
     @Builder.Default
