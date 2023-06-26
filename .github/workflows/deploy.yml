@@ -13,6 +13,8 @@ jobs:
       # Checkout & Secret yml create
       - name: Checkout
         uses: actions/checkout@v3
+      
+      - name: Make Secret Files - 1
       - run: |
           mkdir -p ./src/main/resources/secret
           echo "#!/bin/sh" > ./deploy.sh
@@ -28,6 +30,8 @@ jobs:
           echo "echo 애플리케이션 배포" >> ./deploy.sh
           echo "java -Dspring.profiles.active=release -jar ~/app/${{ secrets.JAVA_APPLICATION_NAME }}*.jar > /dev/null 2>&1 &" >> ./deploy.sh
           
+      - name: Make Secret Files - 1
+      - run: |
           echo "${{ secrets.MONGO_INFO }}" > ./src/main/resources/secret/mongo-info.yml
           echo "${{ secrets.FRONT_INFO }}" > ./src/main/resources/secret/front-info.yml
           echo "${{ secrets.SLACK_INFO }}" > ./src/main/resources/secret/slack-info.yml
