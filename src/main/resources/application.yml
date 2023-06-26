@@ -6,7 +6,6 @@ spring:
       - secret/slack-info.yml
       - secret/jwt-info.yml
       - secret/oauth-info.yml
-      - secret/ssl-info.yml
   data:
     mongodb:
       uri: mongodb+srv://${mongodb.env.username}:${mongodb.env.password}@${mongodb.env.cluster}.mongodb.net/?retryWrites=true&w=majority
@@ -46,6 +45,8 @@ spring:
   config:
     activate:
       on-profile: release
+    import:
+      - secret/ssl-info.yml
 server:
   port: 443
   ssl:
