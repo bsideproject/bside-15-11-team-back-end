@@ -74,7 +74,7 @@ public class UserCreateHandler implements HandlerFunction<ServerResponse> {
 
   private UserResponseProto toUserResponseProto(User user) {
     return UserResponseProto.newBuilder()
-        .setSequence(String.valueOf(user.getSequence()))
+        .setSequence(user.getSequence())
         .setOauthServiceType(
             OauthServiceTypeProto.valueOf(
                 user.getUserId().getOauthServiceType().name()
