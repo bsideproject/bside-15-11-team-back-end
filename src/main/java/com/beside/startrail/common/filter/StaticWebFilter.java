@@ -73,6 +73,9 @@ public class StaticWebFilter implements WebFilter {
                 HttpHeaders.CONTENT_TYPE,
                 contentType.getType()
             );
+      } else if (filePath.endsWith(INDEX_PATH)) {
+        response.getHeaders()
+            .setContentType(MediaType.TEXT_HTML);
       }
 
       log.warn(String.format("!!!!FOR TEST!!!! - file: %s, contentType: %s", filePath, response.getHeaders().getContentType()));
