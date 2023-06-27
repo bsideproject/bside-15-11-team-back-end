@@ -8,11 +8,12 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Profile("release")
 @Configuration
-public class HttpRedirectConfig {
+public class HttpRedirectConfiguration {
   @Bean
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-    http
-        .redirectToHttps();
-    return http.build();
+    return http
+        .redirectToHttps()
+        .and()
+        .build();
   }
 }
