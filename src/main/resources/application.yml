@@ -35,9 +35,6 @@ server:
   port: 8080
 log:
   level: info
-static:
-  path: /Users/user/Downloads/
-
 ---
 
 spring:
