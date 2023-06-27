@@ -8,8 +8,10 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 public class WebSecurityConfiguration {
   @Bean
-  public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-    return http
+  public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
+    return serverHttpSecurity
+        .authorizeExchange().anyExchange().permitAll()
+        .and()
         .formLogin().disable()
         .build();
   }

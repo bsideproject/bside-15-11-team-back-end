@@ -10,8 +10,6 @@ spring:
     mongodb:
       uri: mongodb+srv://${mongodb.env.username}:${mongodb.env.password}@${mongodb.env.cluster}.mongodb.net/?retryWrites=true&w=majority
       database: beside
-cors:
-  origins: www.byeoljachui.com
 management:
   endpoints:
     web:
@@ -31,6 +29,8 @@ spring:
   config:
     activate:
       on-profile: local
+cors:
+  origins: '*'
 server:
   port: 8080
 log:
@@ -43,7 +43,8 @@ spring:
       on-profile: release
     import:
       - secret/ssl-info.yml
-
+cors:
+  origins: www.byeoljachui.com
 server:
   port: 443
   ssl:
