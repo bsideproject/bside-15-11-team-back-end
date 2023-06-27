@@ -44,7 +44,7 @@ spring:
     import:
       - secret/ssl-info.yml
 cors:
-  origins: 'www.byeoljachui.com'
+  origins: www.byeoljachui.com
 server:
   port: 443
   ssl:
