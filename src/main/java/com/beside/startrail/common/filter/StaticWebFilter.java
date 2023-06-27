@@ -27,6 +27,7 @@ import reactor.util.annotation.NonNull;
 @Component
 @Order(-1)
 public class StaticWebFilter implements WebFilter {
+  private static final String INDEX_PATH = "/index.html";
   private final List<String> indexWhiteList;
   private final String staticPath;
 
@@ -48,8 +49,7 @@ public class StaticWebFilter implements WebFilter {
 
     if (!requestPath.startsWith("/api")) {
       if (indexWhiteList.contains(requestPath)) {
-        requestPath = "index.html";
-        exchange.getRequest().getHeaders().setContentType(MediaType.TEXT_HTML);
+        requestPath = INDEX_PATH;
       }
 
       String filePath = staticPath + requestPath;
@@ -71,7 +71,11 @@ public class StaticWebFilter implements WebFilter {
         response.getHeaders()
             .set(
                 HttpHeaders.CONTENT_TYPE,
-                contentType.getType());
+                contentType.getType()
+            );
+      } else if (filePath.endsWith(INDEX_PATH)) {
+        response.getHeaders()
+            .setContentType(MediaType.TEXT_HTML);
       }
 
       log.warn(String.format("!!!!FOR TEST!!!! - file: %s, contentType: %s", filePath, response.getHeaders().getContentType()));
