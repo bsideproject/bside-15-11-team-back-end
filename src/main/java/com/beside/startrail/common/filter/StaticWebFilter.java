@@ -45,7 +45,7 @@ public class StaticWebFilter implements WebFilter {
 
   @Override
   public @NonNull Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
-    String requestPath = UriUtils.decode(exchange.getRequest().getPath().value(), Charsets.UTF_8);
+    String requestPath = UriUtils.decode(exchange.getRequest().getPath().value(), Charsets.UTF_8).substring(1);
 
     if (!requestPath.startsWith("/api")) {
       if (indexWhiteList.contains(requestPath)) {
@@ -73,9 +73,6 @@ public class StaticWebFilter implements WebFilter {
                 HttpHeaders.CONTENT_TYPE,
                 contentType.getType()
             );
-      } else if (filePath.endsWith(INDEX_PATH)) {
-        response.getHeaders()
-            .setContentType(MediaType.TEXT_HTML);
       }
 
       log.warn(String.format("!!!!FOR TEST!!!! - file: %s, contentType: %s", filePath, response.getHeaders().getContentType()));
