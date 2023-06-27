@@ -88,7 +88,7 @@ public class StaticWebFilter implements WebFilter {
 
     return Mono.error(
         new IllegalStateException(
-            String.format("static 파일을 주는데 이상한 상태입니다. request: %s", exchange.getRequest())
+            String.format("static 파일을 주는데 이상한 상태입니다. request path: %s", exchange.getRequest().getPath())
         )
     );
   }
