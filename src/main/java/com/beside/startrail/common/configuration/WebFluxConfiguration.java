@@ -13,22 +13,25 @@ import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.reactive.config.CorsRegistry;
+import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 @Configuration
 public class WebFluxConfiguration implements WebFluxConfigurer {
   private final List<String> origins;
+  private final String staticPath;
 
   public WebFluxConfiguration(
-      @Value("${cors.origins}") List<String> origins
+      @Value("${cors.origins}") List<String> origins,
+      @Value("${static.path}") String staticPath
   ) {
     this.origins = origins;
+    this.staticPath = staticPath;
   }
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry
-        // todo 여기 임시임
         .addMapping("/**")
         .allowedOrigins(origins.toArray(String[]::new));
   }
@@ -49,5 +52,12 @@ public class WebFluxConfiguration implements WebFluxConfigurer {
             }
         ).build())
     );
+  }
+
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
+    registry.addResourceHandler("/**")
+        .addResourceLocations("file:" + staticPath);
   }
 }
