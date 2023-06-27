@@ -52,7 +52,7 @@ server:
     key-store-password: ${ssl.password}
 log:
   path: /root/logs/
-  fileName: beside-15th-11team
+  fileName: startrail
   level: warn
 static:
   path: /root/static/
