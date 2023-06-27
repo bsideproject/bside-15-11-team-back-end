@@ -48,7 +48,8 @@ public class StaticWebFilter implements WebFilter {
 
     if (!requestPath.startsWith("/api")) {
       if (indexWhiteList.contains(requestPath)) {
-        requestPath = "/index.html";
+        requestPath = "index.html";
+        exchange.getRequest().getHeaders().setContentType(MediaType.TEXT_HTML);
       }
 
       String filePath = staticPath + requestPath;
