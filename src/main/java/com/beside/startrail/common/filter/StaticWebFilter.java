@@ -3,6 +3,7 @@ package com.beside.startrail.common.filter;
 import com.google.common.base.Charsets;
 import java.util.List;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.FileSystemResource;
@@ -22,6 +23,7 @@ import org.springframework.web.util.UriUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
+@Slf4j
 @Component
 @Order(-1)
 public class StaticWebFilter implements WebFilter {
@@ -70,6 +72,8 @@ public class StaticWebFilter implements WebFilter {
                 HttpHeaders.CONTENT_TYPE,
                 contentType.getType());
       }
+
+      log.warn(String.format("!!!!FOR TEST!!!! - file: %s, contentType: %s", filePath, response.getHeaders().getContentType()));
 
       return response.writeWith(
           DataBufferUtils.read(
