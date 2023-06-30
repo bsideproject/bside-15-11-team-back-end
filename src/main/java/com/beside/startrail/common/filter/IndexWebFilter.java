@@ -30,7 +30,7 @@ public class IndexWebFilter implements WebFilter {
   public Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
     String requestPath = exchange.getRequest().getPath().value();
 
-    if (indexPaths.contains(requestPath)) {
+    if (indexPaths.contains(requestPath) || requestPath.startsWith("/page")) {
       return chain.filter(
           exchange.mutate()
               .request(
