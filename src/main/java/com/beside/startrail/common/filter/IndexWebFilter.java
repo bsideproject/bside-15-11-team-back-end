@@ -16,7 +16,13 @@ public class IndexWebFilter implements WebFilter {
   private final List<String> indexPaths;
 
   public IndexWebFilter(@Value("${oauth.redirectUri}") String redirectUri) {
-    this.indexPaths = List.of("/", redirectUri);
+    // todo 여기 임시
+    this.indexPaths = List.of(
+        "/",
+        redirectUri,
+        "/main",
+        "/mind"
+        );
   }
 
   @Override
