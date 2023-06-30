@@ -10,9 +10,13 @@ public class WebSecurityConfiguration {
   @Bean
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
     return serverHttpSecurity
+        .formLogin().disable()
+        .logout().disable()
+        .httpBasic().disable()
+        .csrf().disable()
+        .headers().disable()
         .authorizeExchange().anyExchange().permitAll()
         .and()
-        .formLogin().disable()
         .build();
   }
 }
