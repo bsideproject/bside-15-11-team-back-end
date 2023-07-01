@@ -13,7 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import protobuf.relationship.RelationshipGetRequestProto;
-import protobuf.relationship.RelationshipGetResponse;
+import protobuf.relationship.RelationshipGetResponseProto;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -49,7 +49,7 @@ public class RelationshipGetByFriendSequencehandler extends AbstractSignedHandle
             !CollectionUtils.isEmpty(relationshipResponseProtos)
         )
         .map(relationshipResponseProtos ->
-            RelationshipGetResponse.newBuilder()
+            RelationshipGetResponseProto.newBuilder()
                 .addAllRelationships(relationshipResponseProtos)
                 .build()
         )

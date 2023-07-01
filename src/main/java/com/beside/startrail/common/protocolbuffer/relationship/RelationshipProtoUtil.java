@@ -4,11 +4,13 @@ import com.beside.startrail.common.protocolbuffer.common.DateProtoUtil;
 import com.beside.startrail.common.protocolbuffer.common.ItemProtoUtil;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.relationship.document.Relationship;
+import com.beside.startrail.relationship.model.RelationshipCountResult;
 import com.beside.startrail.relationship.type.RelationshipType;
 import java.util.Objects;
 import protobuf.common.RelationshipRequestProto;
 import protobuf.common.RelationshipResponseProto;
 import protobuf.common.type.RelationshipTypeProto;
+import protobuf.relationship.RelationshipCountResponseProto;
 
 public class RelationshipProtoUtil {
   private RelationshipProtoUtil() {
@@ -53,6 +55,16 @@ public class RelationshipProtoUtil {
         .item(ItemProtoUtil.toItem(relationshipRequestProto.getItem()))
         .memo(relationshipRequestProto.getMemo())
         .useYn(useYn)
+        .build();
+  }
+
+  public static RelationshipCountResponseProto toRelationshipCountResponseProto(
+      RelationshipCountResult relationshipCountResult
+  ) {
+    return RelationshipCountResponseProto.newBuilder()
+        .setTotal(relationshipCountResult.getTotal())
+        .setGiven(relationshipCountResult.getGiven())
+        .setTaken(relationshipCountResult.getTaken())
         .build();
   }
 }
