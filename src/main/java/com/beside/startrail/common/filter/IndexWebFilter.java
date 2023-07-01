@@ -1,5 +1,7 @@
 package com.beside.startrail.common.filter;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
@@ -15,11 +17,12 @@ import reactor.core.publisher.Mono;
 public class IndexWebFilter implements WebFilter {
   private final List<String> indexPaths;
 
-  public IndexWebFilter(@Value("${oauth.redirectUri}") String redirectUri) {
+  public IndexWebFilter(@Value("${oauth.redirectUri}") String redirectUri)
+      throws URISyntaxException {
     // todo 여기 임시
     this.indexPaths = List.of(
         "/",
-        redirectUri,
+        new URI(redirectUri).getPath(),
         "/main",
         "/mind"
         );

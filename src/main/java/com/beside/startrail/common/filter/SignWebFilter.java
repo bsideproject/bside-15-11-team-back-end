@@ -55,7 +55,6 @@ public class SignWebFilter implements WebFilter {
       return serverHttpResponse.setComplete();
     }
 
-
     for (String authorization : authorizations) {
       try {
         return jwtService.getPayload(authorization)
