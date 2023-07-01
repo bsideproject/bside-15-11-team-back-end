@@ -6,17 +6,17 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
-public class WebSecurityConfiguration {
+public class SecurityConfiguration {
   @Bean
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
     return serverHttpSecurity
-        .formLogin().disable()
-        .logout().disable()
-        .httpBasic().disable()
-        .csrf().disable()
-        .headers().disable()
-        .authorizeExchange().anyExchange().permitAll()
-        .and()
+        .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+        .logout(ServerHttpSecurity.LogoutSpec::disable)
+        .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+        .csrf(ServerHttpSecurity.CsrfSpec::disable)
+        .headers(ServerHttpSecurity.HeaderSpec::disable)
+        .authorizeExchange(authorizeExchangeSpec ->
+            authorizeExchangeSpec.anyExchange().permitAll())
         .build();
   }
 }
