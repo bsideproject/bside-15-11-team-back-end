@@ -19,12 +19,9 @@ public class IndexWebFilter implements WebFilter {
 
   public IndexWebFilter(@Value("${oauth.redirectUri}") String redirectUri)
       throws URISyntaxException {
-    // todo 여기 임시
     this.indexPaths = List.of(
         "/",
-        new URI(redirectUri).getPath(),
-        "/main",
-        "/mind"
+        new URI(redirectUri).getPath()
         );
   }
 
