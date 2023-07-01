@@ -11,7 +11,8 @@ import com.beside.startrail.relationship.type.SortOrderType;
 import java.util.List;
 
 public class RelationshipService {
-  public static RelationshipCountCommand countByUserSequence(String userSequence) {
+  public static RelationshipCountCommand countByUserSequenceAndRelationshipType(
+      String userSequence) {
     return new RelationshipCountCommand(userSequence);
   }
 

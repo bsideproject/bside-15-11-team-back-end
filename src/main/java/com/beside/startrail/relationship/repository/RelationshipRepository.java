@@ -11,8 +11,6 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface RelationshipRepository extends ReactiveMongoRepository<Relationship, UUID> {
-  Mono<Long> countAllByUserSequenceAndUseYn(String userSequence, YnType useYn);
-
   Flux<Relationship> findAllByUserSequenceAndFriendSequenceAndUseYn(
       String userSequence,
       String friendSequence,
