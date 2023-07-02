@@ -10,19 +10,19 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 public class RelationLevelRouter {
 
     private final RelationLevelGetBySequenceHandler relationLevelGetBySequenceHandler;
-    private final RelationLevelGetAllHandler relationLevelGetAllHandler;
+    private final RelationLevelGetAllByCriteriaHandler relationLevelGetAllByCriteriaHandler;
 
     private final RelationLevelPostHandler relationLevelPostHandler;
     private final RelationLevelPutHandler relationLevelPutHandler;
     private final RelationLevelDeleteHandler relationLevelDeleteHandler;
 
     public RelationLevelRouter(RelationLevelGetBySequenceHandler relationLevelGetBySequenceHandler,
-                               RelationLevelGetAllHandler relationLevelGetAllHandler,
+                               RelationLevelGetAllByCriteriaHandler relationLevelGetAllByCriteriaHandler,
                                RelationLevelPostHandler relationLevelPostHandler,
                                RelationLevelPutHandler relationLevelPutHandler,
                                RelationLevelDeleteHandler relationLevelDeleteHandler) {
         this.relationLevelGetBySequenceHandler = relationLevelGetBySequenceHandler;
-        this.relationLevelGetAllHandler = relationLevelGetAllHandler;
+        this.relationLevelGetAllByCriteriaHandler = relationLevelGetAllByCriteriaHandler;
         this.relationLevelPostHandler = relationLevelPostHandler;
         this.relationLevelPutHandler = relationLevelPutHandler;
         this.relationLevelDeleteHandler = relationLevelDeleteHandler;
@@ -32,7 +32,7 @@ public class RelationLevelRouter {
     public RouterFunction<?> routerRelationLevel(){
         return RouterFunctions.route()
                 .GET("/api/relation-level/{sequence}", relationLevelGetBySequenceHandler)
-                .GET("/api/relation-level", relationLevelGetAllHandler)
+                .GET("/api/relation-level", relationLevelGetAllByCriteriaHandler)
                 .POST("/api/relation-level", relationLevelPostHandler)
                 .PUT("/api/relation-level/{sequence}", relationLevelPutHandler)
                 .DELETE("/api/relation-level/{sequence}", relationLevelDeleteHandler)

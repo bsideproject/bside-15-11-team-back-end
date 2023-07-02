@@ -6,6 +6,7 @@ import com.beside.startrail.relationLevel.repository.RelationLevelRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import protobuf.common.RelationLevelGetCriteriaProto;
 import protobuf.common.RelationLevelProto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,6 +23,14 @@ public class RelationLevelService {
 
     public Mono<RelationLevelProto> getRelationLevelBySequence(String sequence) {
         return getVerifiedRelationLevel(sequence)
+                .flatMap(relationLevel -> Mono.just(this.toRelationLevelProto(relationLevel)));
+    }
+
+    public Flux<RelationLevelProto> getRelationLevelsByCriteria(RelationLevelGetCriteriaProto criteriaProto){
+        return relationLevelRepository.findRelationLevelByCriteria(criteriaProto)
+                .onErrorMap(NumberFormatException.class,
+                        ex -> new IllegalArgumentException("요청값이 잘못 되었습니다.")
+                )
                 .flatMap(relationLevel -> Mono.just(this.toRelationLevelProto(relationLevel)));
     }
 
