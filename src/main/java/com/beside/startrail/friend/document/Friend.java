@@ -10,8 +10,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
-import protobuf.common.BirthProto;
-import protobuf.common.LevelInformationProto;
 
 @Builder
 @Getter
@@ -25,18 +23,16 @@ public class Friend {
 
     private String nickname;
     private String relationship;
-    private BirthProto birth;
+    private Birth birth;
     private String memo;
 
-    @Builder.Default
-    private LevelInformationProto levelInformation = LevelInformationProto.newBuilder().build();
     @Builder.Default
     private YnType useYn = YnType.Y;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDate;
     @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    private LocalDateTime modifiedDate;
 
     public Friend notUseYn(Friend friend){
         friend.useYn = YnType.N;
