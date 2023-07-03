@@ -3,6 +3,7 @@ package com.beside.startrail.common.protocolbuffer.friend;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.friend.document.Birth;
 import com.beside.startrail.friend.document.Friend;
+import org.springframework.util.ObjectUtils;
 import protobuf.common.BirthProto;
 import protobuf.common.DateProto;
 import protobuf.common.LevelInformationProto;
@@ -13,7 +14,6 @@ import protobuf.friend.FriendResponseProto;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class FriendProtoUtil {
@@ -56,7 +56,8 @@ public class FriendProtoUtil {
     }
 
     public static Birth toBirth(BirthProto birthProto){
-        if(Objects.isNull(birthProto)) return Birth.builder().build();
+        if(ObjectUtils.isEmpty(birthProto) || !birthProto.hasDate())
+            return Birth.builder().build();
 
         return Birth.builder()
                 .isLunar(YnType.valueOf(birthProto.getIsLunar().name()))
@@ -70,7 +71,8 @@ public class FriendProtoUtil {
                 .build();
     }
     public static BirthProto toBirthProto(Birth birth){
-        if(Objects.isNull(birth)) return BirthProto.newBuilder().build();
+        if(ObjectUtils.isEmpty(birth))
+            return BirthProto.newBuilder().build();
 
         return BirthProto.newBuilder()
                 .setIsLunar(YnTypeProto.valueOf(birth.getIsLunar().name()))
