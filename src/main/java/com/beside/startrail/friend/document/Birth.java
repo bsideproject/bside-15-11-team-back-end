@@ -9,8 +9,6 @@ import java.time.LocalDate;
 @Builder
 @Getter
 public class Birth {
-    @Builder.Default
-    private YnType isLunar = YnType.N;
-    @Builder.Default
-    private LocalDate date = LocalDate.now();
+    private YnType isLunar;
+    private LocalDate date;
 }

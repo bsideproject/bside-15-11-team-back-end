@@ -57,7 +57,7 @@ public class FriendProtoUtil {
 
     public static Birth toBirth(BirthProto birthProto){
         if(ObjectUtils.isEmpty(birthProto) || !birthProto.hasDate())
-            return Birth.builder().build();
+            return null;
 
         return Birth.builder()
                 .isLunar(YnType.valueOf(birthProto.getIsLunar().name()))
