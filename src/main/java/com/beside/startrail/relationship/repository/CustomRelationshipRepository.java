@@ -6,4 +6,6 @@ import reactor.core.publisher.Mono;
 
 public interface CustomRelationshipRepository {
   Mono<RelationshipCountResult> count(String sequence, YnType useYn);
+
+  Mono<RelationshipCountResult> countByFriend(String sequence, String friendSequence, YnType useYn);
 }
