@@ -42,4 +42,29 @@ public class CustomRelationshipRepositoryImpl implements CustomRelationshipRepos
         )
     );
   }
+
+  @Override
+  public Mono<RelationshipCountResult> countByFriend(String userSequence, String friendSequence, YnType useYn) {
+    Aggregation aggregation = Aggregation.newAggregation(
+            Aggregation.match(Criteria.where("useYn").is(useYn)),
+            Aggregation.match(Criteria.where("userSequence").is(userSequence)),
+            Aggregation.match(Criteria.where("friendSequence").is(friendSequence)),
+            Aggregation.group()
+                    .count().as("total")
+                    .sum(ConditionalOperators.when(Criteria.where("type").is(RelationshipType.GIVEN))
+                            .then(1)
+                            .otherwise(0)).as("given")
+                    .sum(ConditionalOperators.when(Criteria.where("type").is(RelationshipType.TAKEN))
+                            .then(1)
+                            .otherwise(0)).as("taken")
+    );
+
+    return Mono.from(
+            reactiveMongoTemplate.aggregate(
+                    aggregation,
+                    Relationship.class,
+                    RelationshipCountResult.class
+            )
+    );
+  }
 }
