@@ -24,6 +24,10 @@ jwt:
 sign:
   whitePaths: /sign, /users
   attributeName: jwt
+oauth:
+  kakao:
+    accessTokenUri: https://kauth.kakao.com/oauth/token
+    apiUri: https://kapi.kakao.com/v2/user/me
 
 ---
 

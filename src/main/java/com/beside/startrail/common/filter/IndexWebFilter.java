@@ -17,11 +17,14 @@ import reactor.core.publisher.Mono;
 public class IndexWebFilter implements WebFilter {
   private final List<String> indexPaths;
 
-  public IndexWebFilter(@Value("${oauth.redirectUri}") String redirectUri)
+  public IndexWebFilter(
+      @Value("${oauth.kakao.redirectUri}") String kakaoRedirectUri
+      // todo
+  )
       throws URISyntaxException {
     this.indexPaths = List.of(
         "/",
-        new URI(redirectUri).getPath()
+        new URI(kakaoRedirectUri).getPath()
         );
   }
 

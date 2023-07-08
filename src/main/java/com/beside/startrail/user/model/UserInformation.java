@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class UserInformation {
   private final String profileNickname;
-  private final String profileImageLink;
+  private final String profileImageUrl;
   private final SexType sexType;
   private final AgeRangeType ageRangeType;
   private final LocalDateTime birth;
