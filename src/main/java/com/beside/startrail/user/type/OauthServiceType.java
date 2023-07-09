@@ -14,7 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public enum OauthServiceType {
   KAKAO {
     @Override
-    public AbstractSignCommand getSignCommand(String code) {
+    public AbstractSignCommand getSignCommand(String code, String clientSecret) {
       if (
           !(KAKAO.information.containsKey(OauthServiceType.ACCESS_TOKEN_URI)
               && KAKAO.information.containsKey(OauthServiceType.API_URI)
@@ -36,9 +36,25 @@ public enum OauthServiceType {
   },
   APPLE {
     @Override
-    public AbstractSignCommand getSignCommand(String code) {
-      // todo
-      return new AppleSignCommand(code);
+    public AbstractSignCommand getSignCommand(String code, String clientSecret) {
+      if (
+          !(APPLE.information.containsKey(OauthServiceType.ACCESS_TOKEN_URI)
+              && APPLE.information.containsKey(OauthServiceType.API_URI)
+              && APPLE.information.containsKey(OauthServiceType.REDIRECT_URI)
+              && APPLE.information.containsKey(OauthServiceType.CLIENT_ID))
+      ) {
+        throw new IllegalStateException("OauthServiceType이 초기화되지 않았습니다.");
+      }
+
+      return new AppleSignCommand(
+          webClient,
+          APPLE.information.get(OauthServiceType.ACCESS_TOKEN_URI),
+          APPLE.information.get(OauthServiceType.API_URI),
+          code,
+          APPLE.information.get(OauthServiceType.REDIRECT_URI),
+          APPLE.information.get(OauthServiceType.CLIENT_ID),
+          clientSecret
+      );
     }
   };
 
@@ -53,5 +69,5 @@ public enum OauthServiceType {
 
   private Map<String, String> information = new HashMap<>();
 
-  public abstract AbstractSignCommand getSignCommand(String code);
+  public abstract AbstractSignCommand getSignCommand(String code, String clientSecret);
 }

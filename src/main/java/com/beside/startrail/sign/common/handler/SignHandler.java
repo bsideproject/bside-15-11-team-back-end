@@ -32,7 +32,7 @@ public class SignHandler {
             Enum.valueOf(
                 OauthServiceType.class,
                 signRequestProto.getOauthServiceType().name()
-            ).getSignCommand(signRequestProto.getCode())
+            ).getSignCommand(signRequestProto.getCode(), signRequestProto.getClientSecret())
         )
         .flatMap(AbstractSignCommand::execute)
         .flatMap(user ->

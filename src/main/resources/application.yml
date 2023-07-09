@@ -28,6 +28,9 @@ oauth:
   kakao:
     accessTokenUri: https://kauth.kakao.com/oauth/token
     apiUri: https://kapi.kakao.com/v2/user/me
+  apple:
+    accessTokenUri: https://appleid.apple.com/auth/token
+    apiUri:
 
 ---
 
