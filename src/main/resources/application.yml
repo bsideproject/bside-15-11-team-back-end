@@ -15,8 +15,6 @@ management:
     web:
       exposure:
         include: '*'
-cors:
-  origins: '*'
 jwt:
   baseKey: ${jwt.baseKey}
   cookie:
@@ -38,6 +36,8 @@ spring:
   config:
     activate:
       on-profile: local
+cors:
+  origins: '*'
 server:
   port: 8080
 log:
