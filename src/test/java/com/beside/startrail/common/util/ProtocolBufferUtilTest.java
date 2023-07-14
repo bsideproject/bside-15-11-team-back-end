@@ -11,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import protobuf.sign.SignRequestProto;
+import protobuf.sign.JwtPayloadProto;
 
 class ProtocolBufferUtilTest {
   @ParameterizedTest
@@ -24,7 +24,7 @@ class ProtocolBufferUtilTest {
   })
   void parseWhenWrongBody(String body) {
     // given
-    Message.Builder builder = SignRequestProto.newBuilder();
+    Message.Builder builder = JwtPayloadProto.newBuilder();
 
     // when
     // then
@@ -38,7 +38,7 @@ class ProtocolBufferUtilTest {
     String body = """
         {"sequence": ""}
         """;
-    Message.Builder builder = SignRequestProto.newBuilder();
+    Message.Builder builder = JwtPayloadProto.newBuilder();
     Message expected = builder.build();
 
     // when
@@ -51,7 +51,7 @@ class ProtocolBufferUtilTest {
   @Test
   void print() {
     // given
-    Message message = SignRequestProto.newBuilder().build();
+    Message message = JwtPayloadProto.newBuilder().build();
 
     // when
     String json = ProtocolBufferUtil.print(message);
@@ -72,14 +72,14 @@ class ProtocolBufferUtilTest {
     MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
     UUID uuid = UUID.randomUUID();
     multiValueMap.add("sequence", uuid.toString());
-    SignRequestProto.Builder builder = SignRequestProto.newBuilder();
+    JwtPayloadProto.Builder builder = JwtPayloadProto.newBuilder();
 
     // when
-    SignRequestProto SignRequestProto =
-        ProtocolBufferUtil.<SignRequestProto>from(multiValueMap, builder).block();
+    JwtPayloadProto jwtPayloadProto =
+        ProtocolBufferUtil.<JwtPayloadProto>from(multiValueMap, builder).block();
 
     // then
-    assertThat(SignRequestProto.getSequence())
+    assertThat(jwtPayloadProto.getSequence())
         .isEqualTo(uuid.toString());
   }
 }
