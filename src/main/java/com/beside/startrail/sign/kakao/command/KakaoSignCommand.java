@@ -1,5 +1,6 @@
 package com.beside.startrail.sign.kakao.command;
 
+import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.sign.kakao.model.KakaoAccessTokenRequest;
 import com.beside.startrail.sign.kakao.model.KakaoAccessTokenResponse;
 import com.beside.startrail.sign.kakao.model.KakaoApiResponse;
@@ -94,6 +95,7 @@ public class KakaoSignCommand {
                                 .birth(kakaoApiResponse.getKakaoAccount().getBirth())
                                 .build()
                         )
+                        .allowPrivateInformationYn(YnType.Y)
                         .build()
                 )
         );

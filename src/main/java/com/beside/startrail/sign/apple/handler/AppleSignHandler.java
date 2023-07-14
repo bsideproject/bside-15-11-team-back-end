@@ -66,6 +66,7 @@ public class AppleSignHandler implements HandlerFunction<ServerResponse> {
                         .build()
                 )
                 .useYn(YnType.Y)
+                .allowPrivateInformationYn(YnType.Y)
                 .build()
         )
         .flatMap(user ->
