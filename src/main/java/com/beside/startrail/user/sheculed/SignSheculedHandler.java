@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 
 @EnableScheduling
 @Configuration
@@ -17,8 +18,9 @@ public class SignSheculedHandler {
     this.userRepository = userRepository;
   }
 
-    @Scheduled(cron = "0 0 0 ? * MON")
-  void deleteUnAllowedUsers() {
+  @Transactional
+  @Scheduled(cron = "0 0 0 ? * MON")
+  public void deleteUnAllowedUsers() {
     LocalDate now = LocalDate.now();
 
     new UserFindCommand(
