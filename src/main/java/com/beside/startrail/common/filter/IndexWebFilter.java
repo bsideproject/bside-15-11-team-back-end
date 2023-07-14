@@ -1,9 +1,6 @@
 package com.beside.startrail.common.filter;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -17,15 +14,8 @@ import reactor.core.publisher.Mono;
 public class IndexWebFilter implements WebFilter {
   private final List<String> indexPaths;
 
-  public IndexWebFilter(
-      @Value("${oauth.kakao.redirectUri}") String kakaoRedirectUri
-      // todo
-  )
-      throws URISyntaxException {
-    this.indexPaths = List.of(
-        "/",
-        new URI(kakaoRedirectUri).getPath()
-        );
+  public IndexWebFilter() {
+    this.indexPaths = List.of("/");
   }
 
   @Override

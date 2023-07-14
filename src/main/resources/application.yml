@@ -20,7 +20,7 @@ jwt:
   cookie:
     name: jwt
 sign:
-  whitePaths: /sign, /users
+  whitePaths: ${oauth.apple.redirectUri}, ${oauth.kakao.redirectUri}
   attributeName: jwt
 oauth:
   kakao:
@@ -28,7 +28,6 @@ oauth:
     apiUri: https://kapi.kakao.com/v2/user/me
   apple:
     accessTokenUri: https://appleid.apple.com/auth/token
-    apiUri:
 
 ---
 
@@ -39,7 +38,11 @@ spring:
 cors:
   origins: '*'
 server:
-  port: 8080
+  port: 443
+  ssl:
+    key-store: classpath:local.p12
+    key-store-type: PKCS12
+    key-store-password: local
 log:
   level: info
 
