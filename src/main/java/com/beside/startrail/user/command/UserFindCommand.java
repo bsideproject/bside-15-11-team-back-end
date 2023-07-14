@@ -3,34 +3,38 @@ package com.beside.startrail.user.command;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
-import com.beside.startrail.user.type.OauthServiceType;
+import java.time.LocalDate;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @EqualsAndHashCode
 @Getter
 public class UserFindCommand {
-  private final OauthServiceType oauthServiceType;
-  private final String serviceUserId;
+  private final YnType allowPrivateInformationYn;
   private final YnType useYn;
-  private Mono<User> result;
+  private final LocalDate from;
+  private final LocalDate to;
+  private Flux<User> result;
 
   public UserFindCommand(
-      OauthServiceType oauthServiceType,
-      String serviceUserId,
-      YnType useYn
+      YnType allowPrivateInformationYn,
+      YnType useYn,
+      LocalDate from,
+      LocalDate to
   ) {
-    this.oauthServiceType = oauthServiceType;
-    this.serviceUserId = serviceUserId;
+    this.allowPrivateInformationYn = allowPrivateInformationYn;
     this.useYn = useYn;
+    this.from = from;
+    this.to = to;
   }
 
-  public Mono<User> execute(UserRepository userRepository) {
-    result = userRepository.findUserByUserId_OauthServiceType_AndUserId_ServiceUserIdAndUseYn(
-        oauthServiceType,
-        serviceUserId,
-        useYn
+  public Flux<User> execute(UserRepository userRepository) {
+    result = userRepository.findByAllowPrivateInformationYnAndUseYnAndModifiedDateIsBetween(
+        allowPrivateInformationYn,
+        useYn,
+        from.atStartOfDay(),
+        to.atStartOfDay()
     );
 
     return result;

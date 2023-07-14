@@ -10,13 +10,16 @@ public class SecurityConfiguration {
   @Bean
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
     return serverHttpSecurity
+        .redirectToHttps()
+        .and()
         .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
         .logout(ServerHttpSecurity.LogoutSpec::disable)
         .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
         .csrf(ServerHttpSecurity.CsrfSpec::disable)
         .headers(ServerHttpSecurity.HeaderSpec::disable)
         .authorizeExchange(authorizeExchangeSpec ->
-            authorizeExchangeSpec.anyExchange().permitAll())
+            authorizeExchangeSpec.anyExchange().permitAll()
+        )
         .build();
   }
 }

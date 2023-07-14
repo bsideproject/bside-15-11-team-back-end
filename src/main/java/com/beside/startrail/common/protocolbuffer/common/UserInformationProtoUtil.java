@@ -19,7 +19,7 @@ public class UserInformationProtoUtil {
 
     return UserInformationProto.newBuilder()
         .setProfileNickname(userInformation.getProfileNickname())
-        .setProfileImageLink(userInformation.getProfileImageLink())
+        .setProfileImageLink(userInformation.getProfileImageUrl())
         .setSexType(
             SexTypeProto.valueOf(userInformation.getSexType().name())
         )
@@ -37,7 +37,7 @@ public class UserInformationProtoUtil {
 
     return UserInformation.builder()
         .profileNickname(userInformationProto.getProfileNickname())
-        .profileImageLink(userInformationProto.getProfileImageLink())
+        .profileImageUrl(userInformationProto.getProfileImageLink())
         .sexType(
             SexType.valueOf(userInformationProto.getSexType().name())
         )
