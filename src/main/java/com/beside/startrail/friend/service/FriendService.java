@@ -77,7 +77,6 @@ public class FriendService {
         .flatMap(friend -> Mono.just(Friend.from(friend, YnType.N)))
         .flatMap(friendRepository::save)
         .map(FriendProtoUtil::toFriendResponseProto);
-
   }
 
   public Flux<FriendResponseProto> getFriendsByCriteria(
