@@ -9,8 +9,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface FriendRepository extends ReactiveMongoRepository<Friend, UUID>, CustomFriendRepository {
-    Mono<Friend> findByUserSequenceAndSequenceAndUseYn(String userSequence, String sequence, YnType useYn);
+public interface FriendRepository
+    extends ReactiveMongoRepository<Friend, UUID>, CustomFriendRepository {
+  Mono<Friend> findByUserSequenceAndSequenceAndUseYn(
+      String userSequence,
+      String sequence,
+      YnType useYn
+  );
 
-    Flux<Friend> findByUserSequenceAndUseYn(String userSequence, YnType useYn);
+  Flux<Friend> findByUserSequenceAndUseYn(String userSequence, YnType useYn);
 }

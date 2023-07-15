@@ -13,31 +13,30 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class FriendDeleteHandler extends AbstractSignedTransactionalHandler {
-    private final FriendService friendService;
+  private final FriendService friendService;
 
-    public FriendDeleteHandler(@Value("${sign.attributeName}") String attributeName,
-                            FriendService friendService) {
-        super(attributeName);
-        this.friendService = friendService;
-    }
+  public FriendDeleteHandler(
+      @Value("${sign.attributeName}") String attributeName,
+      FriendService friendService
+  ) {
+    super(attributeName);
+    this.friendService = friendService;
+  }
 
 
-    @Override
-    protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
-        String sequence = serverRequest.pathVariable("sequence");
+  @Override
+  protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
+    String sequence = serverRequest.pathVariable("sequence");
 
-        return friendService.removeFriend(super.jwtPayloadProto.getSequence(), sequence)
-                .log()
-                .flatMap(friendResponseProto ->
-                        ServerResponse.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(isDeleted(friendResponseProto))
-                );
-    }
+    return friendService.removeFriend(super.jwtPayloadProto.getSequence(), sequence)
+        .flatMap(friendResponseProto ->
+            ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(isDeleted(friendResponseProto))
+        );
+  }
 
-    private Boolean isDeleted(FriendResponseProto friendResponseProto){
-        return !ObjectUtils.isEmpty(friendResponseProto.getSequence())
-                ? Boolean.TRUE
-                : Boolean.FALSE;
-    }
+  private Boolean isDeleted(FriendResponseProto friendResponseProto) {
+    return !ObjectUtils.isEmpty(friendResponseProto.getSequence());
+  }
 }

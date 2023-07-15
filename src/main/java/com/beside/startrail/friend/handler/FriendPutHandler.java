@@ -13,30 +13,34 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class FriendPutHandler extends AbstractSignedTransactionalHandler {
-    private final FriendService friendService;
-    private final FriendRequestValidator friendValidator;
+  private final FriendService friendService;
+  private final FriendRequestValidator friendValidator;
 
-    public FriendPutHandler(@Value("${sign.attributeName}") String attributeName,
-                            FriendService friendService,
-                            FriendRequestValidator friendRequestValidator) {
-        super(attributeName);
-        this.friendService = friendService;
-        this.friendValidator = friendRequestValidator;
-    }
+  public FriendPutHandler(
+      @Value("${sign.attributeName}") String attributeName,
+      FriendService friendService,
+      FriendRequestValidator friendRequestValidator
+  ) {
+    super(attributeName);
+    this.friendService = friendService;
+    this.friendValidator = friendRequestValidator;
+  }
 
-    @Override
-    protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
-        String sequence = serverRequest.pathVariable("sequence");
+  @Override
+  protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
+    String sequence = serverRequest.pathVariable("sequence");
 
-        return serverRequest.bodyToMono(String.class)
-                .flatMap(body -> ProtocolBufferUtil.<FriendPutProto>parse(body, FriendPutProto.newBuilder()))
-                .log()
-                .doOnNext(friendValidator::updateValidate)
-                .flatMap(body -> friendService.updateFriend(super.jwtPayloadProto.getSequence(), sequence, body))
-                .flatMap(friendDto ->
-                        ServerResponse.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(friendDto)
-                );
-    }
+    return serverRequest.bodyToMono(String.class)
+        .flatMap(
+            body -> ProtocolBufferUtil.<FriendPutProto>parse(body, FriendPutProto.newBuilder()))
+        .doOnNext(friendValidator::updateValidate)
+        .flatMap(body ->
+            friendService.updateFriend(super.jwtPayloadProto.getSequence(), sequence, body)
+        )
+        .flatMap(friendDto ->
+            ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(friendDto)
+        );
+  }
 }

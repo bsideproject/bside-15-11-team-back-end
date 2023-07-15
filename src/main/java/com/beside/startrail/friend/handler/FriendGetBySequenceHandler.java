@@ -11,24 +11,25 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class FriendGetBySequenceHandler extends AbstractSignedHandler {
-    private final FriendService friendService;
+  private final FriendService friendService;
 
-    public FriendGetBySequenceHandler(@Value("${sign.attributeName}") String attributeName,
-                               FriendService friendService) {
-        super(attributeName);
-        this.friendService = friendService;
-    }
+  public FriendGetBySequenceHandler(
+      @Value("${sign.attributeName}") String attributeName,
+      FriendService friendService
+  ) {
+    super(attributeName);
+    this.friendService = friendService;
+  }
 
-    @Override
-    protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
-        String sequence = serverRequest.pathVariable("sequence");
+  @Override
+  protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
+    String sequence = serverRequest.pathVariable("sequence");
 
-        return friendService.getFriendBySequence(super.jwtPayloadProto.getSequence(), sequence)
-                .log()
-                .flatMap(friend ->
-                        ServerResponse.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(friend)
-                );
-    }
+    return friendService.getFriendBySequence(super.jwtPayloadProto.getSequence(), sequence)
+        .flatMap(friend ->
+            ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(friend)
+        );
+  }
 }

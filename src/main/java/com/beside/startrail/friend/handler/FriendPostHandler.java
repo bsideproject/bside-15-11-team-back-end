@@ -14,32 +14,40 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class FriendPostHandler extends AbstractSignedTransactionalHandler {
-    private final FriendService friendService;
-    private final FriendRequestValidator friendValidator;
+  private final FriendService friendService;
+  private final FriendRequestValidator friendValidator;
 
-    public FriendPostHandler(@Value("${sign.attributeName}") String attributeName,
-                            FriendService friendService,
-                            FriendRequestValidator friendRequestValidator) {
-        super(attributeName);
-        this.friendService = friendService;
-        this.friendValidator = friendRequestValidator;
-    }
+  public FriendPostHandler(
+      @Value("${sign.attributeName}") String attributeName,
+      FriendService friendService,
+      FriendRequestValidator friendRequestValidator
+  ) {
+    super(attributeName);
+    this.friendService = friendService;
+    this.friendValidator = friendRequestValidator;
+  }
 
-    @Override
-    protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(String.class)
-                .flatMap(body -> ProtocolBufferUtil.<FriendPostProto>parse(body, FriendPostProto.newBuilder()))
-                .log()
-                .doOnNext(friendValidator::createValidate)
-                .flatMap(friendDto -> friendService.createFriend(super.jwtPayloadProto.getSequence(), friendDto))
-                .onErrorMap(
-                        DuplicateKeyException.class,
-                        ex -> new IllegalArgumentException("Duplicate key, Friend sequence")
-                )
-                .flatMap(friendList ->
-                        ServerResponse.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(friendList)
-                );
-    }
+  @Override
+  protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
+    return serverRequest.bodyToMono(String.class)
+        .flatMap(body -> ProtocolBufferUtil.<FriendPostProto>parse(
+                body, FriendPostProto.newBuilder()
+            )
+        )
+        .doOnNext(friendValidator::createValidate)
+        .flatMap(friendDto -> friendService.createFriend(
+                super.jwtPayloadProto.getSequence(),
+                friendDto
+            )
+        )
+        .onErrorMap(
+            DuplicateKeyException.class,
+            ex -> new IllegalArgumentException("Duplicate key, Friend sequence")
+        )
+        .flatMap(friendList ->
+            ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(friendList)
+        );
+  }
 }

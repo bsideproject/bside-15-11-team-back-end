@@ -13,40 +13,48 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class FriendGetByCriteriaHandler extends AbstractSignedHandler {
-    private final FriendService friendService;
+  private final FriendService friendService;
 
-    public FriendGetByCriteriaHandler(@Value("${sign.attributeName}") String attributeName,
-                                      FriendService friendService) {
-        super(attributeName);
-        this.friendService = friendService;
-    }
+  public FriendGetByCriteriaHandler(
+      @Value("${sign.attributeName}") String attributeName,
+      FriendService friendService
+  ) {
+    super(attributeName);
+    this.friendService = friendService;
+  }
 
 
-    @Override
-    protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
-        return makeCriteriaParams(serverRequest)
-                .flatMapMany(friendSearchCriteria -> friendService.getFriendsByCriteria(super.jwtPayloadProto.getSequence(), friendSearchCriteria))
-                .collectList()
-                .log()
-                .flatMap(friendDtoList -> ServerResponse.ok()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(friendDtoList)
-                );
-    }
+  @Override
+  protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
+    return makeCriteriaParams(serverRequest)
+        .flatMapMany(friendSearchCriteria ->
+            friendService.getFriendsByCriteria(
+                super.jwtPayloadProto.getSequence(),
+                friendSearchCriteria
+            )
+        )
+        .collectList()
+        .flatMap(friendDtoList ->
+            ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(friendDtoList)
+        );
+  }
 
-    private Mono<FriendGetCriteriaProto> makeCriteriaParams(ServerRequest request){
-        FriendGetCriteriaProto.Builder friendSearchCriteriaBuilder = FriendGetCriteriaProto
-                .newBuilder();
+  private Mono<FriendGetCriteriaProto> makeCriteriaParams(ServerRequest request) {
+    FriendGetCriteriaProto.Builder friendSearchCriteriaBuilder =
+        FriendGetCriteriaProto.newBuilder();
 
-        request.queryParams()
-                .forEach((key, value) -> {
-                    if (!ObjectUtils.isEmpty(FriendGetCriteriaProto.getDescriptor().findFieldByName(key))) {
-                        friendSearchCriteriaBuilder.setField(
-                                FriendGetCriteriaProto.getDescriptor().findFieldByName(key),
-                                value.stream().findFirst().orElse(""));
-                    }
-                });
+    request.queryParams()
+        .forEach((key, value) -> {
+          if (!ObjectUtils.isEmpty(FriendGetCriteriaProto.getDescriptor().findFieldByName(key))) {
+            friendSearchCriteriaBuilder.setField(
+                FriendGetCriteriaProto.getDescriptor().findFieldByName(key),
+                value.stream().findFirst().orElse("")
+            );
+          }
+        });
 
-        return Mono.just(friendSearchCriteriaBuilder.build());
-    }
+    return Mono.just(friendSearchCriteriaBuilder.build());
+  }
 }

@@ -9,5 +9,8 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface CustomFriendRepository {
 
-    Flux<Friend> findFriendsByCriteria(String userSequence, FriendGetCriteriaProto friendGetCriteriaProto);
+  Flux<Friend> findFriendsByCriteria(
+      String userSequence,
+      FriendGetCriteriaProto friendGetCriteriaProto
+  );
 }
