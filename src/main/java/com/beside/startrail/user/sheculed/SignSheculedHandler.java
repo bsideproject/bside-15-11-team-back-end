@@ -2,6 +2,8 @@ package com.beside.startrail.user.sheculed;
 
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.user.command.UserFindCommand;
+import com.beside.startrail.user.command.UserSaveCommand;
+import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
 import java.time.LocalDate;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,7 @@ public class SignSheculedHandler {
         now
     )
         .execute(userRepository)
-        .subscribe(user -> user.setUseYn(YnType.N));
+        .map(user -> new UserSaveCommand(User.from(user, YnType.N)))
+        .flatMap(userSaveCommand -> userSaveCommand.execute(userRepository));
   }
 }

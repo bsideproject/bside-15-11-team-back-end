@@ -30,4 +30,18 @@ public class Relationship {
   private final Item item;
   private final String memo;
   private final YnType useYn;
+
+  public static Relationship from(Relationship relationship, YnType useYn) {
+    return Relationship.builder()
+        .sequence(relationship.sequence)
+        .userSequence(relationship.userSequence)
+        .friendSequence(relationship.friendSequence)
+        .type(relationship.type)
+        .event(relationship.event)
+        .date(relationship.date)
+        .item(relationship.item)
+        .memo(relationship.memo)
+        .useYn(useYn)
+        .build();
+  }
 }

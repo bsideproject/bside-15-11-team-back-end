@@ -2,15 +2,13 @@ package com.beside.startrail.friend.service;
 
 import com.beside.startrail.common.protocolbuffer.friend.FriendProtoUtil;
 import com.beside.startrail.common.type.YnType;
-
-import java.util.List;
-
 import com.beside.startrail.friend.document.Friend;
 import com.beside.startrail.friend.repository.FriendRepository;
 import com.beside.startrail.relationLevel.document.RelationLevel;
 import com.beside.startrail.relationLevel.repository.RelationLevelRepository;
 import com.beside.startrail.relationship.model.RelationshipCountResult;
 import com.beside.startrail.relationship.repository.CustomRelationshipRepository;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -67,7 +65,7 @@ public class FriendService {
 
     public Mono<FriendResponseProto> removeFriend(String userSequence, String sequence) {
         return getVerifiedFriend(userSequence, sequence)
-                .flatMap(friend -> Mono.just(friend.notUseYn(friend)))
+                .flatMap(friend -> Mono.just(Friend.from(friend, YnType.N)))
                 .flatMap(friend -> friendRepository.save(friend))
                 .map(friend -> FriendProtoUtil.toFriendResponseProto(friend));
 

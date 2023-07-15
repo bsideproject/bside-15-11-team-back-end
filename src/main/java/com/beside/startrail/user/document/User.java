@@ -6,28 +6,36 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Builder
-@Setter
 @Getter
 @Document("user")
 @EqualsAndHashCode
 public class User {
   @Id
-  private UserId userId;
-  private String sequence;
-  private UserInformation userInformation;
+  private final UserId userId;
+  private final String sequence;
+  private final UserInformation userInformation;
   @Builder.Default
-  private YnType useYn = YnType.Y;
+  private final YnType useYn = YnType.Y;
   @CreatedDate
-  private LocalDateTime createdDate;
+  private final LocalDateTime createdDate;
   @LastModifiedDate
-  private LocalDateTime modifiedDate;
+  private final LocalDateTime modifiedDate;
   @Builder.Default
-  private YnType allowPrivateInformationYn = YnType.Y;
+  private final YnType allowPrivateInformationYn = YnType.Y;
+
+  public static User from (User user, YnType useYn) {
+    return User.builder()
+        .userId(user.userId)
+        .sequence(user.sequence)
+        .userInformation(user.userInformation)
+        .allowPrivateInformationYn(user.allowPrivateInformationYn)
+        .useYn(useYn)
+        .build();
+  }
 }

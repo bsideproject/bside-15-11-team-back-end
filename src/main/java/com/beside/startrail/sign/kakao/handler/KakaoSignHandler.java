@@ -3,6 +3,7 @@ package com.beside.startrail.sign.kakao.handler;
 import com.beside.startrail.common.service.JwtProtoService;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.sign.kakao.command.KakaoSignCommand;
+import com.beside.startrail.user.command.UserSaveCommand;
 import com.beside.startrail.user.document.UserId;
 import com.beside.startrail.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,7 +64,10 @@ public class KakaoSignHandler implements HandlerFunction<ServerResponse> {
                                 .build(),
                             YnType.Y
                         )
-                        .switchIfEmpty(userRepository.insert(user))
+                        .switchIfEmpty(
+                            new UserSaveCommand(user)
+                                .execute(userRepository)
+                        )
                 )
                 .flatMap(user ->
                     jwtProtoService.makeJwtProto(

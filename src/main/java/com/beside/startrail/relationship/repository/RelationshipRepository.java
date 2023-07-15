@@ -29,4 +29,6 @@ public interface RelationshipRepository extends ReactiveMongoRepository<Relation
       String sequence,
       YnType useYn
   );
+
+  Flux<Relationship> findByUserSequenceAndUseYn(String userSequence, YnType useYn);
 }

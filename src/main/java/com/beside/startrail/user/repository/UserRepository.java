@@ -22,4 +22,6 @@ public interface UserRepository extends ReactiveMongoRepository<User, UserId> {
       LocalDateTime from,
       LocalDateTime to
   );
+
+  Mono<User> findBySequenceAndUseYn(String sequence, YnType useYn);
 }
