@@ -3,6 +3,7 @@ package com.beside.startrail.sign.common.configuration;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 import com.beside.startrail.sign.apple.handler.AppleSignHandler;
+import com.beside.startrail.sign.common.handler.SignAllowHandler;
 import com.beside.startrail.sign.common.handler.SignWithdrawlHandler;
 import com.beside.startrail.sign.kakao.handler.KakaoSignHandler;
 import java.net.URI;
@@ -29,11 +30,13 @@ public class SignRouterConfiguration {
   public RouterFunction<?> routeSign(
       KakaoSignHandler kakaoSignHandler,
       AppleSignHandler appleSignHandler,
+      SignAllowHandler signAllowHandler,
       SignWithdrawlHandler signWithdrawlHandler
   ) {
     return route()
         .GET(kakaoSignPath, kakaoSignHandler)
         .POST(appleSignPath, appleSignHandler)
+        .POST("/api/sign/allow", signAllowHandler)
         .POST("/api/sign/withdrawl", signWithdrawlHandler)
         .build();
   }

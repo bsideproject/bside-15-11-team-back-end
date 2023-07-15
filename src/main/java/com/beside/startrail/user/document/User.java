@@ -27,15 +27,25 @@ public class User {
   @LastModifiedDate
   private final LocalDateTime modifiedDate;
   @Builder.Default
-  private final YnType allowPrivateInformationYn = YnType.Y;
+  private final YnType allowPrivateInformationYn = YnType.N;
 
-  public static User from (User user, YnType useYn) {
+  public static User fromUseYn(User user, YnType useYn) {
     return User.builder()
         .userId(user.userId)
         .sequence(user.sequence)
         .userInformation(user.userInformation)
         .allowPrivateInformationYn(user.allowPrivateInformationYn)
         .useYn(useYn)
+        .build();
+  }
+
+  public static User fromAllowPrivateInformationYn(User user, YnType allowPrivateInformationYn) {
+    return User.builder()
+        .userId(user.userId)
+        .sequence(user.sequence)
+        .userInformation(user.userInformation)
+        .allowPrivateInformationYn(allowPrivateInformationYn)
+        .useYn(user.useYn)
         .build();
   }
 }

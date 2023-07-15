@@ -32,7 +32,7 @@ public class SignSheculedHandler {
         now
     )
         .execute(userRepository)
-        .map(user -> new UserSaveCommand(User.from(user, YnType.N)))
+        .map(user -> new UserSaveCommand(User.fromUseYn(user, YnType.N)))
         .flatMap(userSaveCommand -> userSaveCommand.execute(userRepository));
   }
 }

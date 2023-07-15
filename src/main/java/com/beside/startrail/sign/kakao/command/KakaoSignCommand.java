@@ -95,7 +95,8 @@ public class KakaoSignCommand {
                                 .birth(kakaoApiResponse.getKakaoAccount().getBirth())
                                 .build()
                         )
-                        .allowPrivateInformationYn(YnType.Y)
+                        .useYn(YnType.Y)
+                        .allowPrivateInformationYn(YnType.N)
                         .build()
                 )
         );
