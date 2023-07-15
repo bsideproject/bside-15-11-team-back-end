@@ -3,12 +3,9 @@ package com.beside.startrail.friend.handler;
 import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.friend.service.FriendService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.friend.FriendResponseProto;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -30,13 +27,9 @@ public class FriendDeleteHandler extends AbstractSignedTransactionalHandler {
 
     return friendService.removeFriend(super.jwtPayloadProto.getSequence(), sequence)
         .flatMap(friendResponseProto ->
-            ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(isDeleted(friendResponseProto))
+            ServerResponse
+                .ok()
+                .build()
         );
-  }
-
-  private Boolean isDeleted(FriendResponseProto friendResponseProto) {
-    return !ObjectUtils.isEmpty(friendResponseProto.getSequence());
   }
 }

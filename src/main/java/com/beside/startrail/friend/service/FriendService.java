@@ -6,8 +6,10 @@ import com.beside.startrail.friend.document.Friend;
 import com.beside.startrail.friend.repository.FriendRepository;
 import com.beside.startrail.relationLevel.document.RelationLevel;
 import com.beside.startrail.relationLevel.repository.RelationLevelRepository;
+import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.model.RelationshipCountResult;
 import com.beside.startrail.relationship.repository.CustomRelationshipRepository;
+import com.beside.startrail.relationship.repository.RelationshipRepository;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,15 +28,18 @@ public class FriendService {
   private final FriendRepository friendRepository;
   private final RelationLevelRepository relationLevelRepository;
   private final CustomRelationshipRepository customRelationshipRepository;
+  private final RelationshipRepository relationshipRepository;
 
   public FriendService(
       FriendRepository friendRepository,
       RelationLevelRepository relationLevelRepository,
-      CustomRelationshipRepository customRelationshipRepository
+      CustomRelationshipRepository customRelationshipRepository,
+      RelationshipRepository relationshipRepository
   ) {
     this.friendRepository = friendRepository;
     this.relationLevelRepository = relationLevelRepository;
     this.customRelationshipRepository = customRelationshipRepository;
+    this.relationshipRepository = relationshipRepository;
   }
 
   public Mono<FriendResponseProto> getFriendBySequence(String userSequence, String sequence) {
@@ -70,12 +75,23 @@ public class FriendService {
         );
   }
 
-  public Mono<FriendResponseProto> removeFriend(String userSequence, String sequence) {
-    return getVerifiedFriend(userSequence, sequence)
-        .flatMap(friend -> Mono.just(Friend.from(friend, YnType.N)))
-        .flatMap(friendRepository::save)
-        .map(FriendProtoUtil::toFriendResponseProto);
-
+  public Mono<Void> removeFriend(String userSequence, String sequence) {
+    return Mono.when(
+        getVerifiedFriend(userSequence, sequence)
+            .map(friend -> Friend.from(friend, YnType.N))
+            .flatMap(friendRepository::save),
+        relationshipRepository.findAllByUserSequenceAndFriendSequenceAndUseYn(
+                userSequence,
+                sequence,
+                YnType.Y
+            )
+            .flatMap(relationship ->
+                relationshipRepository.save(Relationship.from(
+                    relationship,
+                    YnType.N
+                ))
+            )
+    );
   }
 
   public Flux<FriendResponseProto> getFriendsByCriteria(

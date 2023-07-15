@@ -18,6 +18,12 @@ public interface RelationshipRepository extends ReactiveMongoRepository<Relation
       Sort sort
   );
 
+  Flux<Relationship> findAllByUserSequenceAndFriendSequenceAndUseYn(
+      String userSequence,
+      String friendSequence,
+      YnType useYn
+  );
+
   Mono<Relationship> findOneByUserSequenceAndSequenceAndUseYn(
       String userSequence,
       String sequence,
