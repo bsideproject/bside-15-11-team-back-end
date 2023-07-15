@@ -11,9 +11,7 @@ import com.beside.startrail.relationship.repository.CustomRelationshipRepository
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import protobuf.common.LevelInformationProto;
-import protobuf.common.RelationLevelGetCriteriaProto;
 import protobuf.friend.FriendGetCriteriaProto;
 import protobuf.friend.FriendPostProto;
 import protobuf.friend.FriendPutProto;
@@ -77,6 +75,7 @@ public class FriendService {
         .flatMap(friend -> Mono.just(Friend.from(friend, YnType.N)))
         .flatMap(friendRepository::save)
         .map(FriendProtoUtil::toFriendResponseProto);
+
   }
 
   public Flux<FriendResponseProto> getFriendsByCriteria(
@@ -105,22 +104,21 @@ public class FriendService {
         .switchIfEmpty(Mono.just(RelationshipCountResult.builder().build()))
         .flatMap(relationshipCountResult ->
             getRelationLevelByCount(relationshipCountResult.getTotal())
-                .map(relationLevel -> toLevelInformationProto(relationshipCountResult,
-                    relationLevel))
+                .map(relationLevel ->
+                    toLevelInformationProto(
+                        relationshipCountResult,
+                        relationLevel
+                    )
+                )
         );
   }
 
   private Mono<RelationLevel> getRelationLevelByCount(Integer count) {
-    return relationLevelRepository.findRelationLevelByCriteria(toRelationLevelCountCriteria(count))
-        .collectList()
-        .mapNotNull(relationLevels -> relationLevels.stream().findFirst().orElse(null));
-  }
-
-  private RelationLevelGetCriteriaProto toRelationLevelCountCriteria(Integer val) {
-    return RelationLevelGetCriteriaProto.newBuilder()
-        .setSearchKey("count")
-        .setSearchValue(String.valueOf(val))
-        .build();
+    return relationLevelRepository.findByCountFromIsLessThanEqualAndCountToIsGreaterThanEqual(
+            count,
+            count
+        )
+        .switchIfEmpty(Mono.just(RelationLevel.makeDefault()));
   }
 
   private LevelInformationProto toLevelInformationProto(
@@ -131,7 +129,9 @@ public class FriendService {
         .setTotal(relationshipCountResult.getTotal())
         .setGiven(relationshipCountResult.getGiven())
         .setTaken(relationshipCountResult.getTaken())
-        .setLevel(ObjectUtils.isEmpty(relationLevel) ? 1 : relationLevel.getLevel())
+        .setLevel(relationLevel.getLevel())
+        .setTitle(relationLevel.getTitle())
+        .setDescription(relationLevel.getDescription())
         .build();
   }
 

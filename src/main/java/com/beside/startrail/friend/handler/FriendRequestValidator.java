@@ -1,6 +1,7 @@
 package com.beside.startrail.friend.handler;
 
 import com.google.protobuf.Message;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.stereotype.Component;
 import protobuf.friend.FriendPostProto;
 import protobuf.friend.FriendPutProto;
@@ -8,13 +9,15 @@ import protobuf.friend.FriendPutProto;
 @Component
 public class FriendRequestValidator {
   public void createValidate(FriendPostProto friendPostProto) {
-    if (friendPostProto.getNicknamesCount() == 0 || !friendPostProto.hasRelationship()) {
+    if (friendPostProto.getNicknamesCount() == 0
+        || StringUtils.isNotBlank(friendPostProto.getRelationship())) {
       onValidateErrors(friendPostProto);
     }
   }
 
   public void updateValidate(FriendPutProto friendPutProto) {
-    if (!friendPutProto.hasNickname() || !friendPutProto.hasRelationship()) {
+    if (StringUtils.isNotBlank(friendPutProto.getNickname())
+        || StringUtils.isNotBlank(friendPutProto.getRelationship())) {
       onValidateErrors(friendPutProto);
     }
   }
