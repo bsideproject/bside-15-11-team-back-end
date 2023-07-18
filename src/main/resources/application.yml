@@ -36,7 +36,7 @@ spring:
     activate:
       on-profile: local
 cors:
-  origins: '*'
+  origins: *
 server:
   port: 443
   ssl:
@@ -55,7 +55,8 @@ spring:
     import:
       - secret/ssl-info.yml
 cors:
-  origins: www.byeoljachui.com
+#  origins: www.byeoljachui.com
+  origins: *
 server:
   port: 443
   ssl:
