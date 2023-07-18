@@ -57,7 +57,8 @@ public class RelationshipPutHandler extends AbstractSignedTransactionalHandler {
         )
         .switchIfEmpty(
             ServerResponse
-                .noContent()
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
                 .build()
         );
   }

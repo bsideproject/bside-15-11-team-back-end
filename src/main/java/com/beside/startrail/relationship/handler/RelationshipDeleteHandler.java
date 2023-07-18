@@ -43,7 +43,8 @@ public class RelationshipDeleteHandler extends AbstractSignedHandler {
                 .bodyValue(body))
         .switchIfEmpty(
             ServerResponse
-                .noContent()
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
                 .build()
         );
   }

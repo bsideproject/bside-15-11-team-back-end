@@ -62,7 +62,8 @@ public class RelationshipGetByFriendSequencehandler extends AbstractSignedHandle
         )
         .switchIfEmpty(
             ServerResponse
-                .noContent()
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
                 .build()
         );
   }

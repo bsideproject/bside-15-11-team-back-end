@@ -45,7 +45,8 @@ public class RelationshipGetBySequenceHandler extends AbstractSignedHandler {
         )
         .switchIfEmpty(
             ServerResponse
-                .noContent()
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
                 .build()
         );
   }
