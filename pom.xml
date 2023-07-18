@@ -130,7 +130,10 @@
                             <includeDirectories>
                                 <include>src/main/protobuf/common</include>
                                 <include>src/main/protobuf/common/type</include>
-                                <include>src/main/protobuf/friend</include>
+<!--                                <include>src/main/protobuf/friend</include>-->
+<!--                                <include>src/main/protobuf/relationship</include>-->
+<!--                                <include>src/main/protobuf/sign</include>-->
+<!--                                <include>src/main/protobuf/user</include>-->
                             </includeDirectories>
                             <type>java</type>
                         </configuration>

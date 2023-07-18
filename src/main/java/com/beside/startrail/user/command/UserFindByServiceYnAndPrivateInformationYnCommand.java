@@ -10,32 +10,37 @@ import reactor.core.publisher.Flux;
 
 @EqualsAndHashCode
 @Getter
-public class UserFindCommand {
-  private final YnType allowPrivateInformationYn;
+public class UserFindByServiceYnAndPrivateInformationYnCommand {
+  private final YnType serviceYn;
+  private final YnType privateInformationYn;
   private final YnType useYn;
   private final LocalDate from;
   private final LocalDate to;
   private Flux<User> result;
 
-  public UserFindCommand(
-      YnType allowPrivateInformationYn,
+  public UserFindByServiceYnAndPrivateInformationYnCommand(
+      YnType serviceYn,
+      YnType privateInformationYn,
       YnType useYn,
       LocalDate from,
       LocalDate to
   ) {
-    this.allowPrivateInformationYn = allowPrivateInformationYn;
+    this.serviceYn = serviceYn;
+    this.privateInformationYn = privateInformationYn;
     this.useYn = useYn;
     this.from = from;
     this.to = to;
   }
 
   public Flux<User> execute(UserRepository userRepository) {
-    result = userRepository.findByAllowPrivateInformationYnAndUseYnAndModifiedDateIsBetween(
-        allowPrivateInformationYn,
-        useYn,
-        from.atStartOfDay(),
-        to.atStartOfDay()
-    );
+    result =
+        userRepository.findByAllowInformation_ServiceYnAndAllowInformation_PrivateInformationYnAndUseYn(
+            serviceYn,
+            privateInformationYn,
+            useYn,
+            from.atStartOfDay(),
+            to.atStartOfDay()
+        );
 
     return result;
   }

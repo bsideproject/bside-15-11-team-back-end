@@ -14,36 +14,46 @@ public class UserInformationProtoUtil {
 
   public static UserInformationProto toUserInformationProto(UserInformation userInformation) {
     if (Objects.isNull(userInformation)) {
-      return null;
+      return UserInformationProto
+          .newBuilder()
+          .clear()
+          .build();
     }
 
-    return UserInformationProto.newBuilder()
-        .setProfileNickname(userInformation.getProfileNickname())
-        .setProfileImageLink(userInformation.getProfileImageUrl())
-        .setSexType(
-            SexTypeProto.valueOf(userInformation.getSexType().name())
-        )
-        .setAgeRangeType(
-            AgeRangeTypeProto.valueOf(userInformation.getAgeRangeType().name())
-        )
-        .setBirth(DateProtoUtil.toDate(userInformation.getBirth()))
+    UserInformationProto.Builder builder = UserInformationProto
+        .newBuilder()
+        .clear();
+
+    if (Objects.nonNull(userInformation.getProfileNickname())) {
+      builder.setProfileNickname(userInformation.getProfileNickname());
+    }
+    if (Objects.nonNull(userInformation.getProfileImageUrl())) {
+      builder.setProfileImageLink(userInformation.getProfileImageUrl());
+    }
+    if (Objects.nonNull(userInformation.getSexType())) {
+      builder.setSexType(SexTypeProto.valueOf(userInformation.getSexType().name()));
+    }
+    if (Objects.nonNull(userInformation.getAgeRangeType())) {
+      builder.setAgeRangeType(AgeRangeTypeProto.valueOf(userInformation.getAgeRangeType().name()));
+    }
+    if (Objects.nonNull(userInformation.getBirth())) {
+      builder.setBirth(DateProtoUtil.toDate(userInformation.getBirth()));
+    }
+
+    return builder
         .build();
   }
 
   public static UserInformation toUserInformation(UserInformationProto userInformationProto) {
-    if (Objects.isNull(userInformationProto)) {
+    if (Objects.isNull(userInformationProto) || !userInformationProto.isInitialized()) {
       return null;
     }
 
     return UserInformation.builder()
         .profileNickname(userInformationProto.getProfileNickname())
         .profileImageUrl(userInformationProto.getProfileImageLink())
-        .sexType(
-            SexType.valueOf(userInformationProto.getSexType().name())
-        )
-        .ageRangeType(
-            AgeRangeType.valueOf(userInformationProto.getAgeRangeType().name())
-        )
+        .sexType(SexType.valueOf(userInformationProto.getSexType().name()))
+        .ageRangeType(AgeRangeType.valueOf(userInformationProto.getAgeRangeType().name()))
         .birth(DateProtoUtil.toLocalDateTime(userInformationProto.getBirth()))
         .build();
   }

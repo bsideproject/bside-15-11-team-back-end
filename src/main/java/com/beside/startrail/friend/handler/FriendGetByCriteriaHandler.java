@@ -42,8 +42,9 @@ public class FriendGetByCriteriaHandler extends AbstractSignedHandler {
   }
 
   private Mono<FriendGetCriteriaProto> makeCriteriaParams(ServerRequest request) {
-    FriendGetCriteriaProto.Builder friendSearchCriteriaBuilder =
-        FriendGetCriteriaProto.newBuilder();
+    FriendGetCriteriaProto.Builder friendSearchCriteriaBuilder = FriendGetCriteriaProto
+        .newBuilder()
+        .clear();
 
     request.queryParams()
         .forEach((key, value) -> {

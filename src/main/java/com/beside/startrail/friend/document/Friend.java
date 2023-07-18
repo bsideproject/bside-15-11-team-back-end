@@ -13,32 +13,32 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Document(collection = "friend")
 public class Friend {
-    @Id
-    private final String sequence;
-    private final String userSequence;
+  @Id
+  private final String sequence;
+  private final String userSequence;
 
-    private final String nickname;
-    private final String relationship;
-    private final Birth birth;
-    private final String memo;
+  private final String nickname;
+  private final String relationship;
+  private final Birth birth;
+  private final String memo;
 
-    @Builder.Default
-    private final YnType useYn = YnType.Y;
+  @Builder.Default
+  private final YnType useYn = YnType.Y;
 
-    @CreatedDate
-    private final LocalDateTime createdDate;
-    @LastModifiedDate
-    private final LocalDateTime modifiedDate;
+  @CreatedDate
+  private final LocalDateTime createdDate;
+  @LastModifiedDate
+  private final LocalDateTime modifiedDate;
 
-    public static Friend from(Friend friend, YnType useYn){
-        return Friend.builder()
-            .sequence(friend.sequence)
-            .userSequence(friend.userSequence)
-            .nickname(friend.nickname)
-            .relationship(friend.relationship)
-            .birth(friend.birth)
-            .memo(friend.memo)
-            .useYn(useYn)
-            .build();
-    }
+  public static Friend from(Friend friend, YnType useYn) {
+    return Friend.builder()
+        .sequence(friend.sequence)
+        .userSequence(friend.userSequence)
+        .nickname(friend.nickname)
+        .relationship(friend.relationship)
+        .birth(friend.birth)
+        .memo(friend.memo)
+        .useYn(useYn)
+        .build();
+  }
 }

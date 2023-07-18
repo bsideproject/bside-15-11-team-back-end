@@ -7,31 +7,42 @@ import protobuf.common.ItemProto;
 import protobuf.common.type.ItemTypeProto;
 
 public class ItemProtoUtil {
-  private ItemProtoUtil() {}
+  private ItemProtoUtil() {
+  }
 
   public static ItemProto toItemProto(Item item) {
     if (Objects.isNull(item)) {
-      return ItemProto.newBuilder().build();
+      return ItemProto
+          .newBuilder()
+          .clear()
+          .build();
     }
 
-    return ItemProto.newBuilder()
-        .setType(
-            ItemTypeProto.valueOf(item.getType().name())
-        )
-        .setName(item.getName())
-        .setImageLink(item.getImageLink())
+    ItemProto.Builder builder = ItemProto
+        .newBuilder()
+        .clear();
+
+    if (Objects.nonNull(item.getType())) {
+      builder.setType(ItemTypeProto.valueOf(item.getType().name()));
+    }
+    if (Objects.nonNull(item.getName())) {
+      builder.setName(item.getName());
+    }
+    if (Objects.nonNull(item.getImageLink())) {
+      builder.setImageLink(item.getImageLink());
+    }
+
+    return builder
         .build();
   }
 
   public static Item toItem(ItemProto itemProto) {
-    if (Objects.isNull(itemProto)) {
+    if (Objects.isNull(itemProto) || !itemProto.isInitialized()) {
       return null;
     }
 
     return Item.builder()
-        .type(
-            ItemType.valueOf(itemProto.getType().name())
-        )
+        .type(ItemType.valueOf(itemProto.getType().name()))
         .name(itemProto.getName())
         .imageLink(itemProto.getImageLink())
         .build();

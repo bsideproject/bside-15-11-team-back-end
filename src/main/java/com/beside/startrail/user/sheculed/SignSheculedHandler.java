@@ -1,7 +1,7 @@
 package com.beside.startrail.user.sheculed;
 
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.user.command.UserFindCommand;
+import com.beside.startrail.user.command.UserFindByServiceYnAndPrivateInformationYnCommand;
 import com.beside.startrail.user.command.UserSaveCommand;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
@@ -25,7 +25,8 @@ public class SignSheculedHandler {
   public void deleteUnAllowedUsers() {
     LocalDate now = LocalDate.now();
 
-    new UserFindCommand(
+    new UserFindByServiceYnAndPrivateInformationYnCommand(
+        YnType.N,
         YnType.N,
         YnType.Y,
         now.minusDays(14),

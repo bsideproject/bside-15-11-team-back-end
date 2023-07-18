@@ -12,11 +12,16 @@ public enum KakaoGenderType {
   MALE("male", SexType.MALE),
   FEMALE("female", SexType.FEMALE);
 
-  private final String value;
-  private final SexType sexType;
   private static final Map<String, KakaoGenderType> valueMap =
       Arrays.stream(KakaoGenderType.values())
           .collect(Collectors.toMap(KakaoGenderType::getValue, Function.identity()));
+  private final String value;
+  private final SexType sexType;
+
+  KakaoGenderType(String value, SexType sexType) {
+    this.value = value;
+    this.sexType = sexType;
+  }
 
   public static KakaoGenderType fromValue(String value) {
     if (!valueMap.containsKey(value)) {
@@ -24,11 +29,6 @@ public enum KakaoGenderType {
     }
 
     return valueMap.get(value);
-  }
-
-  KakaoGenderType(String value, SexType sexType) {
-    this.value = value;
-    this.sexType = sexType;
   }
 
 }

@@ -1,5 +1,6 @@
 package com.beside.startrail.common.protocolbuffer.common;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -11,18 +12,33 @@ public class DateProtoUtil {
 
   public static DateProto toDate(LocalDateTime localDateTime) {
     if (Objects.isNull(localDateTime)) {
-      return null;
+      return DateProto
+          .newBuilder()
+          .clear()
+          .build();
     }
 
-    return DateProto.newBuilder()
-        .setYear(localDateTime.getYear())
-        .setMonth(localDateTime.getMonthValue())
-        .setDay(localDateTime.getDayOfMonth())
+    return toDate(localDateTime.toLocalDate());
+  }
+
+  public static DateProto toDate(LocalDate localDate) {
+    if (Objects.isNull(localDate)) {
+      return DateProto
+          .newBuilder()
+          .clear()
+          .build();
+    }
+
+    return DateProto
+        .newBuilder()
+        .setYear(localDate.getYear())
+        .setMonth(localDate.getMonthValue())
+        .setDay(localDate.getDayOfMonth())
         .build();
   }
 
   public static LocalDateTime toLocalDateTime(DateProto dateProto) {
-    if (Objects.isNull(dateProto)) {
+    if (Objects.isNull(dateProto) || isInvalidDate(dateProto)) {
       return null;
     }
 
@@ -35,5 +51,11 @@ public class DateProtoUtil {
         minLocalTime.getHour(),
         minLocalTime.getMinute()
     );
+  }
+
+  private static boolean isInvalidDate(DateProto dateProto) {
+    return dateProto.getYear() == 0
+        || dateProto.getMonth() == 0
+        || dateProto.getDay() == 0;
   }
 }

@@ -6,6 +6,7 @@ import com.beside.startrail.sign.kakao.model.KakaoAccessTokenResponse;
 import com.beside.startrail.sign.kakao.model.KakaoApiResponse;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.document.UserId;
+import com.beside.startrail.user.model.AllowInformation;
 import com.beside.startrail.user.model.UserInformation;
 import com.beside.startrail.user.type.OauthServiceType;
 import java.util.UUID;
@@ -96,7 +97,11 @@ public class KakaoSignCommand {
                                 .build()
                         )
                         .useYn(YnType.Y)
-                        .allowPrivateInformationYn(YnType.N)
+                        .allowInformation(AllowInformation.builder()
+                            .serviceYn(YnType.N)
+                            .privateInformationYn(YnType.N)
+                            .eventMarketingYn(YnType.N)
+                            .build())
                         .build()
                 )
         );

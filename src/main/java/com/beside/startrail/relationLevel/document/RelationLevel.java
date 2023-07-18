@@ -17,28 +17,28 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document(collection = "relationLevel")
 public class RelationLevel {
-    @Id
-    private String sequence;
+  @Id
+  private String sequence;
 
-    private String title;
-    private String description;
-    private Integer level;
-    private Integer countFrom;
-    private Integer countTo;
+  private String title;
+  private String description;
+  private Integer level;
+  private Integer countFrom;
+  private Integer countTo;
 
-    @Builder.Default
-    private YnType useYn = YnType.Y;
+  @Builder.Default
+  private YnType useYn = YnType.Y;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
+  @CreatedDate
+  private LocalDateTime createdAt;
+  @LastModifiedDate
+  private LocalDateTime modifiedAt;
 
-    public static RelationLevel makeDefault() {
-        return RelationLevel.builder()
-            .level(-1)
-            .title("알 수 없는 블랙홀")
-            .description("알 수 없는 친구")
-            .build();
-    }
+  public static RelationLevel makeDefault() {
+    return RelationLevel.builder()
+        .level(-1)
+        .title("알 수 없는 블랙홀")
+        .description("알 수 없는 친구")
+        .build();
+  }
 }

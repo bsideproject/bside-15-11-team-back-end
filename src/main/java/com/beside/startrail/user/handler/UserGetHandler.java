@@ -1,22 +1,22 @@
-package com.beside.startrail.sign.common.handler;
+package com.beside.startrail.user.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
-import com.beside.startrail.common.type.YnType;
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.user.UserProtoUtil;
 import com.beside.startrail.user.command.UserFindBySequenceCommand;
-import com.beside.startrail.user.command.UserSaveCommand;
-import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Component
-public class SignAllowHandler extends AbstractSignedTransactionalHandler {
+public class UserGetHandler extends AbstractSignedTransactionalHandler {
   private final UserRepository userRepository;
 
-  public SignAllowHandler(
+  public UserGetHandler(
       @Value("${sign.attributeName}") String attributeName,
       UserRepository userRepository
   ) {
@@ -26,20 +26,18 @@ public class SignAllowHandler extends AbstractSignedTransactionalHandler {
 
   @Override
   protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
-    String sequence = super.jwtPayloadProto.getSequence();
-
-    return new UserFindBySequenceCommand(sequence)
+    return new UserFindBySequenceCommand(jwtPayloadProto.getSequence())
         .execute(userRepository)
-        .map(user -> new UserSaveCommand(User.fromAllowPrivateInformationYn(user, YnType.Y)))
-        .flatMap(userSaveCommand -> userSaveCommand.execute(userRepository))
-        .flatMap(__ ->
+        .map(UserProtoUtil::toUserResponseProto)
+        .flatMap(userResponseProto ->
             ServerResponse
                 .ok()
-                .build()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(ProtocolBufferUtil.print(userResponseProto))
         )
         .switchIfEmpty(
             ServerResponse
-                .badRequest()
+                .noContent()
                 .build()
         );
   }

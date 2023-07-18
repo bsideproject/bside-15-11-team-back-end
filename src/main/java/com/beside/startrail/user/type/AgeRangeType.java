@@ -3,6 +3,7 @@ package com.beside.startrail.user.type;
 import java.time.LocalDate;
 
 public enum AgeRangeType {
+  NONE(-1),
   UNDER_TEEN(0),
   TEENS(10),
   TWENTIES(20),

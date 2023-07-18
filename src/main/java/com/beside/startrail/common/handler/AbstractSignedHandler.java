@@ -10,9 +10,8 @@ import protobuf.sign.JwtPayloadProto;
 import reactor.core.publisher.Mono;
 
 public abstract class AbstractSignedHandler implements HandlerFunction<ServerResponse> {
-  protected JwtPayloadProto jwtPayloadProto;
-
   private final String attributeName;
+  protected JwtPayloadProto jwtPayloadProto;
 
   public AbstractSignedHandler(String attributeName) {
     this.attributeName = attributeName;

@@ -4,7 +4,6 @@ import com.beside.startrail.common.service.JwtProtoService;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.sign.kakao.command.KakaoSignCommand;
 import com.beside.startrail.user.command.UserSaveCommand;
-import com.beside.startrail.user.document.UserId;
 import com.beside.startrail.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
@@ -58,10 +57,7 @@ public class KakaoSignHandler implements HandlerFunction<ServerResponse> {
                 .flatMap(KakaoSignCommand::execute)
                 .flatMap(user ->
                     userRepository.findUserByUserIdAndUseYn(
-                            UserId.builder()
-                                .oauthServiceType(user.getUserId().getOauthServiceType())
-                                .serviceUserId(user.getUserId().getServiceUserId())
-                                .build(),
+                            user.getUserId(),
                             YnType.Y
                         )
                         .switchIfEmpty(

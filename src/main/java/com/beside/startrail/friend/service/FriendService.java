@@ -11,6 +11,7 @@ import com.beside.startrail.relationship.model.RelationshipCountResult;
 import com.beside.startrail.relationship.repository.CustomRelationshipRepository;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import java.util.List;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import protobuf.common.LevelInformationProto;
@@ -55,8 +56,13 @@ public class FriendService {
       String userSequence,
       FriendPostProto friendCreateDto
   ) {
-    return friendRepository.saveAll(
-            FriendProtoUtil.postProtoToDocuments(userSequence, friendCreateDto))
+    List<Friend> friends = FriendProtoUtil.toFriends(userSequence, friendCreateDto);
+
+    if (Objects.isNull(friends)) {
+      return Mono.just(List.of());
+    }
+
+    return friendRepository.saveAll(friends)
         .flatMap(friend -> Mono.just(FriendProtoUtil.toFriendResponseProto(friend)))
         .collectList();
   }
@@ -66,7 +72,7 @@ public class FriendService {
       FriendPutProto friendPutProto
   ) {
     return getVerifiedFriend(userSequence, sequence)
-        .flatMap(friend -> Mono.just(FriendProtoUtil.updateDtoToDocument(friend, friendPutProto)))
+        .flatMap(friend -> Mono.justOrEmpty(FriendProtoUtil.toFriends(friend, friendPutProto)))
         .flatMap(friendRepository::save)
         .flatMap(friend -> getFriendLevelInfo(userSequence, friend.getSequence())
             .map(levelInformation ->
@@ -141,14 +147,22 @@ public class FriendService {
       RelationshipCountResult relationshipCountResult,
       RelationLevel relationLevel
   ) {
-    return LevelInformationProto.newBuilder()
+    LevelInformationProto.Builder builder = LevelInformationProto
+        .newBuilder()
+        .clear()
         .setTotal(relationshipCountResult.getTotal())
         .setGiven(relationshipCountResult.getGiven())
         .setTaken(relationshipCountResult.getTaken())
-        .setLevel(relationLevel.getLevel())
-        .setTitle(relationLevel.getTitle())
-        .setDescription(relationLevel.getDescription())
-        .build();
+        .setLevel(relationLevel.getLevel());
+
+    if (Objects.nonNull(relationLevel.getTitle())) {
+      builder.setTitle(relationLevel.getTitle());
+    }
+    if (Objects.nonNull(relationLevel.getDescription())) {
+      builder.setDescription(relationLevel.getDescription());
+    }
+
+    return builder.build();
   }
 
   private FriendResponseProto setLevelInfo(

@@ -11,6 +11,8 @@ import protobuf.common.RelationshipRequestProto;
 import protobuf.common.RelationshipResponseProto;
 import protobuf.common.type.RelationshipTypeProto;
 import protobuf.relationship.RelationshipCountResponseProto;
+import protobuf.relationship.RelationshipPutRequestProto;
+import protobuf.relationship.RelationshipPutResponseProto;
 
 public class RelationshipProtoUtil {
   private RelationshipProtoUtil() {
@@ -18,21 +20,41 @@ public class RelationshipProtoUtil {
 
   public static RelationshipResponseProto toRelationshipResponseProto(Relationship relationship) {
     if (Objects.isNull(relationship)) {
-      return RelationshipResponseProto.newBuilder().build();
+      return RelationshipResponseProto
+          .newBuilder()
+          .clear()
+          .build();
     }
 
-    return RelationshipResponseProto.newBuilder()
-        .setSequence(relationship.getSequence())
-        .setType(
-            RelationshipTypeProto.valueOf(relationship.getType().name())
-        )
-        .setEvent(relationship.getEvent())
-        .setDate(DateProtoUtil.toDate(relationship.getDate()))
-        .setCreateDate(DateProtoUtil.toDate(relationship.getCreateDate()))
-        .setModifyDate(DateProtoUtil.toDate(relationship.getModifyDate()))
-        .setItem(ItemProtoUtil.toItemProto(relationship.getItem()))
-        .setMemo(relationship.getMemo())
-        .build();
+    RelationshipResponseProto.Builder builder = RelationshipResponseProto
+        .newBuilder()
+        .clear();
+
+    if (Objects.nonNull(relationship.getSequence())) {
+      builder.setSequence(relationship.getSequence());
+    }
+    if (Objects.nonNull(relationship.getFriendSequence())) {
+      builder.setFriendSequence(relationship.getFriendSequence());
+    }
+    if (Objects.nonNull(relationship.getType())) {
+      builder.setType(
+          RelationshipTypeProto.valueOf(relationship.getType().name())
+      );
+    }
+    if (Objects.nonNull(relationship.getEvent())) {
+      builder.setEvent(relationship.getEvent());
+    }
+    if (Objects.nonNull(relationship.getDate())) {
+      builder.setDate(DateProtoUtil.toDate(relationship.getDate()));
+    }
+    if (Objects.nonNull(relationship.getItem())) {
+      builder.setItem(ItemProtoUtil.toItemProto(relationship.getItem()));
+    }
+    if (Objects.nonNull(relationship.getMemo())) {
+      builder.setMemo(relationship.getMemo());
+    }
+
+    return builder.build();
   }
 
   public static Relationship toRelationship(
@@ -61,10 +83,76 @@ public class RelationshipProtoUtil {
   public static RelationshipCountResponseProto toRelationshipCountResponseProto(
       RelationshipCountResult relationshipCountResult
   ) {
+    if (Objects.isNull(relationshipCountResult)) {
+      return RelationshipCountResponseProto.newBuilder()
+          .clear()
+          .build();
+    }
+
     return RelationshipCountResponseProto.newBuilder()
         .setTotal(relationshipCountResult.getTotal())
         .setGiven(relationshipCountResult.getGiven())
         .setTaken(relationshipCountResult.getTaken())
         .build();
+  }
+
+  public static Relationship toRelationship(
+      RelationshipPutRequestProto relationshipPutRequestProto,
+      String sequence,
+      YnType ynType
+  ) {
+    if (Objects.isNull(relationshipPutRequestProto) ||
+        !relationshipPutRequestProto.isInitialized()) {
+      return null;
+    }
+
+    return Relationship.builder()
+        .userSequence(sequence)
+        .sequence(relationshipPutRequestProto.getSequence())
+        .type(
+            RelationshipType.valueOf(relationshipPutRequestProto.getType().name())
+        )
+        .event(relationshipPutRequestProto.getEvent())
+        .date(DateProtoUtil.toLocalDateTime(relationshipPutRequestProto.getDate()))
+        .item(ItemProtoUtil.toItem(relationshipPutRequestProto.getItem()))
+        .memo(relationshipPutRequestProto.getMemo())
+        .useYn(ynType)
+        .build();
+  }
+
+  public static RelationshipPutResponseProto toRelationshipPutResponseProto(
+      Relationship relationship) {
+    if (Objects.isNull(relationship)) {
+      return RelationshipPutResponseProto.newBuilder()
+          .clear()
+          .build();
+    }
+
+    RelationshipPutResponseProto.Builder builder = RelationshipPutResponseProto
+        .newBuilder()
+        .clear();
+
+    if (Objects.nonNull(relationship.getSequence())) {
+      builder.setSequence(relationship.getSequence());
+    }
+    if (Objects.nonNull(relationship.getType())) {
+      builder.setType(
+          RelationshipTypeProto.valueOf(relationship.getType().name())
+      );
+    }
+    if (Objects.nonNull(relationship.getEvent())) {
+      builder.setEvent(relationship.getEvent());
+    }
+    if (Objects.nonNull(relationship.getDate())) {
+      builder.setDate(DateProtoUtil.toDate(relationship.getDate()));
+    }
+    if (Objects.nonNull(relationship.getItem())) {
+      builder.setItem(ItemProtoUtil.toItemProto(relationship.getItem()));
+    }
+    if (Objects.nonNull(relationship.getMemo())) {
+      builder.setMemo(relationship.getMemo());
+    }
+
+    return builder.build();
   }
 }

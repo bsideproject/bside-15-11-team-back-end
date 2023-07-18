@@ -16,7 +16,8 @@ public interface UserRepository extends ReactiveMongoRepository<User, UserId> {
       YnType useYn
   );
 
-  Flux<User> findByAllowPrivateInformationYnAndUseYnAndModifiedDateIsBetween(
+  Flux<User> findByAllowInformation_ServiceYnAndAllowInformation_PrivateInformationYnAndUseYn(
+      YnType serviceYn,
       YnType privateInformationYn,
       YnType useYn,
       LocalDateTime from,

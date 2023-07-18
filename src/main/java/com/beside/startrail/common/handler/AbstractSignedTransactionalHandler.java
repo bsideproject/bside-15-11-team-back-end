@@ -10,10 +10,10 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import protobuf.sign.JwtPayloadProto;
 import reactor.core.publisher.Mono;
 
-public abstract class AbstractSignedTransactionalHandler implements HandlerFunction<ServerResponse> {
-  protected JwtPayloadProto jwtPayloadProto;
-
+public abstract class AbstractSignedTransactionalHandler
+    implements HandlerFunction<ServerResponse> {
   private final String attributeName;
+  protected JwtPayloadProto jwtPayloadProto;
 
   public AbstractSignedTransactionalHandler(String attributeName) {
     this.attributeName = attributeName;

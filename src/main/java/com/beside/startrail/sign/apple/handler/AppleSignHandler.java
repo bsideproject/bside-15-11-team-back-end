@@ -6,6 +6,7 @@ import com.beside.startrail.sign.apple.service.AppleSignService;
 import com.beside.startrail.user.command.UserSaveCommand;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.document.UserId;
+import com.beside.startrail.user.model.AllowInformation;
 import com.beside.startrail.user.model.UserInformation;
 import com.beside.startrail.user.repository.UserRepository;
 import com.beside.startrail.user.type.OauthServiceType;
@@ -67,15 +68,18 @@ public class AppleSignHandler implements HandlerFunction<ServerResponse> {
                         .build()
                 )
                 .useYn(YnType.Y)
-                .allowPrivateInformationYn(YnType.N)
+                .allowInformation(
+                    AllowInformation.builder()
+                        .serviceYn(YnType.N)
+                        .privateInformationYn(YnType.N)
+                        .eventMarketingYn(YnType.N)
+                        .build()
+                )
                 .build()
         )
         .flatMap(user ->
             userRepository.findUserByUserIdAndUseYn(
-                    UserId.builder()
-                        .oauthServiceType(user.getUserId().getOauthServiceType())
-                        .serviceUserId(user.getUserId().getServiceUserId())
-                        .build(),
+                    user.getUserId(),
                     YnType.Y
                 )
                 .switchIfEmpty(

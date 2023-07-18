@@ -12,11 +12,16 @@ public enum KakaoBirthdayType {
   SOLAR("SOLAR", YnType.N),
   LUNAR("LUNAR", YnType.Y);
 
-  private final String value;
-  private final YnType isLunar;
   private static final Map<String, KakaoBirthdayType> valueMap =
       Arrays.stream(KakaoBirthdayType.values())
           .collect(Collectors.toMap(KakaoBirthdayType::getValue, Function.identity()));
+  private final String value;
+  private final YnType isLunar;
+
+  KakaoBirthdayType(String value, YnType isLunar) {
+    this.value = value;
+    this.isLunar = isLunar;
+  }
 
   public static KakaoBirthdayType fromValue(String value) {
     if (!valueMap.containsKey(value)) {
@@ -24,10 +29,5 @@ public enum KakaoBirthdayType {
     }
 
     return valueMap.get(value);
-  }
-
-  KakaoBirthdayType(String value, YnType isLunar) {
-    this.value = value;
-    this.isLunar = isLunar;
   }
 }
