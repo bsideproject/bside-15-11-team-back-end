@@ -24,9 +24,9 @@ public class User {
   @Builder.Default
   private final YnType useYn = YnType.Y;
   @CreatedDate
-  private final LocalDateTime createdDate;
+  private final LocalDateTime createDate;
   @LastModifiedDate
-  private final LocalDateTime modifiedDate;
+  private final LocalDateTime modifyDate;
   private final AllowInformation allowInformation;
 
   public static User fromUseYn(User user, YnType useYn) {

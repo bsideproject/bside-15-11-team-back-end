@@ -30,9 +30,9 @@ public class RelationLevel {
   private YnType useYn = YnType.Y;
 
   @CreatedDate
-  private LocalDateTime createdAt;
+  private LocalDateTime createDate;
   @LastModifiedDate
-  private LocalDateTime modifiedAt;
+  private LocalDateTime modifyDate;
 
   public static RelationLevel makeDefault() {
     return RelationLevel.builder()

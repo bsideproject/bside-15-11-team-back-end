@@ -26,9 +26,9 @@ public class Friend {
   private final YnType useYn = YnType.Y;
 
   @CreatedDate
-  private final LocalDateTime createdDate;
+  private final LocalDateTime createDate;
   @LastModifiedDate
-  private final LocalDateTime modifiedDate;
+  private final LocalDateTime modifyDate;
 
   public static Friend from(Friend friend, YnType useYn) {
     return Friend.builder()
