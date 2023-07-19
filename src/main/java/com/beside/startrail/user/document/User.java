@@ -28,20 +28,27 @@ public class User {
   @LastModifiedDate
   private final LocalDateTime modifyDate;
   private final AllowInformation allowInformation;
+  private final String withdrawlReason;
 
   public static User fromUseYn(User user, YnType useYn) {
     return User.builder()
         .userId(user.userId)
         .sequence(user.sequence)
         .userInformation(user.userInformation)
-        .allowInformation(
-            AllowInformation.builder()
-                .serviceYn(user.allowInformation.getServiceYn())
-                .privateInformationYn(user.allowInformation.getPrivateInformationYn())
-                .eventMarketingYn(user.allowInformation.getEventMarketingYn())
-                .build()
-        )
+        .allowInformation(user.allowInformation)
         .useYn(useYn)
+        .withdrawlReason(user.getWithdrawlReason())
+        .build();
+  }
+
+  public static User fromReason(User user, String reason) {
+    return User.builder()
+        .userId(user.getUserId())
+        .sequence(user.getSequence())
+        .userInformation(user.getUserInformation())
+        .allowInformation(user.getAllowInformation())
+        .useYn(user.getUseYn())
+        .withdrawlReason(reason)
         .build();
   }
 }

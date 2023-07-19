@@ -1,6 +1,7 @@
 package com.beside.startrail.sign.common.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.friend.command.FriendFindByUserSequenceCommand;
 import com.beside.startrail.friend.command.FriendSaveCommand;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import protobuf.sign.SignWithdrawlRequestProto;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -42,28 +44,42 @@ public class SignWithdrawlHandler extends AbstractSignedTransactionalHandler {
   protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
     String sequence = super.jwtPayloadProto.getSequence();
 
-    return Mono.when(
-            new UserFindBySequenceCommand(sequence)
-                .execute(userRepository)
-                .map(user -> new UserSaveCommand(User.fromUseYn(user, YnType.N)))
-                .flatMap(userSaveCommand -> userSaveCommand.execute(userRepository)),
-            new FriendFindByUserSequenceCommand(sequence)
-                .execute(friendRepository)
-                .map(friend -> new FriendSaveCommand(Friend.from(friend, YnType.N)))
-                .flatMap(friendSaveCommand -> friendSaveCommand.execute(friendRepository)),
-            new RelationshipFindByUserSequenceCommand(sequence)
-                .execute(relationshipRepository)
-                .map(relationship -> new RelationshipSaveCommand(
-                    Relationship.from(relationship, YnType.N))
-                )
-                .flatMap(relationshipSaveCommand ->
-                    relationshipSaveCommand.execute(relationshipRepository)
-                )
+    return serverRequest
+        .bodyToMono(String.class)
+        .flatMap(body ->
+            ProtocolBufferUtil.<SignWithdrawlRequestProto>parse(body,
+                SignWithdrawlRequestProto.newBuilder())
         )
-        .then(
-            ServerResponse
-                .ok()
-                .build()
+        .flatMap(signWithdrawlRequestProto ->
+            Mono.when(
+                    new UserFindBySequenceCommand(sequence)
+                        .execute(userRepository)
+                        .map(user ->
+                            User.fromReason(user, signWithdrawlRequestProto.getWithdrawlReason())
+                        )
+                        .map(user ->
+                            User.fromUseYn(user, YnType.N)
+                        )
+                        .map(UserSaveCommand::new)
+                        .flatMap(userSaveCommand -> userSaveCommand.execute(userRepository)),
+                    new FriendFindByUserSequenceCommand(sequence)
+                        .execute(friendRepository)
+                        .map(friend -> new FriendSaveCommand(Friend.from(friend, YnType.N)))
+                        .flatMap(friendSaveCommand -> friendSaveCommand.execute(friendRepository)),
+                    new RelationshipFindByUserSequenceCommand(sequence)
+                        .execute(relationshipRepository)
+                        .map(relationship -> new RelationshipSaveCommand(
+                            Relationship.from(relationship, YnType.N))
+                        )
+                        .flatMap(relationshipSaveCommand ->
+                            relationshipSaveCommand.execute(relationshipRepository)
+                        )
+                )
+                .then(
+                    ServerResponse
+                        .ok()
+                        .build()
+                )
         );
   }
 }
