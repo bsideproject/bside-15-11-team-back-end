@@ -5,7 +5,6 @@ spring:
       - secret/front-info.yml
       - secret/slack-info.yml
       - secret/jwt-info.yml
-      - secret/oauth-info.yml
   data:
     mongodb:
       uri: mongodb+srv://${mongodb.env.username}:${mongodb.env.password}@${mongodb.env.cluster}.mongodb.net/?retryWrites=true&w=majority
@@ -17,17 +16,8 @@ management:
         include: '*'
 jwt:
   baseKey: ${jwt.baseKey}
-  cookie:
-    name: jwt
 sign:
-  whitePaths: ${oauth.apple.redirectUri}, ${oauth.kakao.redirectUri}
   attributeName: jwt
-oauth:
-  kakao:
-    accessTokenUri: https://kauth.kakao.com/oauth/token
-    apiUri: https://kapi.kakao.com/v2/user/me
-  apple:
-    accessTokenUri: https://appleid.apple.com/auth/token
 
 ---
 
@@ -55,8 +45,7 @@ spring:
     import:
       - secret/ssl-info.yml
 cors:
-#  origins: www.byeoljachui.com
-  origins: '*'
+  origins: www.byeoljachui.com
 server:
   port: 443
   ssl:

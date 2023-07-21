@@ -1,4 +1,4 @@
-package com.beside.startrail.sign.common.handler;
+package com.beside.startrail.sign.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
