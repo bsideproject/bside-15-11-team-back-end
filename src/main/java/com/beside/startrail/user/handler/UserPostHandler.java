@@ -48,7 +48,7 @@ public class UserPostHandler implements HandlerFunction<ServerResponse> {
               .map(result -> !result)
               .filter(Boolean::booleanValue)
               .mapNotNull(__ -> UserProtoUtil.toUser(userPostRequestProto))
-              .map(user -> User.fromSequence(user, UUID.randomUUID().toString()))
+              .<User>map(user -> User.fromSequence(user, UUID.randomUUID().toString()))
               .map(UserSaveCommand::new)
               .flatMap(userSaveCommand -> userSaveCommand.execute(userRepository))
               .map(UserProtoUtil::toUserResponseProto)
