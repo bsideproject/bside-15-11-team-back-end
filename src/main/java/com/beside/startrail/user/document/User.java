@@ -51,4 +51,15 @@ public class User {
         .withdrawlReason(reason)
         .build();
   }
+
+  public static User fromSequence(User user, String sequence) {
+    return User.builder()
+        .userId(user.userId)
+        .sequence(sequence)
+        .userInformation(user.userInformation)
+        .allowInformation(user.allowInformation)
+        .useYn(user.getUseYn())
+        .withdrawlReason(user.getWithdrawlReason())
+        .build();
+  }
 }

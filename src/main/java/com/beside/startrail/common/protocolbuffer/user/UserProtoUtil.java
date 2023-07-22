@@ -5,6 +5,7 @@ import com.beside.startrail.common.protocolbuffer.common.UserInformationProtoUti
 import com.beside.startrail.user.document.User;
 import java.util.Objects;
 import protobuf.user.UserPatchRequestProto;
+import protobuf.user.UserPostRequestProto;
 import protobuf.user.UserResponseProto;
 
 public class UserProtoUtil {
@@ -31,9 +32,25 @@ public class UserProtoUtil {
         .build();
   }
 
-  public static User toUser(
-      UserPatchRequestProto userPatchRequestProto
-  ) {
+  public static User toUser(UserPostRequestProto userPostRequestProto) {
+    if (Objects.isNull(userPostRequestProto) || !userPostRequestProto.isInitialized()) {
+      return null;
+    }
+
+    return User.builder()
+        .userId(UserIdProtoUtil.toUserId(userPostRequestProto.getUserId()))
+        .userInformation(
+            UserInformationProtoUtil.toUserInformation(userPostRequestProto.getUserInformation())
+        )
+        .allowInformation(
+            AllowInformationProtoUtil.toAllowInformation(
+                userPostRequestProto.getAllowInformation()
+            )
+        )
+        .build();
+  }
+
+  public static User toUser(UserPatchRequestProto userPatchRequestProto) {
     if (Objects.isNull(userPatchRequestProto) || !userPatchRequestProto.isInitialized()) {
       return null;
     }

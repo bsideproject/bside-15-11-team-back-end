@@ -1,6 +1,6 @@
 package com.beside.startrail.user.handler;
 
-import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
+import com.beside.startrail.common.handler.AbstractSignedHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.user.UserProtoUtil;
 import com.beside.startrail.user.command.UserFindBySequenceCommand;
@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Component
-public class UserGetHandler extends AbstractSignedTransactionalHandler {
+public class UserGetHandler extends AbstractSignedHandler {
   private final UserRepository userRepository;
 
   public UserGetHandler(
@@ -25,7 +25,7 @@ public class UserGetHandler extends AbstractSignedTransactionalHandler {
   }
 
   @Override
-  protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
+  protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
     return new UserFindBySequenceCommand(jwtPayloadProto.getSequence())
         .execute(userRepository)
         .map(UserProtoUtil::toUserResponseProto)
