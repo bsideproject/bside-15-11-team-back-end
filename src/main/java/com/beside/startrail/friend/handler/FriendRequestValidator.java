@@ -10,14 +10,14 @@ import protobuf.friend.FriendPutProto;
 public class FriendRequestValidator {
   public void createValidate(FriendPostProto friendPostProto) {
     if (friendPostProto.getNicknamesCount() == 0
-        || StringUtils.isNotBlank(friendPostProto.getRelationship())) {
+        || StringUtils.isBlank(friendPostProto.getRelationship())) {
       onValidateErrors(friendPostProto);
     }
   }
 
   public void updateValidate(FriendPutProto friendPutProto) {
-    if (StringUtils.isNotBlank(friendPutProto.getNickname())
-        || StringUtils.isNotBlank(friendPutProto.getRelationship())) {
+    if (StringUtils.isBlank(friendPutProto.getNickname())
+        || StringUtils.isBlank(friendPutProto.getRelationship())) {
       onValidateErrors(friendPutProto);
     }
   }
