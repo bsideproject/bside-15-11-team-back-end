@@ -53,6 +53,18 @@ public class DateProtoUtil {
     );
   }
 
+  public static LocalDate toLocalDate(DateProto dateProto) {
+    if (Objects.isNull(dateProto) || isInvalidDate(dateProto)) {
+      return null;
+    }
+
+    return LocalDate.of(
+        dateProto.getYear(),
+        dateProto.getMonth(),
+        dateProto.getDay()
+    );
+  }
+
   private static boolean isInvalidDate(DateProto dateProto) {
     return dateProto.getYear() == 0
         || dateProto.getMonth() == 0

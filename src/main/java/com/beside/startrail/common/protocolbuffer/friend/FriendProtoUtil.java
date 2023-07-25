@@ -4,11 +4,9 @@ import com.beside.startrail.common.protocolbuffer.common.DateProtoUtil;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.friend.document.Birth;
 import com.beside.startrail.friend.document.Friend;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.springframework.util.ObjectUtils;
 import protobuf.common.BirthProto;
 import protobuf.common.LevelInformationProto;
 import protobuf.common.type.YnTypeProto;
@@ -98,19 +96,13 @@ public class FriendProtoUtil {
   }
 
   public static Birth toBirth(BirthProto birthProto) {
-    if (ObjectUtils.isEmpty(birthProto) || !birthProto.isInitialized()) {
+    if (Objects.isNull(birthProto) || !birthProto.isInitialized()) {
       return null;
     }
 
     return Birth.builder()
         .isLunar(YnType.valueOf(birthProto.getIsLunar().name()))
-        .date(
-            LocalDate.of(
-                birthProto.getDate().getYear(),
-                birthProto.getDate().getMonth(),
-                birthProto.getDate().getDay()
-            )
-        )
+        .date(DateProtoUtil.toLocalDate(birthProto.getDate()))
         .build();
   }
 
