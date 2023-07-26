@@ -3,7 +3,7 @@
     <springProperty scope="context" name="LOG_LEVEL" source="log.level"/>
     <property name="LOG_PATTERN" value="[%level] %d{yy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] - %msg%n"/>
 
-    <logger name="org.springframework.data.mongodb.core" level="debug"/>
+    <logger name="org.springframework.data.mongodb.core" level="${LOG_LEVEL}"/>
 
     <springProfile name="local">
         <include resource="console-appender.xml"/>
