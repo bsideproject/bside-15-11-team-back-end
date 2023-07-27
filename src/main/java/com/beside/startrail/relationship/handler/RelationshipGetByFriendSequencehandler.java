@@ -35,7 +35,6 @@ public class RelationshipGetByFriendSequencehandler extends AbstractSignedHandle
             RelationshipGetRequestProto.newBuilder())
         .map(relationshipGetRequestProto ->
             RelationshipService.getByFriendSequence(
-                super.jwtPayloadProto.getSequence(),
                 relationshipGetRequestProto.getFriendSequence(),
                 SortOrderType.valueOf(relationshipGetRequestProto.getSort().name())
             )

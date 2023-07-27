@@ -45,7 +45,7 @@ public class FriendService {
 
   public Mono<FriendResponseProto> getFriendBySequence(String userSequence, String sequence) {
     return getVerifiedFriend(userSequence, sequence)
-        .flatMap(friend -> getFriendLevelInfo(userSequence, friend.getSequence())
+        .flatMap(friend -> getFriendLevelInfo(friend.getSequence())
             .map(levelInformation ->
                 setLevelInfo(FriendProtoUtil.toFriendResponseProto(friend), levelInformation)
             )
@@ -74,7 +74,7 @@ public class FriendService {
     return getVerifiedFriend(userSequence, sequence)
         .flatMap(friend -> Mono.justOrEmpty(FriendProtoUtil.toFriends(friend, friendPutProto)))
         .flatMap(friendRepository::save)
-        .flatMap(friend -> getFriendLevelInfo(userSequence, friend.getSequence())
+        .flatMap(friend -> getFriendLevelInfo(friend.getSequence())
             .map(levelInformation ->
                 setLevelInfo(FriendProtoUtil.toFriendResponseProto(friend), levelInformation)
             )
@@ -86,8 +86,7 @@ public class FriendService {
         getVerifiedFriend(userSequence, sequence)
             .map(friend -> Friend.from(friend, YnType.N))
             .flatMap(friendRepository::save),
-        relationshipRepository.findAllByUserSequenceAndFriendSequenceAndUseYn(
-                userSequence,
+        relationshipRepository.findAllByFriendSequenceAndUseYn(
                 sequence,
                 YnType.Y
             )
@@ -106,7 +105,7 @@ public class FriendService {
   ) {
     return friendRepository.findFriendsByCriteria(userSequence, friendSearchCriteria)
         .flatMap(friend ->
-            getFriendLevelInfo(userSequence, friend.getSequence())
+            getFriendLevelInfo(friend.getSequence())
                 .map(levelInformation ->
                     setLevelInfo(FriendProtoUtil.toFriendResponseProto(friend), levelInformation)
                 )
@@ -118,11 +117,8 @@ public class FriendService {
         .switchIfEmpty(Mono.error(new IllegalArgumentException("Not Found Friend")));
   }
 
-  private Mono<LevelInformationProto> getFriendLevelInfo(
-      String userSequence,
-      String friendSequence
-  ) {
-    return customRelationshipRepository.countByFriend(userSequence, friendSequence, YnType.Y)
+  private Mono<LevelInformationProto> getFriendLevelInfo(String friendSequence) {
+    return customRelationshipRepository.countByFriendSequenceAndUseYn(friendSequence, YnType.Y)
         .switchIfEmpty(Mono.just(RelationshipCountResult.builder().build()))
         .flatMap(relationshipCountResult ->
             getRelationLevelByCount(relationshipCountResult.getTotal())

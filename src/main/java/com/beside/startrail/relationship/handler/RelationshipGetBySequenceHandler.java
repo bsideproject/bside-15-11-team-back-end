@@ -30,10 +30,7 @@ public class RelationshipGetBySequenceHandler extends AbstractSignedHandler {
     String sequence = serverRequest.pathVariable("sequence");
 
     return RelationshipService
-        .getByUserSequenceAndSequence(
-            super.jwtPayloadProto.getSequence(),
-            sequence
-        )
+        .getByUserSequenceAndSequence(sequence)
         .execute(relationshipRepository)
         .map(RelationshipProtoUtil::toRelationshipResponseProto)
         .map(ProtocolBufferUtil::print)

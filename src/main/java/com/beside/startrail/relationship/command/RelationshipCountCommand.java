@@ -16,7 +16,7 @@ public class RelationshipCountCommand {
   public Mono<RelationshipCountResult> execute(
       CustomRelationshipRepository customRelationshipRepository
   ) {
-    result = customRelationshipRepository.count(
+    result = customRelationshipRepository.countByUserSequenceAndUseYn(
         userSequence,
         YnType.Y);
 

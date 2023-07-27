@@ -5,7 +5,7 @@ import com.beside.startrail.relationship.model.RelationshipCountResult;
 import reactor.core.publisher.Mono;
 
 public interface CustomRelationshipRepository {
-  Mono<RelationshipCountResult> count(String sequence, YnType useYn);
+  Mono<RelationshipCountResult> countByUserSequenceAndUseYn(String sequence, YnType useYn);
 
-  Mono<RelationshipCountResult> countByFriend(String sequence, String friendSequence, YnType useYn);
+  Mono<RelationshipCountResult> countByFriendSequenceAndUseYn(String friendSequence, YnType useYn);
 }

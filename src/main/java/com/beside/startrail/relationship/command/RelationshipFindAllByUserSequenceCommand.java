@@ -5,11 +5,11 @@ import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import reactor.core.publisher.Flux;
 
-public class RelationshipFindByUserSequenceCommand {
+public class RelationshipFindAllByUserSequenceCommand {
   private final String userSequence;
   private Flux<Relationship> result;
 
-  public RelationshipFindByUserSequenceCommand(String userSequence) {
+  public RelationshipFindAllByUserSequenceCommand(String userSequence) {
     this.userSequence = userSequence;
   }
 

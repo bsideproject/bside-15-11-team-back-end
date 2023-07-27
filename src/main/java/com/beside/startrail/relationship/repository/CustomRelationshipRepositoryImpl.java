@@ -20,7 +20,10 @@ public class CustomRelationshipRepositoryImpl implements CustomRelationshipRepos
   }
 
   @Override
-  public Mono<RelationshipCountResult> count(String userSequence, YnType useYn) {
+  public Mono<RelationshipCountResult> countByUserSequenceAndUseYn(
+      String userSequence,
+      YnType useYn
+  ) {
     Aggregation aggregation = Aggregation.newAggregation(
         Aggregation.match(Criteria.where("useYn").is(useYn)),
         Aggregation.match(Criteria.where("userSequence").is(userSequence)),
@@ -44,11 +47,12 @@ public class CustomRelationshipRepositoryImpl implements CustomRelationshipRepos
   }
 
   @Override
-  public Mono<RelationshipCountResult> countByFriend(String userSequence, String friendSequence,
-                                                     YnType useYn) {
+  public Mono<RelationshipCountResult> countByFriendSequenceAndUseYn(
+      String friendSequence,
+      YnType useYn
+  ) {
     Aggregation aggregation = Aggregation.newAggregation(
         Aggregation.match(Criteria.where("useYn").is(useYn)),
-        Aggregation.match(Criteria.where("userSequence").is(userSequence)),
         Aggregation.match(Criteria.where("friendSequence").is(friendSequence)),
         Aggregation.group()
             .count().as("total")

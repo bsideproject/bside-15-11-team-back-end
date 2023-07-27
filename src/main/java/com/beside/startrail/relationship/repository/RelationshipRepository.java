@@ -11,21 +11,18 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface RelationshipRepository extends ReactiveMongoRepository<Relationship, UUID> {
-  Flux<Relationship> findAllByUserSequenceAndFriendSequenceAndUseYn(
-      String userSequence,
+  Flux<Relationship> findAllByFriendSequenceAndUseYn(
       String friendSequence,
       YnType useYn,
       Sort sort
   );
 
-  Flux<Relationship> findAllByUserSequenceAndFriendSequenceAndUseYn(
-      String userSequence,
+  Flux<Relationship> findAllByFriendSequenceAndUseYn(
       String friendSequence,
       YnType useYn
   );
 
-  Mono<Relationship> findOneByUserSequenceAndSequenceAndUseYn(
-      String userSequence,
+  Mono<Relationship> findOneBySequenceAndUseYn(
       String sequence,
       YnType useYn
   );

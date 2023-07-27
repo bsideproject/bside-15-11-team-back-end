@@ -7,7 +7,7 @@ import com.beside.startrail.friend.command.FriendFindByUserSequenceCommand;
 import com.beside.startrail.friend.command.FriendSaveCommand;
 import com.beside.startrail.friend.document.Friend;
 import com.beside.startrail.friend.repository.FriendRepository;
-import com.beside.startrail.relationship.command.RelationshipFindByUserSequenceCommand;
+import com.beside.startrail.relationship.command.RelationshipFindAllByUserSequenceCommand;
 import com.beside.startrail.relationship.command.RelationshipSaveCommand;
 import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
@@ -66,7 +66,7 @@ public class SignWithdrawlHandler extends AbstractSignedTransactionalHandler {
                         .execute(friendRepository)
                         .map(friend -> new FriendSaveCommand(Friend.from(friend, YnType.N)))
                         .flatMap(friendSaveCommand -> friendSaveCommand.execute(friendRepository)),
-                    new RelationshipFindByUserSequenceCommand(sequence)
+                    new RelationshipFindAllByUserSequenceCommand(sequence)
                         .execute(relationshipRepository)
                         .map(relationship -> new RelationshipSaveCommand(
                             Relationship.from(relationship, YnType.N))

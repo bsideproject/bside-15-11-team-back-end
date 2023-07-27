@@ -107,8 +107,9 @@ public class RelationshipProtoUtil {
     }
 
     return Relationship.builder()
-        .userSequence(sequence)
         .sequence(relationshipPutRequestProto.getSequence())
+        .userSequence(sequence)
+        .friendSequence(relationshipPutRequestProto.getFriendSequence())
         .type(
             RelationshipType.valueOf(relationshipPutRequestProto.getType().name())
         )

@@ -17,20 +17,17 @@ public class RelationshipService {
   }
 
   public static RelationshipFindAllByFriendSequenceCommand getByFriendSequence(
-      String userSequence,
       String friendSequence,
       SortOrderType sortOrderType
   ) {
     return new RelationshipFindAllByFriendSequenceCommand(
-        userSequence,
         friendSequence,
         sortOrderType.getSort("date")
     );
   }
 
-  public static RelationshipFindOneBySequenceCommand getByUserSequenceAndSequence(
-      String userSequence, String sequence) {
-    return new RelationshipFindOneBySequenceCommand(userSequence, sequence);
+  public static RelationshipFindOneBySequenceCommand getByUserSequenceAndSequence(String sequence) {
+    return new RelationshipFindOneBySequenceCommand(sequence);
   }
 
   public static RelationshipSaveAllCommand save(List<Relationship> relationships) {
