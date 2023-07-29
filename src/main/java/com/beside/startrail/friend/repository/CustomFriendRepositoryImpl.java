@@ -31,7 +31,6 @@ public class CustomFriendRepositoryImpl implements CustomFriendRepository {
             .orOperator(Criteria.where(NICK_NAME_FILED).regex(keywordReg))
     ).with(Sort.by(Sort.Order.asc(NICK_NAME_FILED)));
 
-    Flux<Friend> friendFlux = reactiveMongoTemplate.find(query, Friend.class);
-    return friendFlux;
+    return reactiveMongoTemplate.find(query, Friend.class);
   }
 }
