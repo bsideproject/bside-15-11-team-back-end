@@ -17,8 +17,8 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import protobuf.common.LevelInformationProto;
-import protobuf.friend.FriendPostProto;
-import protobuf.friend.FriendPutProto;
+import protobuf.friend.FriendPostRequestProto;
+import protobuf.friend.FriendPutRequestProto;
 import protobuf.friend.FriendResponseProto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -55,9 +55,9 @@ public class FriendService {
 
   public Mono<List<FriendResponseProto>> createFriend(
       String userSequence,
-      FriendPostProto friendCreateDto
+      FriendPostRequestProto friendPostRequestProto
   ) {
-    List<Friend> friends = FriendProtoUtil.toFriends(userSequence, friendCreateDto);
+    List<Friend> friends = FriendProtoUtil.toFriends(userSequence, friendPostRequestProto);
 
     if (Objects.isNull(friends)) {
       return Mono.just(List.of());
@@ -70,10 +70,10 @@ public class FriendService {
 
   public Mono<FriendResponseProto> updateFriend(
       String userSequence, String sequence,
-      FriendPutProto friendPutProto
+      FriendPutRequestProto friendPutRequestProto
   ) {
     return getVerifiedFriend(userSequence, sequence)
-        .flatMap(friend -> Mono.justOrEmpty(FriendProtoUtil.toFriends(friend, friendPutProto)))
+        .flatMap(friend -> Mono.justOrEmpty(FriendProtoUtil.toFriends(friend, friendPutRequestProto)))
         .flatMap(friendRepository::save)
         .flatMap(friend -> getFriendLevelInfo(friend.getSequence())
             .map(levelInformation ->
@@ -176,8 +176,10 @@ public class FriendService {
         .build();
   }
 
-  private Flux<FriendResponseProto> sort(Flux<FriendResponseProto> friendResponseProtos,
-                                         String sort) {
+  private Flux<FriendResponseProto> sort(
+      Flux<FriendResponseProto> friendResponseProtos,
+      String sort
+  ) {
     switch (sort) {
       case "level" -> {
         return friendResponseProtos

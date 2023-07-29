@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import protobuf.common.BirthProto;
 import protobuf.common.LevelInformationProto;
 import protobuf.common.type.YnTypeProto;
-import protobuf.friend.FriendPostProto;
-import protobuf.friend.FriendPutProto;
+import protobuf.friend.FriendPostRequestProto;
+import protobuf.friend.FriendPutRequestProto;
 import protobuf.friend.FriendResponseProto;
 
 public class FriendProtoUtil {
@@ -59,19 +59,19 @@ public class FriendProtoUtil {
 
   public static List<Friend> toFriends(
       String userSequence,
-      FriendPostProto friendPostProto
+      FriendPostRequestProto friendPostRequestProto
   ) {
-    if (Objects.isNull(friendPostProto) || !friendPostProto.isInitialized()) {
+    if (Objects.isNull(friendPostRequestProto) || !friendPostRequestProto.isInitialized()) {
       return null;
     }
 
-    return friendPostProto.getNicknamesList().stream()
+    return friendPostRequestProto.getNicknamesList().stream()
         .map(nickname -> Friend.builder()
             .userSequence(userSequence)
             .nickname(nickname)
-            .relationship(friendPostProto.getRelationship())
-            .birth(toBirth(friendPostProto.getBirth()))
-            .memo(friendPostProto.getMemo())
+            .relationship(friendPostRequestProto.getRelationship())
+            .birth(toBirth(friendPostRequestProto.getBirth()))
+            .memo(friendPostRequestProto.getMemo())
             .build()
         )
         .collect(Collectors.toList());
@@ -79,19 +79,19 @@ public class FriendProtoUtil {
 
   public static Friend toFriends(
       Friend friend,
-      FriendPutProto friendPutProto
+      FriendPutRequestProto friendPutRequestProto
   ) {
-    if (Objects.isNull(friendPutProto) || !friendPutProto.isInitialized()) {
+    if (Objects.isNull(friendPutRequestProto) || !friendPutRequestProto.isInitialized()) {
       return null;
     }
 
     return Friend.builder()
         .sequence(friend.getSequence())
         .userSequence(friend.getUserSequence())
-        .nickname(friendPutProto.getNickname())
-        .relationship(friendPutProto.getRelationship())
-        .birth(toBirth(friendPutProto.getBirth()))
-        .memo(friendPutProto.getMemo())
+        .nickname(friendPutRequestProto.getNickname())
+        .relationship(friendPutRequestProto.getRelationship())
+        .birth(toBirth(friendPutRequestProto.getBirth()))
+        .memo(friendPutRequestProto.getMemo())
         .build();
   }
 

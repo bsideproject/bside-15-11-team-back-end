@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.friend.FriendPutProto;
+import protobuf.friend.FriendPutRequestProto;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -32,7 +32,7 @@ public class FriendPutHandler extends AbstractSignedTransactionalHandler {
 
     return serverRequest.bodyToMono(String.class)
         .flatMap(
-            body -> ProtocolBufferUtil.<FriendPutProto>parse(body, FriendPutProto.newBuilder()))
+            body -> ProtocolBufferUtil.<FriendPutRequestProto>parse(body, FriendPutRequestProto.newBuilder()))
         .doOnNext(friendValidator::updateValidate)
         .flatMap(body ->
             friendService.updateFriend(super.jwtPayloadProto.getSequence(), sequence, body)

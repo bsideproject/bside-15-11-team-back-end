@@ -8,14 +8,14 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.friend.FriendGetCriteriaProto;
+import protobuf.friend.FriendGetRequestProto;
 import reactor.core.publisher.Mono;
 
 @Component
-public class FriendGetByCriteriaHandler extends AbstractSignedHandler {
+public class FriendGetBySequenceAndKeywordAndSortHandler extends AbstractSignedHandler {
   private final FriendService friendService;
 
-  public FriendGetByCriteriaHandler(
+  public FriendGetBySequenceAndKeywordAndSortHandler(
       @Value("${sign.attributeName}") String attributeName,
       FriendService friendService
   ) {
@@ -43,21 +43,21 @@ public class FriendGetByCriteriaHandler extends AbstractSignedHandler {
         );
   }
 
-  private Mono<FriendGetCriteriaProto> makeCriteriaParams(ServerRequest request) {
-    FriendGetCriteriaProto.Builder friendSearchCriteriaBuilder = FriendGetCriteriaProto
+  private Mono<FriendGetRequestProto> makeCriteriaParams(ServerRequest serverRequest) {
+    FriendGetRequestProto.Builder builder = FriendGetRequestProto
         .newBuilder()
         .clear();
 
-    request.queryParams()
+    serverRequest.queryParams()
         .forEach((key, value) -> {
-          if (Objects.nonNull(FriendGetCriteriaProto.getDescriptor().findFieldByName(key))) {
-            friendSearchCriteriaBuilder.setField(
-                FriendGetCriteriaProto.getDescriptor().findFieldByName(key),
+          if (Objects.nonNull(FriendGetRequestProto.getDescriptor().findFieldByName(key))) {
+            builder.setField(
+                FriendGetRequestProto.getDescriptor().findFieldByName(key),
                 value.stream().findFirst().orElse("")
             );
           }
         });
 
-    return Mono.just(friendSearchCriteriaBuilder.build());
+    return Mono.just(builder.build());
   }
 }

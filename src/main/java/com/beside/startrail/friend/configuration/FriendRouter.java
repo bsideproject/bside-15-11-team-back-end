@@ -1,7 +1,7 @@
 package com.beside.startrail.friend.configuration;
 
 import com.beside.startrail.friend.handler.FriendDeleteHandler;
-import com.beside.startrail.friend.handler.FriendGetByCriteriaHandler;
+import com.beside.startrail.friend.handler.FriendGetBySequenceAndKeywordAndSortHandler;
 import com.beside.startrail.friend.handler.FriendGetBySequenceHandler;
 import com.beside.startrail.friend.handler.FriendPostHandler;
 import com.beside.startrail.friend.handler.FriendPutHandler;
@@ -16,17 +16,18 @@ public class FriendRouter {
   private final FriendPutHandler friendPutHandler;
   private final FriendDeleteHandler friendDeleteHandler;
   private final FriendGetBySequenceHandler friendGetBySequenceHandler;
-  private final FriendGetByCriteriaHandler friendGetByCriteria;
+  private final FriendGetBySequenceAndKeywordAndSortHandler
+      friendGetBySequenceAndKeywordAndSortHandler;
 
   public FriendRouter(
       FriendGetBySequenceHandler friendGetBySequenceHandler,
-      FriendGetByCriteriaHandler friendGetByCriteria,
+      FriendGetBySequenceAndKeywordAndSortHandler friendGetBySequenceAndKeywordAndSortHandler,
       FriendPostHandler friendPostHandler,
       FriendPutHandler friendPutHandler,
       FriendDeleteHandler friendDeleteHandler
   ) {
     this.friendGetBySequenceHandler = friendGetBySequenceHandler;
-    this.friendGetByCriteria = friendGetByCriteria;
+    this.friendGetBySequenceAndKeywordAndSortHandler = friendGetBySequenceAndKeywordAndSortHandler;
     this.friendPostHandler = friendPostHandler;
     this.friendPutHandler = friendPutHandler;
     this.friendDeleteHandler = friendDeleteHandler;
@@ -36,7 +37,7 @@ public class FriendRouter {
   public RouterFunction<?> routerFriend() {
     return RouterFunctions.route()
         .GET("/api/friend/{sequence}", friendGetBySequenceHandler)
-        .GET("/api/friend", friendGetByCriteria)
+        .GET("/api/friend", friendGetBySequenceAndKeywordAndSortHandler)
         .POST("/api/friend", friendPostHandler)
         .PUT("/api/friend/{sequence}", friendPutHandler)
         .DELETE("/api/friend/{sequence}", friendDeleteHandler)
