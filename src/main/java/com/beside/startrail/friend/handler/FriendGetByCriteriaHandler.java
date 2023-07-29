@@ -36,7 +36,8 @@ public class FriendGetByCriteriaHandler extends AbstractSignedHandler {
         )
         .collectList()
         .flatMap(friendDtoList ->
-            ServerResponse.ok()
+            ServerResponse
+                .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(friendDtoList)
         );

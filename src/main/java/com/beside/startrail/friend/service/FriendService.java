@@ -115,23 +115,7 @@ public class FriendService {
                     )
             );
 
-    switch (sort) {
-      case "level" -> {
-        return friendResponseProtos
-            .sort(
-                Comparator.<FriendResponseProto, Integer>comparing(friendResponseProto ->
-                        Optional.ofNullable(friendResponseProto)
-                            .map(FriendResponseProto::getLevelInformation)
-                            .map(LevelInformationProto::getLevel)
-                            .orElse(0)
-                    )
-                    .reversed()
-            );
-      }
-      default -> {
-        return friendResponseProtos;
-      }
-    }
+    return sort(friendResponseProtos, sort);
   }
 
   private Mono<Friend> getVerifiedFriend(String userSequence, String sequence) {
@@ -190,5 +174,33 @@ public class FriendService {
     return friendResponseProto.toBuilder()
         .setLevelInformation(levelInformationProto)
         .build();
+  }
+
+  private Flux<FriendResponseProto> sort(Flux<FriendResponseProto> friendResponseProtos,
+                                         String sort) {
+    switch (sort) {
+      case "level" -> {
+        return friendResponseProtos
+            .sort(
+                Comparator.<FriendResponseProto, Integer>comparing(friendResponseProto ->
+                        Optional.ofNullable(friendResponseProto)
+                            .map(FriendResponseProto::getLevelInformation)
+                            .map(LevelInformationProto::getLevel)
+                            .orElse(0)
+                    )
+                    .reversed()
+            );
+      }
+      default -> {
+        return friendResponseProtos
+            .sort(
+                Comparator.comparing(friendResponseProto ->
+                    Optional.ofNullable(friendResponseProto)
+                        .map(FriendResponseProto::getNickname)
+                        .orElse("")
+                )
+            );
+      }
+    }
   }
 }
