@@ -36,11 +36,18 @@ public class FriendRouter {
   @Bean
   public RouterFunction<?> routerFriend() {
     return RouterFunctions.route()
+        // todo to be changed
         .GET("/api/friend/{sequence}", friendGetBySequenceHandler)
         .GET("/api/friend", friendGetBySequenceAndKeywordAndSortHandler)
         .POST("/api/friend", friendPostHandler)
         .PUT("/api/friend/{sequence}", friendPutHandler)
         .DELETE("/api/friend/{sequence}", friendDeleteHandler)
+
+        .GET("/api/friends/{sequence}", friendGetBySequenceHandler)
+        .GET("/api/friends", friendGetBySequenceAndKeywordAndSortHandler)
+        .POST("/api/friends", friendPostHandler)
+        .PUT("/api/friends/{sequence}", friendPutHandler)
+        .DELETE("/api/friends/{sequence}", friendDeleteHandler)
         .build();
   }
 }
