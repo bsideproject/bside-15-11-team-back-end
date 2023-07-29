@@ -7,12 +7,12 @@ import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.model.RelationshipCountResult;
 import com.beside.startrail.relationship.type.RelationshipType;
 import java.util.Objects;
-import protobuf.common.RelationshipRequestProto;
-import protobuf.common.RelationshipResponseProto;
 import protobuf.common.type.RelationshipTypeProto;
 import protobuf.relationship.RelationshipCountResponseProto;
 import protobuf.relationship.RelationshipPutRequestProto;
 import protobuf.relationship.RelationshipPutResponseProto;
+import protobuf.relationship.RelationshipRequestProto;
+import protobuf.relationship.RelationshipResponseProto;
 
 public class RelationshipProtoUtil {
   private RelationshipProtoUtil() {
@@ -32,9 +32,6 @@ public class RelationshipProtoUtil {
 
     if (Objects.nonNull(relationship.getSequence())) {
       builder.setSequence(relationship.getSequence());
-    }
-    if (Objects.nonNull(relationship.getFriendSequence())) {
-      builder.setFriendSequence(relationship.getFriendSequence());
     }
     if (Objects.nonNull(relationship.getType())) {
       builder.setType(
@@ -135,6 +132,9 @@ public class RelationshipProtoUtil {
 
     if (Objects.nonNull(relationship.getSequence())) {
       builder.setSequence(relationship.getSequence());
+    }
+    if (Objects.nonNull(relationship.getFriendSequence())) {
+      builder.setFriendSequence(relationship.getFriendSequence());
     }
     if (Objects.nonNull(relationship.getType())) {
       builder.setType(
