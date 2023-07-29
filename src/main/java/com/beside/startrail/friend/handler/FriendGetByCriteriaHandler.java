@@ -2,10 +2,10 @@ package com.beside.startrail.friend.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedHandler;
 import com.beside.startrail.friend.service.FriendService;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import protobuf.friend.FriendGetCriteriaProto;
@@ -28,9 +28,10 @@ public class FriendGetByCriteriaHandler extends AbstractSignedHandler {
   protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
     return makeCriteriaParams(serverRequest)
         .flatMapMany(friendSearchCriteria ->
-            friendService.getFriendsByCriteria(
+            friendService.getFriends(
                 super.jwtPayloadProto.getSequence(),
-                friendSearchCriteria
+                friendSearchCriteria.getKeyword(),
+                friendSearchCriteria.getSort()
             )
         )
         .collectList()
@@ -48,7 +49,7 @@ public class FriendGetByCriteriaHandler extends AbstractSignedHandler {
 
     request.queryParams()
         .forEach((key, value) -> {
-          if (!ObjectUtils.isEmpty(FriendGetCriteriaProto.getDescriptor().findFieldByName(key))) {
+          if (Objects.nonNull(FriendGetCriteriaProto.getDescriptor().findFieldByName(key))) {
             friendSearchCriteriaBuilder.setField(
                 FriendGetCriteriaProto.getDescriptor().findFieldByName(key),
                 value.stream().findFirst().orElse("")

@@ -10,12 +10,13 @@ import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.model.RelationshipCountResult;
 import com.beside.startrail.relationship.repository.CustomRelationshipRepository;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import protobuf.common.LevelInformationProto;
-import protobuf.friend.FriendGetCriteriaProto;
 import protobuf.friend.FriendPostProto;
 import protobuf.friend.FriendPutProto;
 import protobuf.friend.FriendResponseProto;
@@ -47,7 +48,7 @@ public class FriendService {
     return getVerifiedFriend(userSequence, sequence)
         .flatMap(friend -> getFriendLevelInfo(friend.getSequence())
             .map(levelInformation ->
-                setLevelInfo(FriendProtoUtil.toFriendResponseProto(friend), levelInformation)
+                setLevelInformation(FriendProtoUtil.toFriendResponseProto(friend), levelInformation)
             )
         );
   }
@@ -76,7 +77,7 @@ public class FriendService {
         .flatMap(friendRepository::save)
         .flatMap(friend -> getFriendLevelInfo(friend.getSequence())
             .map(levelInformation ->
-                setLevelInfo(FriendProtoUtil.toFriendResponseProto(friend), levelInformation)
+                setLevelInformation(FriendProtoUtil.toFriendResponseProto(friend), levelInformation)
             )
         );
   }
@@ -99,17 +100,38 @@ public class FriendService {
     );
   }
 
-  public Flux<FriendResponseProto> getFriendsByCriteria(
+  public Flux<FriendResponseProto> getFriends(
       String userSequence,
-      FriendGetCriteriaProto friendSearchCriteria
+      String nicknameKeyword,
+      String sort
   ) {
-    return friendRepository.findFriendsByCriteria(userSequence, friendSearchCriteria)
-        .flatMap(friend ->
-            getFriendLevelInfo(friend.getSequence())
-                .map(levelInformation ->
-                    setLevelInfo(FriendProtoUtil.toFriendResponseProto(friend), levelInformation)
-                )
-        );
+    Flux<FriendResponseProto> friendResponseProtos =
+        friendRepository.findFriendsByCriteria(userSequence, nicknameKeyword)
+            .flatMap(friend ->
+                getFriendLevelInfo(friend.getSequence())
+                    .map(levelInformation ->
+                        setLevelInformation(FriendProtoUtil.toFriendResponseProto(friend),
+                            levelInformation)
+                    )
+            );
+
+    switch (sort) {
+      case "level" -> {
+        return friendResponseProtos
+            .sort(
+                Comparator.<FriendResponseProto, Integer>comparing(friendResponseProto ->
+                        Optional.ofNullable(friendResponseProto)
+                            .map(FriendResponseProto::getLevelInformation)
+                            .map(LevelInformationProto::getLevel)
+                            .orElse(0)
+                    )
+                    .reversed()
+            );
+      }
+      default -> {
+        return friendResponseProtos;
+      }
+    }
   }
 
   private Mono<Friend> getVerifiedFriend(String userSequence, String sequence) {
@@ -161,7 +183,7 @@ public class FriendService {
     return builder.build();
   }
 
-  private FriendResponseProto setLevelInfo(
+  private FriendResponseProto setLevelInformation(
       FriendResponseProto friendResponseProto,
       LevelInformationProto levelInformationProto
   ) {
