@@ -1,19 +1,23 @@
 package com.beside.startrail.user.command;
 
+import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
 import reactor.core.publisher.Mono;
 
-public class UserSaveCommand {
-  private final User user;
+public class UserFindOneBySequenceCommand {
+  private final String sequence;
   private Mono<User> result;
 
-  public UserSaveCommand(User user) {
-    this.user = user;
+  public UserFindOneBySequenceCommand(String sequence) {
+    this.sequence = sequence;
   }
 
   public Mono<User> execute(UserRepository userRepository) {
-    result = userRepository.save(user);
+    result = userRepository.findBySequenceAndUseYn(
+        sequence,
+        YnType.Y
+    );
 
     return result;
   }

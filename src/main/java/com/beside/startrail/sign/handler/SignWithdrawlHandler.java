@@ -3,16 +3,16 @@ package com.beside.startrail.sign.handler;
 import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.friend.command.FriendFindByUserSequenceCommand;
-import com.beside.startrail.friend.command.FriendSaveCommand;
+import com.beside.startrail.friend.command.FriendFindAllByUserSequenceCommand;
+import com.beside.startrail.friend.command.FriendSaveOneCommand;
 import com.beside.startrail.friend.document.Friend;
 import com.beside.startrail.friend.repository.FriendRepository;
 import com.beside.startrail.relationship.command.RelationshipFindAllByUserSequenceCommand;
-import com.beside.startrail.relationship.command.RelationshipSaveCommand;
+import com.beside.startrail.relationship.command.RelationshipSaveOneCommand;
 import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
-import com.beside.startrail.user.command.UserFindBySequenceCommand;
-import com.beside.startrail.user.command.UserSaveCommand;
+import com.beside.startrail.user.command.UserFindOneBySequenceCommand;
+import com.beside.startrail.user.command.UserSaveOneCommand;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +52,7 @@ public class SignWithdrawlHandler extends AbstractSignedTransactionalHandler {
         )
         .flatMap(signWithdrawlRequestProto ->
             Mono.when(
-                    new UserFindBySequenceCommand(sequence)
+                    new UserFindOneBySequenceCommand(sequence)
                         .execute(userRepository)
                         .map(user ->
                             User.fromReason(user, signWithdrawlRequestProto.getWithdrawlReason())
@@ -60,15 +60,15 @@ public class SignWithdrawlHandler extends AbstractSignedTransactionalHandler {
                         .map(user ->
                             User.fromUseYn(user, YnType.N)
                         )
-                        .map(UserSaveCommand::new)
+                        .map(UserSaveOneCommand::new)
                         .flatMap(userSaveCommand -> userSaveCommand.execute(userRepository)),
-                    new FriendFindByUserSequenceCommand(sequence)
+                    new FriendFindAllByUserSequenceCommand(sequence)
                         .execute(friendRepository)
-                        .map(friend -> new FriendSaveCommand(Friend.from(friend, YnType.N)))
+                        .map(friend -> new FriendSaveOneCommand(Friend.from(friend, YnType.N)))
                         .flatMap(friendSaveCommand -> friendSaveCommand.execute(friendRepository)),
                     new RelationshipFindAllByUserSequenceCommand(sequence)
                         .execute(relationshipRepository)
-                        .map(relationship -> new RelationshipSaveCommand(
+                        .map(relationship -> new RelationshipSaveOneCommand(
                             Relationship.from(relationship, YnType.N))
                         )
                         .flatMap(relationshipSaveCommand ->

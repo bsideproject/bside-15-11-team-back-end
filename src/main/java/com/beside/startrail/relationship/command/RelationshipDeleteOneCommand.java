@@ -5,12 +5,12 @@ import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import reactor.core.publisher.Mono;
 
-public class RelationshipDeleteCommand {
+public class RelationshipDeleteOneCommand {
   private final String userSequence;
   private final String sequence;
   private Mono<Relationship> result;
 
-  public RelationshipDeleteCommand(String userSequence, String sequence) {
+  public RelationshipDeleteOneCommand(String userSequence, String sequence) {
     this.userSequence = userSequence;
     this.sequence = sequence;
   }

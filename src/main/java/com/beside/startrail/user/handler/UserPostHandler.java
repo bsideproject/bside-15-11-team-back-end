@@ -5,7 +5,7 @@ import com.beside.startrail.common.protocolbuffer.user.UserIdProtoUtil;
 import com.beside.startrail.common.protocolbuffer.user.UserProtoUtil;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.user.command.UserExistsByUserIdAndUseYnCommand;
-import com.beside.startrail.user.command.UserSaveCommand;
+import com.beside.startrail.user.command.UserSaveOneCommand;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.document.UserId;
 import com.beside.startrail.user.repository.UserRepository;
@@ -49,7 +49,7 @@ public class UserPostHandler implements HandlerFunction<ServerResponse> {
               .filter(Boolean::booleanValue)
               .mapNotNull(__ -> UserProtoUtil.toUser(userPostRequestProto))
               .<User>map(user -> User.fromSequence(user, UUID.randomUUID().toString()))
-              .map(UserSaveCommand::new)
+              .map(UserSaveOneCommand::new)
               .flatMap(userSaveCommand -> userSaveCommand.execute(userRepository))
               .map(UserProtoUtil::toUserResponseProto)
               .flatMap(userResponseProto ->

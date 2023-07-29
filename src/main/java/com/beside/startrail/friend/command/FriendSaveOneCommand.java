@@ -4,11 +4,11 @@ import com.beside.startrail.friend.document.Friend;
 import com.beside.startrail.friend.repository.FriendRepository;
 import reactor.core.publisher.Mono;
 
-public class FriendSaveCommand {
+public class FriendSaveOneCommand {
   private final Friend friend;
   private Mono<Friend> result;
 
-  public FriendSaveCommand(Friend friend) {
+  public FriendSaveOneCommand(Friend friend) {
     this.friend = friend;
   }
 

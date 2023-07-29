@@ -1,23 +1,19 @@
 package com.beside.startrail.relationship.command;
 
-import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import reactor.core.publisher.Mono;
 
-public class RelationshipFindOneBySequenceCommand {
-  private final String sequence;
+public class RelationshipSaveOneCommand {
+  private final Relationship relationship;
   private Mono<Relationship> result;
 
-  public RelationshipFindOneBySequenceCommand(String sequence) {
-    this.sequence = sequence;
+  public RelationshipSaveOneCommand(Relationship relationship) {
+    this.relationship = relationship;
   }
 
   public Mono<Relationship> execute(RelationshipRepository relationshipRepository) {
-    result = relationshipRepository.findOneBySequenceAndUseYn(
-        sequence,
-        YnType.Y
-    );
+    result = relationshipRepository.save(relationship);
 
     return result;
   }

@@ -5,11 +5,11 @@ import com.beside.startrail.friend.document.Friend;
 import com.beside.startrail.friend.repository.FriendRepository;
 import reactor.core.publisher.Flux;
 
-public class FriendFindByUserSequenceCommand {
+public class FriendFindAllByUserSequenceCommand {
   private final String userSequence;
   private Flux<Friend> result;
 
-  public FriendFindByUserSequenceCommand(String userSequence) {
+  public FriendFindAllByUserSequenceCommand(String userSequence) {
     this.userSequence = userSequence;
   }
 
