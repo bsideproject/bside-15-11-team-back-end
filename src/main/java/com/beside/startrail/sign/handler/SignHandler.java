@@ -28,7 +28,6 @@ public class SignHandler implements HandlerFunction<ServerResponse> {
     this.jwtProtoService = jwtProtoService;
   }
 
-
   @Override
   @NonNull
   public Mono<ServerResponse> handle(ServerRequest serverRequest) {

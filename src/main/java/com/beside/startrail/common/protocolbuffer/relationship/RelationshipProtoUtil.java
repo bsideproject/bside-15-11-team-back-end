@@ -1,22 +1,19 @@
 package com.beside.startrail.common.protocolbuffer.relationship;
 
 import com.beside.startrail.common.protocolbuffer.common.DateProtoUtil;
-import com.beside.startrail.common.protocolbuffer.common.ItemProtoUtil;
 import com.beside.startrail.common.type.YnType;
+import com.beside.startrail.relationship.document.Birth;
 import com.beside.startrail.relationship.document.Relationship;
-import com.beside.startrail.relationship.model.RelationshipCountResult;
-import com.beside.startrail.relationship.type.RelationshipType;
+import java.util.List;
 import java.util.Objects;
-import protobuf.common.type.RelationshipTypeProto;
-import protobuf.relationship.RelationshipCountResponseProto;
+import java.util.stream.Collectors;
+import protobuf.common.BirthProto;
+import protobuf.common.type.YnTypeProto;
+import protobuf.relationship.RelationshipPostRequestProto;
 import protobuf.relationship.RelationshipPutRequestProto;
-import protobuf.relationship.RelationshipPutResponseProto;
-import protobuf.relationship.RelationshipRequestProto;
 import protobuf.relationship.RelationshipResponseProto;
 
 public class RelationshipProtoUtil {
-  private RelationshipProtoUtil() {
-  }
 
   public static RelationshipResponseProto toRelationshipResponseProto(Relationship relationship) {
     if (Objects.isNull(relationship)) {
@@ -33,19 +30,14 @@ public class RelationshipProtoUtil {
     if (Objects.nonNull(relationship.getSequence())) {
       builder.setSequence(relationship.getSequence());
     }
-    if (Objects.nonNull(relationship.getType())) {
-      builder.setType(
-          RelationshipTypeProto.valueOf(relationship.getType().name())
-      );
+    if (Objects.nonNull(relationship.getNickname())) {
+      builder.setNickname(relationship.getNickname());
     }
-    if (Objects.nonNull(relationship.getEvent())) {
-      builder.setEvent(relationship.getEvent());
+    if (Objects.nonNull(relationship.getRelationship())) {
+      builder.setRelationship(relationship.getRelationship());
     }
-    if (Objects.nonNull(relationship.getDate())) {
-      builder.setDate(DateProtoUtil.toDate(relationship.getDate()));
-    }
-    if (Objects.nonNull(relationship.getItem())) {
-      builder.setItem(ItemProtoUtil.toItemProto(relationship.getItem()));
+    if (Objects.nonNull(relationship.getBirth())) {
+      builder.setBirth(toBirthProto(relationship.getBirth()));
     }
     if (Objects.nonNull(relationship.getMemo())) {
       builder.setMemo(relationship.getMemo());
@@ -54,49 +46,30 @@ public class RelationshipProtoUtil {
     return builder.build();
   }
 
-  public static Relationship toRelationship(
-      RelationshipRequestProto relationshipRequestProto,
+  public static List<Relationship> toRelationships(
       String userSequence,
-      YnType useYn
+      RelationshipPostRequestProto relationshipPostRequestProto
   ) {
-    if (Objects.isNull(relationshipRequestProto)) {
+    if (Objects.isNull(relationshipPostRequestProto) ||
+        !relationshipPostRequestProto.isInitialized()) {
       return null;
     }
 
-    return Relationship.builder()
-        .userSequence(userSequence)
-        .friendSequence(relationshipRequestProto.getFriendSequence())
-        .type(
-            RelationshipType.valueOf(relationshipRequestProto.getType().name())
+    return relationshipPostRequestProto.getNicknamesList().stream()
+        .map(nickname -> Relationship.builder()
+            .userSequence(userSequence)
+            .nickname(nickname)
+            .relationship(relationshipPostRequestProto.getRelationship())
+            .birth(toBirth(relationshipPostRequestProto.getBirth()))
+            .memo(relationshipPostRequestProto.getMemo())
+            .build()
         )
-        .event(relationshipRequestProto.getEvent())
-        .date(DateProtoUtil.toLocalDateTime(relationshipRequestProto.getDate()))
-        .item(ItemProtoUtil.toItem(relationshipRequestProto.getItem()))
-        .memo(relationshipRequestProto.getMemo())
-        .useYn(useYn)
-        .build();
+        .collect(Collectors.toList());
   }
 
-  public static RelationshipCountResponseProto toRelationshipCountResponseProto(
-      RelationshipCountResult relationshipCountResult
-  ) {
-    if (Objects.isNull(relationshipCountResult)) {
-      return RelationshipCountResponseProto.newBuilder()
-          .clear()
-          .build();
-    }
-
-    return RelationshipCountResponseProto.newBuilder()
-        .setTotal(relationshipCountResult.getTotal())
-        .setGiven(relationshipCountResult.getGiven())
-        .setTaken(relationshipCountResult.getTaken())
-        .build();
-  }
-
-  public static Relationship toRelationship(
-      RelationshipPutRequestProto relationshipPutRequestProto,
-      String sequence,
-      YnType ynType
+  public static Relationship toRelationships(
+      Relationship friend,
+      RelationshipPutRequestProto relationshipPutRequestProto
   ) {
     if (Objects.isNull(relationshipPutRequestProto) ||
         !relationshipPutRequestProto.isInitialized()) {
@@ -104,54 +77,42 @@ public class RelationshipProtoUtil {
     }
 
     return Relationship.builder()
-        .sequence(relationshipPutRequestProto.getSequence())
-        .userSequence(sequence)
-        .friendSequence(relationshipPutRequestProto.getFriendSequence())
-        .type(
-            RelationshipType.valueOf(relationshipPutRequestProto.getType().name())
-        )
-        .event(relationshipPutRequestProto.getEvent())
-        .date(DateProtoUtil.toLocalDateTime(relationshipPutRequestProto.getDate()))
-        .item(ItemProtoUtil.toItem(relationshipPutRequestProto.getItem()))
+        .sequence(friend.getSequence())
+        .userSequence(friend.getUserSequence())
+        .nickname(relationshipPutRequestProto.getNickname())
+        .relationship(relationshipPutRequestProto.getRelationship())
+        .birth(toBirth(relationshipPutRequestProto.getBirth()))
         .memo(relationshipPutRequestProto.getMemo())
-        .useYn(ynType)
         .build();
   }
 
-  public static RelationshipPutResponseProto toRelationshipPutResponseProto(
-      Relationship relationship) {
-    if (Objects.isNull(relationship)) {
-      return RelationshipPutResponseProto.newBuilder()
+  public static Birth toBirth(BirthProto birthProto) {
+    if (Objects.isNull(birthProto) || !birthProto.isInitialized()) {
+      return null;
+    }
+
+    return Birth.builder()
+        .isLunar(YnType.valueOf(birthProto.getIsLunar().name()))
+        .date(DateProtoUtil.toLocalDate(birthProto.getDate()))
+        .build();
+  }
+
+  private static BirthProto toBirthProto(Birth birth) {
+    if (Objects.isNull(birth)) {
+      return BirthProto.newBuilder()
           .clear()
           .build();
     }
 
-    RelationshipPutResponseProto.Builder builder = RelationshipPutResponseProto
+    BirthProto.Builder builder = BirthProto
         .newBuilder()
         .clear();
 
-    if (Objects.nonNull(relationship.getSequence())) {
-      builder.setSequence(relationship.getSequence());
+    if (Objects.nonNull(birth.getIsLunar())) {
+      builder.setIsLunar(YnTypeProto.valueOf(birth.getIsLunar().name()));
     }
-    if (Objects.nonNull(relationship.getFriendSequence())) {
-      builder.setFriendSequence(relationship.getFriendSequence());
-    }
-    if (Objects.nonNull(relationship.getType())) {
-      builder.setType(
-          RelationshipTypeProto.valueOf(relationship.getType().name())
-      );
-    }
-    if (Objects.nonNull(relationship.getEvent())) {
-      builder.setEvent(relationship.getEvent());
-    }
-    if (Objects.nonNull(relationship.getDate())) {
-      builder.setDate(DateProtoUtil.toDate(relationship.getDate()));
-    }
-    if (Objects.nonNull(relationship.getItem())) {
-      builder.setItem(ItemProtoUtil.toItemProto(relationship.getItem()));
-    }
-    if (Objects.nonNull(relationship.getMemo())) {
-      builder.setMemo(relationship.getMemo());
+    if (Objects.nonNull(birth.getDate())) {
+      builder.setDate(DateProtoUtil.toDate(birth.getDate()));
     }
 
     return builder.build();

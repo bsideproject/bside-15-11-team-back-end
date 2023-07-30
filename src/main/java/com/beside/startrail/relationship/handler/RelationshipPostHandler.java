@@ -2,10 +2,8 @@ package com.beside.startrail.relationship.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
-import com.beside.startrail.common.protocolbuffer.relationship.RelationshipProtoUtil;
-import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationship.service.RelationshipService;
+import com.beside.startrail.relationship.validator.RelationshipRequestValidator;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -17,47 +15,40 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class RelationshipPostHandler extends AbstractSignedTransactionalHandler {
-  private final RelationshipRepository relationshipRepository;
+  private final RelationshipService relationshipService;
+  private final RelationshipRequestValidator relationshipRequestValidator;
 
   public RelationshipPostHandler(
       @Value("${sign.attributeName}") String attributeName,
-      RelationshipRepository relationshipRepository
+      RelationshipService relationshipService,
+      RelationshipRequestValidator relationshipRequestValidator
   ) {
     super(attributeName);
-    this.relationshipRepository = relationshipRepository;
+    this.relationshipService = relationshipService;
+    this.relationshipRequestValidator = relationshipRequestValidator;
   }
 
   @Override
   protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
     return serverRequest
         .bodyToMono(String.class)
-        .flatMap(body ->
-            ProtocolBufferUtil.<RelationshipPostRequestProto>parse(
-                body,
-                RelationshipPostRequestProto.newBuilder()
+        .flatMap(body -> ProtocolBufferUtil.<RelationshipPostRequestProto>parse(
+                body, RelationshipPostRequestProto.newBuilder()
             )
         )
-        .map(RelationshipPostRequestProto::getRelationshipsList)
-        .map(relationshipRequestProtos ->
-            relationshipRequestProtos.stream()
-                .map(relationshipDto ->
-                    RelationshipProtoUtil.toRelationship(
-                        relationshipDto,
-                        super.jwtPayloadProto.getSequence(),
-                        YnType.Y
-                    )
-                )
+        .doOnNext(relationshipRequestValidator::createValidate)
+        .flatMap(friendDto -> relationshipService.create(
+                super.jwtPayloadProto.getSequence(),
+                friendDto
+            )
+        )
+        .map(relationshipResponseProtos ->
+            relationshipResponseProtos.stream()
+                .map(ProtocolBufferUtil::print)
                 .collect(Collectors.toList())
         )
-        .flatMap(relationships -> RelationshipService.save(relationships)
-            .execute(relationshipRepository)
-            .map(RelationshipProtoUtil::toRelationshipResponseProto)
-            .map(ProtocolBufferUtil::print)
-            .collect(Collectors.joining())
-        )
         .flatMap(body ->
-            ServerResponse
-                .ok()
+            ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
         );

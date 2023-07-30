@@ -1,7 +1,7 @@
 package com.beside.startrail.common.protocolbuffer.common;
 
-import com.beside.startrail.relationship.document.Item;
-import com.beside.startrail.relationship.type.ItemType;
+import com.beside.startrail.mind.document.Item;
+import com.beside.startrail.mind.type.ItemType;
 import java.util.Objects;
 import protobuf.common.ItemProto;
 import protobuf.common.type.ItemTypeProto;

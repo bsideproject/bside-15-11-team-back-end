@@ -3,10 +3,10 @@ package com.beside.startrail.sign.handler;
 import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.friend.command.FriendFindAllByUserSequenceCommand;
-import com.beside.startrail.friend.command.FriendSaveOneCommand;
-import com.beside.startrail.friend.document.Friend;
-import com.beside.startrail.friend.repository.FriendRepository;
+import com.beside.startrail.mind.command.MindFindAllByUserSequenceCommand;
+import com.beside.startrail.mind.command.MindSaveOneCommand;
+import com.beside.startrail.mind.document.Mind;
+import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.relationship.command.RelationshipFindAllByUserSequenceCommand;
 import com.beside.startrail.relationship.command.RelationshipSaveOneCommand;
 import com.beside.startrail.relationship.document.Relationship;
@@ -25,14 +25,14 @@ import reactor.core.publisher.Mono;
 @Component
 public class SignWithdrawlHandler extends AbstractSignedTransactionalHandler {
   private final UserRepository userRepository;
-  private final FriendRepository friendRepository;
-  private final RelationshipRepository relationshipRepository;
+  private final RelationshipRepository friendRepository;
+  private final MindRepository relationshipRepository;
 
   public SignWithdrawlHandler(
       @Value("${sign.attributeName}") String attributeName,
       UserRepository userRepository,
-      FriendRepository friendRepository,
-      RelationshipRepository relationshipRepository
+      RelationshipRepository friendRepository,
+      MindRepository relationshipRepository
   ) {
     super(attributeName);
     this.userRepository = userRepository;
@@ -62,14 +62,14 @@ public class SignWithdrawlHandler extends AbstractSignedTransactionalHandler {
                         )
                         .map(UserSaveOneCommand::new)
                         .flatMap(userSaveCommand -> userSaveCommand.execute(userRepository)),
-                    new FriendFindAllByUserSequenceCommand(sequence)
-                        .execute(friendRepository)
-                        .map(friend -> new FriendSaveOneCommand(Friend.from(friend, YnType.N)))
-                        .flatMap(friendSaveCommand -> friendSaveCommand.execute(friendRepository)),
                     new RelationshipFindAllByUserSequenceCommand(sequence)
+                        .execute(friendRepository)
+                        .map(friend -> new RelationshipSaveOneCommand(Relationship.from(friend, YnType.N)))
+                        .flatMap(friendSaveCommand -> friendSaveCommand.execute(friendRepository)),
+                    new MindFindAllByUserSequenceCommand(sequence)
                         .execute(relationshipRepository)
-                        .map(relationship -> new RelationshipSaveOneCommand(
-                            Relationship.from(relationship, YnType.N))
+                        .map(relationship -> new MindSaveOneCommand(
+                            Mind.from(relationship, YnType.N))
                         )
                         .flatMap(relationshipSaveCommand ->
                             relationshipSaveCommand.execute(relationshipRepository)

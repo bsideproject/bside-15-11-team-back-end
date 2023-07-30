@@ -2,8 +2,6 @@ package com.beside.startrail.relationship.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
-import com.beside.startrail.common.protocolbuffer.relationship.RelationshipProtoUtil;
-import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationship.service.RelationshipService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -13,38 +11,27 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Component
-
 public class RelationshipGetBySequenceHandler extends AbstractSignedHandler {
-  private final RelationshipRepository relationshipRepository;
+  private final RelationshipService relationshipService;
 
   public RelationshipGetBySequenceHandler(
       @Value("${sign.attributeName}") String attributeName,
-      RelationshipRepository relationshipRepository
+      RelationshipService relationshipService
   ) {
     super(attributeName);
-    this.relationshipRepository = relationshipRepository;
+    this.relationshipService = relationshipService;
   }
 
   @Override
   protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
     String sequence = serverRequest.pathVariable("sequence");
 
-    return RelationshipService
-        .getByUserSequenceAndSequence(sequence)
-        .execute(relationshipRepository)
-        .map(RelationshipProtoUtil::toRelationshipResponseProto)
-        .map(ProtocolBufferUtil::print)
-        .flatMap(body ->
-            ServerResponse
-                .ok()
+    return relationshipService
+        .getBySequence(super.jwtPayloadProto.getSequence(), sequence)
+        .flatMap(relationshipResponseProto ->
+            ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(body)
-        )
-        .switchIfEmpty(
-            ServerResponse
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
+                .bodyValue(ProtocolBufferUtil.print(relationshipResponseProto))
         );
   }
 }

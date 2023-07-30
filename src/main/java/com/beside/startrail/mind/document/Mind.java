@@ -1,8 +1,10 @@
-package com.beside.startrail.relationship.document;
+package com.beside.startrail.mind.document;
 
 import com.beside.startrail.common.type.YnType;
+import com.beside.startrail.mind.type.MindType;
 import java.time.LocalDateTime;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -11,32 +13,33 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Builder
 @Getter
-@Document(collection = "relationship")
-public class Relationship {
+@Document("mind")
+@EqualsAndHashCode
+public class Mind {
   @Id
   private final String sequence;
   private final String userSequence;
-
-  private final String nickname;
-  private final String relationship;
-  private final Birth birth;
-  private final String memo;
-
-  @Builder.Default
-  private final YnType useYn = YnType.Y;
-
+  private final String relationshipSequence;
+  private final MindType type;
+  private final String event;
+  private final LocalDateTime date;
   @CreatedDate
   private final LocalDateTime createDate;
   @LastModifiedDate
   private final LocalDateTime modifyDate;
+  private final Item item;
+  private final String memo;
+  private final YnType useYn;
 
-  public static Relationship from(Relationship relationship, YnType useYn) {
-    return Relationship.builder()
+  public static Mind from(Mind relationship, YnType useYn) {
+    return Mind.builder()
         .sequence(relationship.sequence)
         .userSequence(relationship.userSequence)
-        .nickname(relationship.nickname)
-        .relationship(relationship.relationship)
-        .birth(relationship.birth)
+        .relationshipSequence(relationship.relationshipSequence)
+        .type(relationship.type)
+        .event(relationship.event)
+        .date(relationship.date)
+        .item(relationship.item)
         .memo(relationship.memo)
         .useYn(useYn)
         .build();

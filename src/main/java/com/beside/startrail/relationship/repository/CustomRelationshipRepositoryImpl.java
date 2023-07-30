@@ -2,17 +2,15 @@ package com.beside.startrail.relationship.repository;
 
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.relationship.document.Relationship;
-import com.beside.startrail.relationship.model.RelationshipCountResult;
-import com.beside.startrail.relationship.type.RelationshipType;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
+import org.springframework.data.mongodb.core.query.Query;
+import reactor.core.publisher.Flux;
 
-@Repository
 public class CustomRelationshipRepositoryImpl implements CustomRelationshipRepository {
+
+  private final String USER_SEQUENCE_FIELD = "userSequence";
+  private final String NICK_NAME_FIELD = "nickname";
   private final ReactiveMongoTemplate reactiveMongoTemplate;
 
   public CustomRelationshipRepositoryImpl(ReactiveMongoTemplate reactiveMongoTemplate) {
@@ -20,56 +18,18 @@ public class CustomRelationshipRepositoryImpl implements CustomRelationshipRepos
   }
 
   @Override
-  public Mono<RelationshipCountResult> countByUserSequenceAndUseYn(
+  public Flux<Relationship> findRelationshipsByCriteria(
       String userSequence,
-      YnType useYn
+      String nicknameKeyword
   ) {
-    Aggregation aggregation = Aggregation.newAggregation(
-        Aggregation.match(Criteria.where("useYn").is(useYn)),
-        Aggregation.match(Criteria.where("userSequence").is(userSequence)),
-        Aggregation.group()
-            .count().as("total")
-            .sum(ConditionalOperators.when(Criteria.where("type").is(RelationshipType.GIVEN))
-                .then(1)
-                .otherwise(0)).as("given")
-            .sum(ConditionalOperators.when(Criteria.where("type").is(RelationshipType.TAKEN))
-                .then(1)
-                .otherwise(0)).as("taken")
+    String keywordReg = ".*" + nicknameKeyword + ".*";
+
+    Query query = new Query(
+        Criteria.where("useYn").is(YnType.Y)
+            .andOperator(Criteria.where(USER_SEQUENCE_FIELD).is(userSequence))
+            .orOperator(Criteria.where(NICK_NAME_FIELD).regex(keywordReg))
     );
 
-    return Mono.from(
-        reactiveMongoTemplate.aggregate(
-            aggregation,
-            Relationship.class,
-            RelationshipCountResult.class
-        )
-    );
-  }
-
-  @Override
-  public Mono<RelationshipCountResult> countByFriendSequenceAndUseYn(
-      String friendSequence,
-      YnType useYn
-  ) {
-    Aggregation aggregation = Aggregation.newAggregation(
-        Aggregation.match(Criteria.where("useYn").is(useYn)),
-        Aggregation.match(Criteria.where("friendSequence").is(friendSequence)),
-        Aggregation.group()
-            .count().as("total")
-            .sum(ConditionalOperators.when(Criteria.where("type").is(RelationshipType.GIVEN))
-                .then(1)
-                .otherwise(0)).as("given")
-            .sum(ConditionalOperators.when(Criteria.where("type").is(RelationshipType.TAKEN))
-                .then(1)
-                .otherwise(0)).as("taken")
-    );
-
-    return Mono.from(
-        reactiveMongoTemplate.aggregate(
-            aggregation,
-            Relationship.class,
-            RelationshipCountResult.class
-        )
-    );
+    return reactiveMongoTemplate.find(query, Relationship.class);
   }
 }
