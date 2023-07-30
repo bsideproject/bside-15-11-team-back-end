@@ -1,6 +1,7 @@
 package com.beside.startrail.friend.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedHandler;
+import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.friend.service.FriendService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -26,10 +27,10 @@ public class FriendGetBySequenceHandler extends AbstractSignedHandler {
     String sequence = serverRequest.pathVariable("sequence");
 
     return friendService.getFriendBySequence(super.jwtPayloadProto.getSequence(), sequence)
-        .flatMap(friend ->
+        .flatMap(friendResponseProto ->
             ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(friend)
+                .bodyValue(ProtocolBufferUtil.print(friendResponseProto))
         );
   }
 }

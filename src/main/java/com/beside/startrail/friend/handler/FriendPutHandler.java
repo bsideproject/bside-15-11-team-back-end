@@ -37,10 +37,11 @@ public class FriendPutHandler extends AbstractSignedTransactionalHandler {
         .flatMap(body ->
             friendService.updateFriend(super.jwtPayloadProto.getSequence(), sequence, body)
         )
-        .flatMap(friendDto ->
+        .map(ProtocolBufferUtil::print)
+        .flatMap(body ->
             ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(friendDto)
+                .bodyValue(body)
         );
   }
 }
