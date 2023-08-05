@@ -25,14 +25,14 @@ import protobuf.sign.SignWithdrawlRequestProto;
 import reactor.core.publisher.Mono;
 
 @Component
-public class SignWithdrawlHandler extends AbstractSignedTransactionalHandler {
+public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
   private final String bucketName;
   private final UserRepository userRepository;
   private final RelationshipRepository friendRepository;
   private final MindRepository relationshipRepository;
   private final ImageRepository imageRepository;
 
-  public SignWithdrawlHandler(
+  public SignWithdrawalHandler(
       @Value("${sign.attributeName}") String attributeName,
       @Value("${objectStorage.bucketName}") String bucketName,
       UserRepository userRepository,
