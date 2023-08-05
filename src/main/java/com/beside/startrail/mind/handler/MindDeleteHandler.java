@@ -7,6 +7,7 @@ import com.beside.startrail.image.repository.ImageRepository;
 import com.beside.startrail.image.service.ImageService;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -45,11 +46,13 @@ public class MindDeleteHandler extends AbstractSignedHandler {
         .execute(mindRepository)
         .doOnNext(mind -> key = mind.getItem().getImageLink())
         .doOnNext(mind ->
-            ImageService.delete(
-                    bucketName,
-                    ImageService.getKey(mind.getItem().getImageLink())
+            Optional.ofNullable(
+                    ImageService.delete(
+                        bucketName,
+                        ImageService.getKey(mind.getItem().getImageLink())
+                    )
                 )
-                .execute(imageRepository)
+                .map(imageDeleteCommand -> imageDeleteCommand.execute(imageRepository))
         )
         .map(MindProtoUtil::toMindResponseProto)
         .map(ProtocolBufferUtil::print)

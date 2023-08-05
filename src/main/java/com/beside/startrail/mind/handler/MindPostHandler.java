@@ -10,6 +10,7 @@ import com.beside.startrail.image.service.ImageService;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
 import io.micrometer.common.util.StringUtils;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -53,20 +54,35 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
         .flatMap(mindRequestProtos ->
             Flux.fromIterable(mindRequestProtos)
                 .flatMap(mindRequestProto ->
-                    ImageService.save(
-                            bucketName,
-                            mindRequestProto.getItem().getImage().toByteArray(),
-                            mindRequestProto.getItem().getName(),
-                            mindRequestProto.getItem().getImageExtension()
+                    Optional.ofNullable(
+                            ImageService.save(
+                                bucketName,
+                                mindRequestProto.getItem().getImage().toByteArray(),
+                                mindRequestProto.getItem().getName(),
+                                mindRequestProto.getItem().getImageExtension()
+                            )
                         )
-                        .execute(imageRepository)
-                        .doOnNext(imageLink -> key = imageLink)
-                        .mapNotNull(imageLink ->
-                            MindProtoUtil.toMindWithImageLink(
-                                mindRequestProto,
-                                imageLink,
-                                super.jwtPayloadProto.getSequence(),
-                                YnType.Y
+                        .map(imageSaveCommand ->
+                            imageSaveCommand
+                                .execute(imageRepository)
+                                .doOnNext(imageLink -> key = imageLink)
+                                .mapNotNull(imageLink ->
+                                    MindProtoUtil.toMindWithImageLink(
+                                        mindRequestProto,
+                                        imageLink,
+                                        super.jwtPayloadProto.getSequence(),
+                                        YnType.Y
+                                    )
+                                )
+                        )
+                        .orElse(
+                            Mono.justOrEmpty(
+                                MindProtoUtil.toMindWithImageLink(
+                                    mindRequestProto,
+                                    "",
+                                    super.jwtPayloadProto.getSequence(),
+                                    YnType.Y
+                                )
                             )
                         )
                 )

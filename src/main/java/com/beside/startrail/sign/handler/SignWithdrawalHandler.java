@@ -17,6 +17,7 @@ import com.beside.startrail.user.command.UserFindOneBySequenceCommand;
 import com.beside.startrail.user.command.UserSaveOneCommand;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -58,12 +59,12 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
             ProtocolBufferUtil.<SignWithdrawalRequestProto>parse(body,
                 SignWithdrawalRequestProto.newBuilder())
         )
-        .flatMap(signWithdrawlRequestProto ->
+        .flatMap(signWithdrawalRequestProto ->
             Mono.when(
                     new UserFindOneBySequenceCommand(sequence)
                         .execute(userRepository)
                         .map(user ->
-                            User.fromReason(user, signWithdrawlRequestProto.getWithdrawalReason())
+                            User.fromReason(user, signWithdrawalRequestProto.getWithdrawalReason())
                         )
                         .map(user ->
                             User.fromUseYn(user, YnType.N)
@@ -82,11 +83,15 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
                     new MindFindAllByUserSequenceCommand(sequence)
                         .execute(relationshipRepository)
                         .flatMap(relationship ->
-                            ImageService.delete(
-                                    bucketName,
-                                    ImageService.getKey(relationship.getItem().getImageLink())
+                            Optional.ofNullable(
+                                    ImageService
+                                        .delete(
+                                            bucketName,
+                                            ImageService.getKey(relationship.getItem().getImageLink())
+                                        )
                                 )
-                                .execute(imageRepository)
+                                .map(imageDeleteCommand -> imageDeleteCommand.execute(imageRepository))
+                                .orElse(Mono.empty())
                                 .thenReturn(
                                     new MindSaveOneCommand(
                                         Mind.from(relationship, YnType.N)

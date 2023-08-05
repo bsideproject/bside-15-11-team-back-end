@@ -10,6 +10,7 @@ import com.beside.startrail.image.service.ImageService;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
 import io.micrometer.common.util.StringUtils;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -48,49 +49,64 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
             )
         )
         .flatMap(mindPutRequestProto ->
-            ImageService.save(
-                    bucketName,
-                    mindPutRequestProto.getItem().getImage().toByteArray(),
-                    mindPutRequestProto.getItem().getName(),
-                    mindPutRequestProto.getItem().getImageExtension()
-                )
-                .execute(imageRepository)
-                .doOnNext(imageLink -> key = imageLink)
-                .mapNotNull(imageLink ->
-                    MindProtoUtil.toMindWithImageLink(
-                        mindPutRequestProto,
-                        mindPutRequestProto.getItem().getImageLink(),
-                        jwtPayloadProto.getSequence(),
-                        YnType.Y
+            Optional.ofNullable(
+                    ImageService.save(
+                        bucketName,
+                        mindPutRequestProto.getItem().getImage().toByteArray(),
+                        mindPutRequestProto.getItem().getName(),
+                        mindPutRequestProto.getItem().getImageExtension()
                     )
                 )
-        )
-        .map(MindService::update)
-        .flatMap(mindSaveOneCommand ->
-            mindSaveOneCommand.execute(mindRepository)
-        )
-        .map(MindProtoUtil::toMindPutResponseProto)
-        .map(ProtocolBufferUtil::print)
-        .flatMap(body ->
-            ServerResponse
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(body)
-        )
-        .switchIfEmpty(
-            ServerResponse
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-        )
-        .onErrorMap(throwable -> {
-              if (!StringUtils.isBlank(key)) {
-                new ImageDeleteCommand(bucketName, key)
-                    .execute(imageRepository);
-              }
+                .map(imageSaveCommand ->
+                    imageSaveCommand
+                        .execute(imageRepository)
+                        .doOnNext(imageLink -> key = imageLink)
+                        .mapNotNull(imageLink ->
+                            MindProtoUtil.toMindWithImageLink(
+                                mindPutRequestProto,
+                                imageLink,
+                                super.jwtPayloadProto.getSequence(),
+                                YnType.Y
+                            )
+                        )
+                )
+                .orElse(
+                    Mono.justOrEmpty(
+                        MindProtoUtil.toMindWithImageLink(
+                            mindPutRequestProto,
+                            "",
+                            super.jwtPayloadProto.getSequence(),
+                            YnType.Y
+                        )
+                    )
+                )
+                .map(MindService::update)
+                .flatMap(mindSaveOneCommand ->
+                    mindSaveOneCommand.execute(mindRepository)
+                )
+                .map(MindProtoUtil::toMindPutResponseProto)
+                .map(ProtocolBufferUtil::print)
+                .flatMap(body ->
+                    ServerResponse
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(body)
+                )
+                .switchIfEmpty(
+                    ServerResponse
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                )
+                .onErrorMap(throwable -> {
+                      if (!StringUtils.isBlank(key)) {
+                        new ImageDeleteCommand(bucketName, key)
+                            .execute(imageRepository);
+                      }
 
-              return throwable;
-            }
+                      return throwable;
+                    }
+                )
         );
   }
 }
