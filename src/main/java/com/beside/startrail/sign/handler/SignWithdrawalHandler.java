@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import protobuf.sign.SignWithdrawlRequestProto;
+import protobuf.sign.SignWithdrawalRequestProto;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -55,15 +55,15 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
     return serverRequest
         .bodyToMono(String.class)
         .flatMap(body ->
-            ProtocolBufferUtil.<SignWithdrawlRequestProto>parse(body,
-                SignWithdrawlRequestProto.newBuilder())
+            ProtocolBufferUtil.<SignWithdrawalRequestProto>parse(body,
+                SignWithdrawalRequestProto.newBuilder())
         )
         .flatMap(signWithdrawlRequestProto ->
             Mono.when(
                     new UserFindOneBySequenceCommand(sequence)
                         .execute(userRepository)
                         .map(user ->
-                            User.fromReason(user, signWithdrawlRequestProto.getWithdrawlReason())
+                            User.fromReason(user, signWithdrawlRequestProto.getWithdrawalReason())
                         )
                         .map(user ->
                             User.fromUseYn(user, YnType.N)
