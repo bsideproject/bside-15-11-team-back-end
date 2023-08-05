@@ -4,8 +4,12 @@ import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.mind.MindProtoUtil;
 import com.beside.startrail.common.type.YnType;
+import com.beside.startrail.image.command.ImageDeleteCommand;
+import com.beside.startrail.image.repository.ImageRepository;
+import com.beside.startrail.image.service.ImageService;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -16,14 +20,21 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class MindPutHandler extends AbstractSignedTransactionalHandler {
+  private final String bucketName;
   private final MindRepository mindRepository;
+  private final ImageRepository imageRepository;
+  private String key;
 
   public MindPutHandler(
       @Value("${sign.attributeName}") String attributeName,
-      MindRepository mindRepository
+      @Value("${objectStorage.bucketName}") String bucketName,
+      MindRepository mindRepository,
+      ImageRepository imageRepository
   ) {
     super(attributeName);
+    this.bucketName = bucketName;
     this.mindRepository = mindRepository;
+    this.imageRepository = imageRepository;
   }
 
   @Override
@@ -36,12 +47,23 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
                 MindPutRequestProto.newBuilder()
             )
         )
-        .mapNotNull(mindPutRequestProto ->
-            MindProtoUtil.toMind(
-                mindPutRequestProto,
-                jwtPayloadProto.getSequence(),
-                YnType.Y
-            )
+        .flatMap(mindPutRequestProto ->
+            ImageService.save(
+                    bucketName,
+                    mindPutRequestProto.getItem().getImage().toByteArray(),
+                    mindPutRequestProto.getItem().getName(),
+                    mindPutRequestProto.getItem().getImageExtension()
+                )
+                .execute(imageRepository)
+                .doOnNext(imageLink -> key = imageLink)
+                .mapNotNull(imageLink ->
+                    MindProtoUtil.toMindWithImageLink(
+                        mindPutRequestProto,
+                        mindPutRequestProto.getItem().getImageLink(),
+                        jwtPayloadProto.getSequence(),
+                        YnType.Y
+                    )
+                )
         )
         .map(MindService::update)
         .flatMap(mindSaveOneCommand ->
@@ -60,6 +82,15 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .build()
+        )
+        .onErrorMap(throwable -> {
+              if (!StringUtils.isBlank(key)) {
+                new ImageDeleteCommand(bucketName, key)
+                    .execute(imageRepository);
+              }
+
+              return throwable;
+            }
         );
   }
 }

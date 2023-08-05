@@ -47,4 +47,16 @@ public class ItemProtoUtil {
         .imageLink(itemProto.getImageLink())
         .build();
   }
+
+  public static Item toItemWithImageLink(ItemProto itemProto, String imageLink) {
+    if (Objects.isNull(itemProto) || !itemProto.isInitialized()) {
+      return null;
+    }
+
+    return Item.builder()
+        .type(ItemType.valueOf(itemProto.getType().name()))
+        .name(itemProto.getName())
+        .imageLink(imageLink)
+        .build();
+  }
 }

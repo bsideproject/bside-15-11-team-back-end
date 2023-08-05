@@ -54,8 +54,9 @@ public class MindProtoUtil {
     return builder.build();
   }
 
-  public static Mind toMind(
+  public static Mind toMindWithImageLink(
       MindRequestProto mindRequestProto,
+      String imageLink,
       String userSequence,
       YnType useYn
   ) {
@@ -71,7 +72,7 @@ public class MindProtoUtil {
         )
         .event(mindRequestProto.getEvent())
         .date(DateProtoUtil.toLocalDateTime(mindRequestProto.getDate()))
-        .item(ItemProtoUtil.toItem(mindRequestProto.getItem()))
+        .item(ItemProtoUtil.toItemWithImageLink(mindRequestProto.getItem(), imageLink))
         .memo(mindRequestProto.getMemo())
         .useYn(useYn)
         .build();
@@ -93,8 +94,9 @@ public class MindProtoUtil {
         .build();
   }
 
-  public static Mind toMind(
+  public static Mind toMindWithImageLink(
       MindPutRequestProto mindPutRequestProto,
+      String imageLink,
       String sequence,
       YnType ynType
   ) {
@@ -112,7 +114,7 @@ public class MindProtoUtil {
         )
         .event(mindPutRequestProto.getEvent())
         .date(DateProtoUtil.toLocalDateTime(mindPutRequestProto.getDate()))
-        .item(ItemProtoUtil.toItem(mindPutRequestProto.getItem()))
+        .item(ItemProtoUtil.toItemWithImageLink(mindPutRequestProto.getItem(), imageLink))
         .memo(mindPutRequestProto.getMemo())
         .useYn(ynType)
         .build();

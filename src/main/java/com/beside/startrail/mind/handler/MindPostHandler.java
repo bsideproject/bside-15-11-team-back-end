@@ -4,8 +4,12 @@ import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.mind.MindProtoUtil;
 import com.beside.startrail.common.type.YnType;
+import com.beside.startrail.image.command.ImageDeleteCommand;
+import com.beside.startrail.image.repository.ImageRepository;
+import com.beside.startrail.image.service.ImageService;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
+import io.micrometer.common.util.StringUtils;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -13,18 +17,26 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import protobuf.mind.MindPostRequestProto;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
 public class MindPostHandler extends AbstractSignedTransactionalHandler {
+  private final String bucketName;
   private final MindRepository mindRepository;
+  private final ImageRepository imageRepository;
+  private String key;
 
   public MindPostHandler(
       @Value("${sign.attributeName}") String attributeName,
-      MindRepository mindRepository
+      @Value("${objectStorage.bucketName}") String bucketName,
+      MindRepository mindRepository,
+      ImageRepository imageRepository
   ) {
     super(attributeName);
+    this.bucketName = bucketName;
     this.mindRepository = mindRepository;
+    this.imageRepository = imageRepository;
   }
 
   @Override
@@ -38,16 +50,27 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
             )
         )
         .map(MindPostRequestProto::getMindsList)
-        .map(mindRequestProtos ->
-            mindRequestProtos.stream()
-                .map(relationshipDto ->
-                    MindProtoUtil.toMind(
-                        relationshipDto,
-                        super.jwtPayloadProto.getSequence(),
-                        YnType.Y
-                    )
+        .flatMap(mindRequestProtos ->
+            Flux.fromIterable(mindRequestProtos)
+                .flatMap(mindRequestProto ->
+                    ImageService.save(
+                            bucketName,
+                            mindRequestProto.getItem().getImage().toByteArray(),
+                            mindRequestProto.getItem().getName(),
+                            mindRequestProto.getItem().getImageExtension()
+                        )
+                        .execute(imageRepository)
+                        .doOnNext(imageLink -> key = imageLink)
+                        .mapNotNull(imageLink ->
+                            MindProtoUtil.toMindWithImageLink(
+                                mindRequestProto,
+                                imageLink,
+                                super.jwtPayloadProto.getSequence(),
+                                YnType.Y
+                            )
+                        )
                 )
-                .collect(Collectors.toList())
+                .collectList()
         )
         .flatMap(minds -> MindService.save(minds)
             .execute(mindRepository)
@@ -60,6 +83,15 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
+        )
+        .onErrorMap(throwable -> {
+              if (!StringUtils.isBlank(key)) {
+                new ImageDeleteCommand(bucketName, key)
+                    .execute(imageRepository);
+              }
+
+              return throwable;
+            }
         );
   }
 }
