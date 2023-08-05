@@ -33,6 +33,7 @@ jobs:
           echo "${{ secrets.JWT_INFO }}" > ./src/main/resources/secret/jwt-info.yml
           echo "${{ secrets.OAUTH_INFO }}" > ./src/main/resources/secret/oauth-info.yml
           echo "${{ secrets.SSL_INFO }}" > ./src/main/resources/secret/ssl-info.yml
+          echo "${{ secrets.OBJECTSTORAGE_INFO }}" > ./src/main/resources/secret/objectstorage-info.yml
           
       # Update Submodule - Protocol Buffer
       - name: Submodule Update
