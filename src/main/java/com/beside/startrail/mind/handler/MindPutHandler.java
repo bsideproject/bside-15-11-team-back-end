@@ -50,7 +50,7 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
         )
         .flatMap(mindPutRequestProto ->
             Optional.ofNullable(
-                    ImageService.save(
+                    ImageService.create(
                         bucketName,
                         mindPutRequestProto.getItem().getImage().toByteArray(),
                         mindPutRequestProto.getItem().getName(),

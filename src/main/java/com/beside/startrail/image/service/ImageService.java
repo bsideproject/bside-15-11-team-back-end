@@ -7,13 +7,13 @@ import io.micrometer.common.util.StringUtils;
 import java.util.UUID;
 
 public class ImageService {
-  public static ImageSaveCommand save(
+  public static ImageSaveCommand create(
       String bucketName,
       byte[] image,
       String imageName,
       String fileExtension
   ) {
-    if (isNotValidSave(image, imageName, fileExtension)) {
+    if (isNotValidToCreate(image, imageName, fileExtension)) {
       return null;
     }
 
@@ -40,7 +40,7 @@ public class ImageService {
     return url.substring(lastIndex + 1);
   }
 
-  private static boolean isNotValidSave(byte[] image, String imageName, String fileExtension) {
+  private static boolean isNotValidToCreate(byte[] image, String imageName, String fileExtension) {
     return Objects.isEmpty(image) || StringUtils.isBlank(imageName) ||
         StringUtils.isBlank(fileExtension);
   }

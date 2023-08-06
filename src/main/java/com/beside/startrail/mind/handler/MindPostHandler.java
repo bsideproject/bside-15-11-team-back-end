@@ -55,7 +55,7 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
             Flux.fromIterable(mindRequestProtos)
                 .flatMap(mindRequestProto ->
                     Optional.ofNullable(
-                            ImageService.save(
+                            ImageService.create(
                                 bucketName,
                                 mindRequestProto.getItem().getImage().toByteArray(),
                                 mindRequestProto.getItem().getName(),
@@ -88,7 +88,7 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
                 )
                 .collectList()
         )
-        .flatMap(minds -> MindService.save(minds)
+        .flatMap(minds -> MindService.create(minds)
             .execute(mindRepository)
             .map(MindProtoUtil::toMindResponseProto)
             .map(ProtocolBufferUtil::print)

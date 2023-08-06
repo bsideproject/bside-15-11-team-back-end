@@ -30,7 +30,7 @@ public class MindService {
     return new MindFindOneBySequenceCommand(sequence);
   }
 
-  public static MindSaveAllCommand save(List<Mind> minds) {
+  public static MindSaveAllCommand create(List<Mind> minds) {
     return new MindSaveAllCommand(minds);
   }
 
