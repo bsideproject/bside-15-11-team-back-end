@@ -17,5 +17,6 @@ public interface RelationshipRepository
       YnType useYn
   );
 
+
   Flux<Relationship> findByUserSequenceAndUseYn(String userSequence, YnType useYn);
 }

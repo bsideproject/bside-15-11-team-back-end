@@ -2,10 +2,11 @@ package com.beside.startrail.relationship.service;
 
 import com.beside.startrail.common.protocolbuffer.relationship.RelationshipProtoUtil;
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.mind.document.Mind;
 import com.beside.startrail.mind.model.MindCountResult;
 import com.beside.startrail.mind.repository.CustomMindRepository;
 import com.beside.startrail.mind.repository.MindRepository;
+import com.beside.startrail.relationship.command.RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand;
+import com.beside.startrail.relationship.command.RelationshipFindOneByUserSequenceAndSequenceAndUseYnCommand;
 import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationshiplevel.document.RelationshipLevel;
@@ -86,24 +87,6 @@ public class RelationshipService {
         );
   }
 
-  public Mono<Void> remove(String userSequence, String sequence) {
-    return Mono.when(
-        getVerified(userSequence, sequence)
-            .map(friend -> Relationship.from(friend, YnType.N))
-            .flatMap(relationshipRepository::save),
-        mindRepository.findAllByRelationshipSequenceAndUseYn(
-                sequence,
-                YnType.Y
-            )
-            .flatMap(mind ->
-                mindRepository.save(Mind.from(
-                    mind,
-                    YnType.N
-                ))
-            )
-    );
-  }
-
   public Flux<RelationshipResponseProto> get(
       String userSequence,
       String nicknameKeyword,
@@ -182,7 +165,7 @@ public class RelationshipService {
         .build();
   }
 
-  private Flux<RelationshipResponseProto> sort(
+  private static Flux<RelationshipResponseProto> sort(
       Flux<RelationshipResponseProto> relationshipResponseProtos,
       String sort
   ) {
@@ -211,5 +194,29 @@ public class RelationshipService {
             );
       }
     }
+  }
+
+  public static RelationshipFindOneByUserSequenceAndSequenceAndUseYnCommand getByUserSequenceAndSequenceAndUseYn(
+      String userSequence,
+      String sequence,
+      YnType useYn
+  ) {
+    return new RelationshipFindOneByUserSequenceAndSequenceAndUseYnCommand(
+        userSequence,
+        sequence,
+        useYn
+    );
+  }
+
+  public static RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand getByUserSequenceAndNicknameKeywordAndUseYn(
+      String userSequence,
+      String nicknameKeyword,
+      YnType useYn
+  ) {
+    return new RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand(
+        userSequence,
+        nicknameKeyword,
+        useYn
+    );
   }
 }

@@ -1,8 +1,8 @@
 package com.beside.startrail.mind.service;
 
 import com.beside.startrail.mind.command.MindCountCommand;
-import com.beside.startrail.mind.command.MindDeleteOneCommand;
 import com.beside.startrail.mind.command.MindFindAllByRelationshipSequenceCommand;
+import com.beside.startrail.mind.command.MindFindAllByRelationshipSequenceWithOrderCommand;
 import com.beside.startrail.mind.command.MindFindOneBySequenceCommand;
 import com.beside.startrail.mind.command.MindSaveAllCommand;
 import com.beside.startrail.mind.command.MindSaveOneCommand;
@@ -16,17 +16,25 @@ public class MindService {
     return new MindCountCommand(userSequence);
   }
 
-  public static MindFindAllByRelationshipSequenceCommand getByRelationshipSequence(
+  public static MindFindAllByRelationshipSequenceWithOrderCommand getByRelationshipSequenceWithOrder(
       String relationshipSequence,
       SortOrderType sortOrderType
   ) {
-    return new MindFindAllByRelationshipSequenceCommand(
+    return new MindFindAllByRelationshipSequenceWithOrderCommand(
         relationshipSequence,
         sortOrderType.getSort("date")
     );
   }
 
-  public static MindFindOneBySequenceCommand getByUserSequenceAndSequence(String sequence) {
+  public static MindFindAllByRelationshipSequenceCommand getByRelationshipSequence(
+      String relationshipSequence
+  ) {
+    return new MindFindAllByRelationshipSequenceCommand(
+        relationshipSequence
+    );
+  }
+
+  public static MindFindOneBySequenceCommand getBySequence(String sequence) {
     return new MindFindOneBySequenceCommand(sequence);
   }
 
@@ -36,12 +44,5 @@ public class MindService {
 
   public static MindSaveOneCommand update(Mind mind) {
     return new MindSaveOneCommand(mind);
-  }
-
-  public static MindDeleteOneCommand removeByUserSequenceAndSequence(
-      String userSequence,
-      String sequence
-  ) {
-    return new MindDeleteOneCommand(userSequence, sequence);
   }
 }

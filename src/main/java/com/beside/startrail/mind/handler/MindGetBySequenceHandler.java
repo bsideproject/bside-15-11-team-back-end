@@ -30,7 +30,7 @@ public class MindGetBySequenceHandler extends AbstractSignedHandler {
     String sequence = serverRequest.pathVariable("sequence");
 
     return MindService
-        .getByUserSequenceAndSequence(sequence)
+        .getBySequence(sequence)
         .execute(mindRepository)
         .map(MindProtoUtil::toMindResponseProto)
         .map(ProtocolBufferUtil::print)

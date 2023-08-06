@@ -3,8 +3,11 @@ package com.beside.startrail.mind.handler;
 import com.beside.startrail.common.handler.AbstractSignedHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.mind.MindProtoUtil;
+import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.image.repository.ImageRepository;
 import com.beside.startrail.image.service.ImageService;
+import com.beside.startrail.mind.command.MindSaveOneCommand;
+import com.beside.startrail.mind.document.Mind;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
 import java.util.Optional;
@@ -39,8 +42,7 @@ public class MindDeleteHandler extends AbstractSignedHandler {
     String sequence = serverRequest.pathVariable("sequence");
 
     return MindService
-        .removeByUserSequenceAndSequence(
-            super.jwtPayloadProto.getSequence(),
+        .getBySequence(
             sequence
         )
         .execute(mindRepository)
@@ -53,6 +55,11 @@ public class MindDeleteHandler extends AbstractSignedHandler {
                     )
                 )
                 .map(imageDeleteCommand -> imageDeleteCommand.execute(imageRepository))
+        )
+        .map(mind -> Mind.from(mind, YnType.N))
+        .map(MindSaveOneCommand::new)
+        .flatMap(mindSaveOneCommand ->
+            mindSaveOneCommand.execute(mindRepository)
         )
         .map(MindProtoUtil::toMindResponseProto)
         .map(ProtocolBufferUtil::print)

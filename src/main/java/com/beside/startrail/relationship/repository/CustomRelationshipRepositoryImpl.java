@@ -20,12 +20,13 @@ public class CustomRelationshipRepositoryImpl implements CustomRelationshipRepos
   @Override
   public Flux<Relationship> findRelationshipsByCriteria(
       String userSequence,
-      String nicknameKeyword
+      String nicknameKeyword,
+      YnType useYn
   ) {
     String keywordReg = ".*" + nicknameKeyword + ".*";
 
     Query query = new Query(
-        Criteria.where("useYn").is(YnType.Y)
+        Criteria.where("useYn").is(useYn)
             .andOperator(Criteria.where(USER_SEQUENCE_FIELD).is(userSequence))
             .orOperator(Criteria.where(NICK_NAME_FIELD).regex(keywordReg))
     );

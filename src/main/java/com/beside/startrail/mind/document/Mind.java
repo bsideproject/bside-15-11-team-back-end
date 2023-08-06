@@ -31,16 +31,16 @@ public class Mind {
   private final String memo;
   private final YnType useYn;
 
-  public static Mind from(Mind relationship, YnType useYn) {
+  public static Mind from(Mind mind, YnType useYn) {
     return Mind.builder()
-        .sequence(relationship.sequence)
-        .userSequence(relationship.userSequence)
-        .relationshipSequence(relationship.relationshipSequence)
-        .type(relationship.type)
-        .event(relationship.event)
-        .date(relationship.date)
-        .item(relationship.item)
-        .memo(relationship.memo)
+        .sequence(mind.sequence)
+        .userSequence(mind.userSequence)
+        .relationshipSequence(mind.relationshipSequence)
+        .type(mind.type)
+        .event(mind.event)
+        .date(mind.date)
+        .item(mind.item)
+        .memo(mind.memo)
         .useYn(useYn)
         .build();
   }

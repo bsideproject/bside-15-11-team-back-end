@@ -34,7 +34,7 @@ public class MindGetByRelationshipSequencehandler extends AbstractSignedHandler 
         .<MindGetRequestProto>from(serverRequest.queryParams(),
             MindGetRequestProto.newBuilder())
         .map(mindGetRequestProto ->
-            MindService.getByRelationshipSequence(
+            MindService.getByRelationshipSequenceWithOrder(
                 mindGetRequestProto.getRelationshipSequence(),
                 SortOrderType.valueOf(mindGetRequestProto.getSort().name())
             )

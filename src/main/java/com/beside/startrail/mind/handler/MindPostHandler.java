@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import protobuf.mind.MindPostRequestProto;
@@ -39,6 +40,9 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
     this.mindRepository = mindRepository;
     this.imageRepository = imageRepository;
   }
+
+// todo
+// @TransactionalEventListener
 
   @Override
   protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
