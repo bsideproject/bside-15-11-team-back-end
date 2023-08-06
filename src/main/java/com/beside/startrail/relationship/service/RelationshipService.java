@@ -26,7 +26,6 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 public class RelationshipService {
-
   private final RelationshipRepository relationshipRepository;
   private final RelationshipLevelRepository relationshipLevelRepository;
   private final CustomMindRepository customMindRepository;
