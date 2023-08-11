@@ -1,6 +1,8 @@
 package com.beside.startrail.mind.service;
 
-import com.beside.startrail.mind.command.MindCountCommand;
+import com.beside.startrail.common.type.YnType;
+import com.beside.startrail.mind.command.MindCountByRelationshipSequenceAndUseYnCommand;
+import com.beside.startrail.mind.command.MindCountByUserSequenceAndUseYnCommand;
 import com.beside.startrail.mind.command.MindFindAllByRelationshipSequenceCommand;
 import com.beside.startrail.mind.command.MindFindAllByRelationshipSequenceWithOrderCommand;
 import com.beside.startrail.mind.command.MindFindOneBySequenceCommand;
@@ -11,9 +13,18 @@ import com.beside.startrail.mind.type.SortOrderType;
 import java.util.List;
 
 public class MindService {
-  public static MindCountCommand countByUserSequenceAndRelationshipType(
-      String userSequence) {
-    return new MindCountCommand(userSequence);
+  public static MindCountByUserSequenceAndUseYnCommand countByUserSequenceAndUseYn(
+      String userSequence,
+      YnType useYn
+  ) {
+    return new MindCountByUserSequenceAndUseYnCommand(userSequence, useYn);
+  }
+
+  public static MindCountByRelationshipSequenceAndUseYnCommand countByRelationshipSequenceAndUseYn(
+      String userSequence,
+      YnType useYn
+  ) {
+    return new MindCountByRelationshipSequenceAndUseYnCommand(userSequence, useYn);
   }
 
   public static MindFindAllByRelationshipSequenceWithOrderCommand getByRelationshipSequenceWithOrder(

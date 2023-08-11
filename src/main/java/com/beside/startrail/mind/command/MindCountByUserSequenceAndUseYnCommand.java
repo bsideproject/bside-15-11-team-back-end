@@ -5,12 +5,14 @@ import com.beside.startrail.mind.model.MindCountResult;
 import com.beside.startrail.mind.repository.CustomMindRepository;
 import reactor.core.publisher.Mono;
 
-public class MindCountCommand {
+public class MindCountByUserSequenceAndUseYnCommand {
   private final String userSequence;
+  private final YnType useYn;
   private Mono<MindCountResult> result;
 
-  public MindCountCommand(String userSequence) {
+  public MindCountByUserSequenceAndUseYnCommand(String userSequence, YnType useYn) {
     this.userSequence = userSequence;
+    this.useYn = useYn;
   }
 
   public Mono<MindCountResult> execute(
@@ -18,7 +20,8 @@ public class MindCountCommand {
   ) {
     result = customMindRepository.countByUserSequenceAndUseYn(
         userSequence,
-        YnType.Y);
+        useYn
+    );
 
     return result;
   }

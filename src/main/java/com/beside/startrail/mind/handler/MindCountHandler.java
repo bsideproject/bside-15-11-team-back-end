@@ -3,6 +3,7 @@ package com.beside.startrail.mind.handler;
 import com.beside.startrail.common.handler.AbstractSignedHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.mind.MindProtoUtil;
+import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.mind.repository.CustomMindRepository;
 import com.beside.startrail.mind.service.MindService;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,7 @@ public class MindCountHandler extends AbstractSignedHandler {
   @Override
   protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
     return MindService
-        .countByUserSequenceAndRelationshipType(super.jwtPayloadProto.getSequence())
+        .countByUserSequenceAndUseYn(super.jwtPayloadProto.getSequence(), YnType.Y)
         .execute(customMindRepository)
         .map(MindProtoUtil::toMindCountResponseProto)
         .flatMap(mindCountResponseProto ->

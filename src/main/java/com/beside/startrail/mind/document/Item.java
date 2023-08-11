@@ -11,6 +11,5 @@ import lombok.Getter;
 public class Item {
   private final ItemType type;
   private final String name;
-  // todo 이미지 기능 추가
   private final String imageLink;
 }

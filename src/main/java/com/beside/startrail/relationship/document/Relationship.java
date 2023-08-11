@@ -41,4 +41,6 @@ public class Relationship {
         .useYn(useYn)
         .build();
   }
+
+  public static Relationship from(Relationship relationship, )
 }

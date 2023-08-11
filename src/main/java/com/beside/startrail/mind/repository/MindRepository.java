@@ -11,6 +11,11 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface MindRepository extends ReactiveMongoRepository<Mind, UUID> {
+  Mono<Integer> countByRelationshipSequenceAndUseYn(
+      String relationshipSequence,
+      YnType useYn
+  );
+
   Flux<Mind> findAllByRelationshipSequenceAndUseYn(
       String relationshipSequence,
       YnType useYn,

@@ -113,7 +113,7 @@ public class RelationshipService {
   }
 
   private Mono<LevelInformationProto> getLevelInformation(String relationshipSequence) {
-    return customMindRepository.countByRelationshipSequenceAndUseYn(relationshipSequence, YnType.Y)
+    return customMindRepository.countBySequenceAndUseYn(relationshipSequence, YnType.Y)
         .switchIfEmpty(Mono.just(MindCountResult.builder().build()))
         .flatMap(mindCountResult ->
             getRelationshipLevelByCount(mindCountResult.getTotal())

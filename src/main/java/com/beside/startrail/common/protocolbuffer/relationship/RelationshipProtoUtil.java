@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import protobuf.common.BirthProto;
+import protobuf.common.LevelInformationProto;
 import protobuf.common.type.YnTypeProto;
 import protobuf.relationship.RelationshipPostRequestProto;
 import protobuf.relationship.RelationshipPutRequestProto;
@@ -44,6 +45,13 @@ public class RelationshipProtoUtil {
     }
 
     return builder.build();
+  }
+
+  public static RelationshipResponseProto from(RelationshipResponseProto relationshipResponseProto, LevelInformationProto levelInformationProto) {
+    return relationshipResponseProto
+        .toBuilder()
+        .setLevelInformation(levelInformationProto)
+        .build();
   }
 
   public static List<Relationship> toRelationships(

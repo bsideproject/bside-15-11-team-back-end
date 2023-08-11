@@ -41,7 +41,7 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
     this.imageRepository = imageRepository;
   }
 
-// todo
+// todo 이미지 저장소 transactional
 // @TransactionalEventListener
 
   @Override
