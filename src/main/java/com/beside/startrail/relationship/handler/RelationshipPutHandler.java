@@ -2,8 +2,10 @@ package com.beside.startrail.relationship.handler;
 
 import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
+import com.beside.startrail.common.protocolbuffer.relationship.RelationshipProtoUtil;
+import com.beside.startrail.common.type.YnType;
+import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationship.service.RelationshipService;
-import com.beside.startrail.relationship.validator.RelationshipRequestValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -14,17 +16,14 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class RelationshipPutHandler extends AbstractSignedTransactionalHandler {
-  private final RelationshipService relationshipService;
-  private final RelationshipRequestValidator relationshipRequestValidator;
+  private final RelationshipRepository relationshipRepository;
 
   public RelationshipPutHandler(
       @Value("${sign.attributeName}") String attributeName,
-      RelationshipService relationshipService,
-      RelationshipRequestValidator relationshipRequestValidator
+      RelationshipRepository relationshipRepository
   ) {
     super(attributeName);
-    this.relationshipService = relationshipService;
-    this.relationshipRequestValidator = relationshipRequestValidator;
+    this.relationshipRepository = relationshipRepository;
   }
 
   @Override
@@ -39,15 +38,37 @@ public class RelationshipPutHandler extends AbstractSignedTransactionalHandler {
                 RelationshipPutRequestProto.newBuilder()
             )
         )
-        .doOnNext(relationshipRequestValidator::updateValidate)
-        .flatMap(body ->
-            relationshipService.update(super.jwtPayloadProto.getSequence(), sequence, body)
+        .flatMap(relationshipPutRequestProto ->
+            RelationshipService.getByUserSequenceAndSequenceAndUseYn(
+                    super.jwtPayloadProto.getSequence(),
+                    sequence,
+                    YnType.Y
+                )
+                .execute(relationshipRepository)
+                .mapNotNull(relationship ->
+                    RelationshipProtoUtil.toRelationship(
+                        relationship,
+                        relationshipPutRequestProto
+                    )
+                )
         )
+        .flatMap(relationship ->
+            RelationshipService
+                .create(relationship)
+                .execute(relationshipRepository)
+        )
+        .map(RelationshipProtoUtil::toRelationshipResponseProto)
         .map(ProtocolBufferUtil::print)
         .flatMap(body ->
             ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(body)
+        )
+        .switchIfEmpty(
+            ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .build()
         );
   }
 }

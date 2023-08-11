@@ -13,7 +13,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Component
-
 public class MindGetBySequenceHandler extends AbstractSignedHandler {
   private final MindRepository mindRepository;
 
@@ -30,7 +29,10 @@ public class MindGetBySequenceHandler extends AbstractSignedHandler {
     String sequence = serverRequest.pathVariable("sequence");
 
     return MindService
-        .getBySequence(sequence)
+        .getBySequence(
+            super.jwtPayloadProto.getSequence(),
+            sequence
+        )
         .execute(mindRepository)
         .map(MindProtoUtil::toMindResponseProto)
         .map(ProtocolBufferUtil::print)

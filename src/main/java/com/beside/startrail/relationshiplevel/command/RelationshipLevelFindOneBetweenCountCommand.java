@@ -4,12 +4,12 @@ import com.beside.startrail.relationshiplevel.document.RelationshipLevel;
 import com.beside.startrail.relationshiplevel.repository.RelationshipLevelRepository;
 import reactor.core.publisher.Mono;
 
-public class RelationshipLevelFindBetweenCountCommand {
+public class RelationshipLevelFindOneBetweenCountCommand {
   private final int count;
 
   private Mono<RelationshipLevel> result;
 
-  public RelationshipLevelFindBetweenCountCommand(int count) {
+  public RelationshipLevelFindOneBetweenCountCommand(int count) {
     this.count = count;
   }
 

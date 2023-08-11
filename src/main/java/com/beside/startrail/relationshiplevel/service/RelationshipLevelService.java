@@ -1,9 +1,9 @@
 package com.beside.startrail.relationshiplevel.service;
 
-import com.beside.startrail.relationshiplevel.command.RelationshipLevelFindBetweenCountCommand;
+import com.beside.startrail.relationshiplevel.command.RelationshipLevelFindOneBetweenCountCommand;
 
 public class RelationshipLevelService {
-  public static RelationshipLevelFindBetweenCountCommand getBetweenCount(int count) {
-    return new RelationshipLevelFindBetweenCountCommand(count);
+  public static RelationshipLevelFindOneBetweenCountCommand getBetweenCount(int count) {
+    return new RelationshipLevelFindOneBetweenCountCommand(count);
   }
 }

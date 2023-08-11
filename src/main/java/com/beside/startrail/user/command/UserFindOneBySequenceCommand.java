@@ -7,16 +7,22 @@ import reactor.core.publisher.Mono;
 
 public class UserFindOneBySequenceCommand {
   private final String sequence;
+  private final YnType useYn;
+
   private Mono<User> result;
 
-  public UserFindOneBySequenceCommand(String sequence) {
+  public UserFindOneBySequenceCommand(
+      String sequence,
+      YnType useYn
+  ) {
     this.sequence = sequence;
+    this.useYn = useYn;
   }
 
   public Mono<User> execute(UserRepository userRepository) {
     result = userRepository.findBySequenceAndUseYn(
         sequence,
-        YnType.Y
+        useYn
     );
 
     return result;

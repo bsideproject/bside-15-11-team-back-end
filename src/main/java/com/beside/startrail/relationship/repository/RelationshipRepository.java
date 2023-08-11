@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface RelationshipRepository
-    extends ReactiveMongoRepository<Relationship, UUID>, CustomRelationshipRepository {
+    extends ReactiveMongoRepository<Relationship, UUID> {
   Mono<Relationship> findByUserSequenceAndSequenceAndUseYn(
       String userSequence,
       String sequence,

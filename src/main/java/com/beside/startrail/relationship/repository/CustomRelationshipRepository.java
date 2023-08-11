@@ -2,14 +2,11 @@ package com.beside.startrail.relationship.repository;
 
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.relationship.document.Relationship;
-import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
 
-@Repository
 public interface CustomRelationshipRepository {
-
-  Flux<Relationship> findRelationshipsByCriteria(
+  Flux<Relationship> findAllRelationshipByUserSequenceAndNicknameKeywordAndUseYn(
       String userSequence,
       String nicknameKeyword,
       YnType useYn

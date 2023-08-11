@@ -4,7 +4,6 @@ import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.mind.MindProtoUtil;
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.image.command.ImageDeleteCommand;
 import com.beside.startrail.image.repository.ImageRepository;
 import com.beside.startrail.image.service.ImageService;
 import com.beside.startrail.mind.repository.MindRepository;
@@ -24,6 +23,7 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
   private final String bucketName;
   private final MindRepository mindRepository;
   private final ImageRepository imageRepository;
+
   private String key;
 
   public MindPutHandler(
@@ -100,7 +100,8 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
                 )
                 .onErrorMap(throwable -> {
                       if (!StringUtils.isBlank(key)) {
-                        new ImageDeleteCommand(bucketName, key)
+                        ImageService
+                            .delete(bucketName, key)
                             .execute(imageRepository);
                       }
 

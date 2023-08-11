@@ -7,16 +7,18 @@ import reactor.core.publisher.Flux;
 
 public class RelationshipFindAllByUserSequenceCommand {
   private final String userSequence;
+  private final YnType useYn;
   private Flux<Relationship> result;
 
-  public RelationshipFindAllByUserSequenceCommand(String userSequence) {
+  public RelationshipFindAllByUserSequenceCommand(String userSequence, YnType useYn) {
     this.userSequence = userSequence;
+    this.useYn = useYn;
   }
 
   public Flux<Relationship> execute(RelationshipRepository relationshipRepository) {
     result = relationshipRepository.findByUserSequenceAndUseYn(
         userSequence,
-        YnType.Y
+        useYn
     );
 
     return result;

@@ -23,7 +23,7 @@ public class RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand 
   }
 
   public Flux<Relationship> execute(CustomRelationshipRepository customRelationshipRepository) {
-    result = customRelationshipRepository.findRelationshipsByCriteria(
+    result = customRelationshipRepository.findAllRelationshipByUserSequenceAndNicknameKeywordAndUseYn(
         userSequence,
         nicknameKeyword,
         useYn

@@ -9,7 +9,6 @@ import com.beside.startrail.mind.type.SortOrderType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import protobuf.mind.MindGetRequestProto;
@@ -34,19 +33,19 @@ public class MindGetByRelationshipSequencehandler extends AbstractSignedHandler 
         .<MindGetRequestProto>from(serverRequest.queryParams(),
             MindGetRequestProto.newBuilder())
         .map(mindGetRequestProto ->
-            MindService.getByRelationshipSequenceWithOrder(
-                mindGetRequestProto.getRelationshipSequence(),
-                SortOrderType.valueOf(mindGetRequestProto.getSort().name())
-            )
+            MindService
+                .getByRelationshipSequenceWithOrder(
+                    super.jwtPayloadProto.getSequence(),
+                    mindGetRequestProto.getRelationshipSequence(),
+                    SortOrderType.valueOf(mindGetRequestProto.getSort().name())
+                )
         )
-        .flatMap(mindFindAllByRelationshipSequenceCommand ->
-            mindFindAllByRelationshipSequenceCommand.execute(mindRepository)
+        .flatMapMany(mindFindAllByRelationshipSequenceCommand ->
+            mindFindAllByRelationshipSequenceCommand
+                .execute(mindRepository)
                 .map(MindProtoUtil::toMindResponseProto)
-                .collectList()
         )
-        .filter(mindResponseProtos ->
-            !CollectionUtils.isEmpty(mindResponseProtos)
-        )
+        .collectList()
         .map(mindResponseProtos ->
             MindGetResponseProto.newBuilder()
                 .addAllMinds(mindResponseProtos)

@@ -5,18 +5,21 @@ import com.beside.startrail.mind.document.Mind;
 import com.beside.startrail.mind.repository.MindRepository;
 import reactor.core.publisher.Flux;
 
-public class MindFindAllByUserSequenceCommand {
+public class MindFindAllByUserSequenceAndUseYnCommand {
   private final String userSequence;
+  private final YnType useYn;
+
   private Flux<Mind> result;
 
-  public MindFindAllByUserSequenceCommand(String userSequence) {
+  public MindFindAllByUserSequenceAndUseYnCommand(String userSequence, YnType useYn) {
     this.userSequence = userSequence;
+    this.useYn = useYn;
   }
 
   public Flux<Mind> execute(MindRepository mindRepository) {
     result = mindRepository.findByUserSequenceAndUseYn(
         userSequence,
-        YnType.Y
+        useYn
     );
 
     return result;

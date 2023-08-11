@@ -45,7 +45,11 @@ public class RelationshipDeleteHandler extends AbstractSignedTransactionalHandle
     String sequence = serverRequest.pathVariable("sequence");
 
     return Mono.when(
-            MindService.getByRelationshipSequence(sequence)
+            MindService.getByRelationshipSequence(
+                    super.jwtPayloadProto.getSequence(),
+                    sequence,
+                    YnType.Y
+                )
                 .execute(mindRepository)
                 .doOnNext(mind ->
                     Optional.ofNullable(

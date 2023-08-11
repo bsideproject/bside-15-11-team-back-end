@@ -42,5 +42,15 @@ public class Relationship {
         .build();
   }
 
-  public static Relationship from(Relationship relationship, )
+  public static Relationship from(Relationship relationship, String userSequence) {
+    return Relationship.builder()
+        .sequence(relationship.sequence)
+        .userSequence(userSequence)
+        .nickname(relationship.nickname)
+        .relationship(relationship.relationship)
+        .birth(relationship.birth)
+        .memo(relationship.memo)
+        .useYn(relationship.getUseYn())
+        .build();
+  }
 }

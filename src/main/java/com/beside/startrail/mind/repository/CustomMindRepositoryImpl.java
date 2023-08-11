@@ -45,4 +45,33 @@ public class CustomMindRepositoryImpl implements CustomMindRepository {
         )
     );
   }
+
+  @Override
+  public Mono<MindCountResult> countByRelationshipSequenceAndUseYn(
+      String userSequence,
+      String relationshipSequence,
+      YnType useYn
+  ) {
+    Aggregation aggregation = Aggregation.newAggregation(
+        Aggregation.match(Criteria.where("useYn").is(useYn)),
+        Aggregation.match(Criteria.where("userSequence").is(userSequence)),
+        Aggregation.match(Criteria.where("relationshipSequence").is(relationshipSequence)),
+        Aggregation.group()
+            .count().as("total")
+            .sum(ConditionalOperators.when(Criteria.where("type").is(MindType.GIVEN))
+                .then(1)
+                .otherwise(0)).as("given")
+            .sum(ConditionalOperators.when(Criteria.where("type").is(MindType.TAKEN))
+                .then(1)
+                .otherwise(0)).as("taken")
+    );
+
+    return Mono.from(
+        reactiveMongoTemplate.aggregate(
+            aggregation,
+            Mind.class,
+            MindCountResult.class
+        )
+    );
+  }
 }

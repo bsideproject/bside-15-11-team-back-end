@@ -4,15 +4,14 @@ import com.beside.startrail.common.protocolbuffer.common.DateProtoUtil;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.relationship.document.Birth;
 import com.beside.startrail.relationship.document.Relationship;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import protobuf.common.BirthProto;
 import protobuf.common.LevelInformationProto;
 import protobuf.common.type.YnTypeProto;
 import protobuf.relationship.RelationshipPostRequestProto;
 import protobuf.relationship.RelationshipPutRequestProto;
 import protobuf.relationship.RelationshipResponseProto;
+import reactor.core.publisher.Flux;
 
 public class RelationshipProtoUtil {
 
@@ -47,36 +46,40 @@ public class RelationshipProtoUtil {
     return builder.build();
   }
 
-  public static RelationshipResponseProto from(RelationshipResponseProto relationshipResponseProto, LevelInformationProto levelInformationProto) {
+  public static RelationshipResponseProto from(
+      RelationshipResponseProto relationshipResponseProto,
+      LevelInformationProto levelInformationProto
+  ) {
     return relationshipResponseProto
         .toBuilder()
         .setLevelInformation(levelInformationProto)
         .build();
   }
 
-  public static List<Relationship> toRelationships(
+  public static Flux<Relationship> toRelationships(
       String userSequence,
       RelationshipPostRequestProto relationshipPostRequestProto
   ) {
     if (Objects.isNull(relationshipPostRequestProto) ||
         !relationshipPostRequestProto.isInitialized()) {
-      return null;
+      return Flux.empty();
     }
 
-    return relationshipPostRequestProto.getNicknamesList().stream()
-        .map(nickname -> Relationship.builder()
-            .userSequence(userSequence)
-            .nickname(nickname)
-            .relationship(relationshipPostRequestProto.getRelationship())
-            .birth(toBirth(relationshipPostRequestProto.getBirth()))
-            .memo(relationshipPostRequestProto.getMemo())
-            .build()
-        )
-        .collect(Collectors.toList());
+    return Flux.fromStream(
+        relationshipPostRequestProto.getNicknamesList().stream()
+            .map(nickname -> Relationship.builder()
+                .userSequence(userSequence)
+                .nickname(nickname)
+                .relationship(relationshipPostRequestProto.getRelationship())
+                .birth(toBirth(relationshipPostRequestProto.getBirth()))
+                .memo(relationshipPostRequestProto.getMemo())
+                .build()
+            )
+    );
   }
 
-  public static Relationship toRelationships(
-      Relationship friend,
+  public static Relationship toRelationship(
+      Relationship relationship,
       RelationshipPutRequestProto relationshipPutRequestProto
   ) {
     if (Objects.isNull(relationshipPutRequestProto) ||
@@ -85,8 +88,8 @@ public class RelationshipProtoUtil {
     }
 
     return Relationship.builder()
-        .sequence(friend.getSequence())
-        .userSequence(friend.getUserSequence())
+        .sequence(relationship.getSequence())
+        .userSequence(relationship.getUserSequence())
         .nickname(relationshipPutRequestProto.getNickname())
         .relationship(relationshipPutRequestProto.getRelationship())
         .birth(toBirth(relationshipPutRequestProto.getBirth()))

@@ -3,8 +3,9 @@ package com.beside.startrail.user.handler;
 import com.beside.startrail.common.handler.AbstractSignedHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.user.UserProtoUtil;
-import com.beside.startrail.user.command.UserFindOneBySequenceCommand;
+import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.user.repository.UserRepository;
+import com.beside.startrail.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,11 @@ public class UserGetHandler extends AbstractSignedHandler {
 
   @Override
   protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
-    return new UserFindOneBySequenceCommand(jwtPayloadProto.getSequence())
+    return UserService
+        .getBySequenceAndUseYn(
+            super.jwtPayloadProto.getSequence(),
+            YnType.Y
+        )
         .execute(userRepository)
         .map(UserProtoUtil::toUserResponseProto)
         .flatMap(userResponseProto ->

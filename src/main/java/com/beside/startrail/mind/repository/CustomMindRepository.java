@@ -5,5 +5,11 @@ import com.beside.startrail.mind.model.MindCountResult;
 import reactor.core.publisher.Mono;
 
 public interface CustomMindRepository {
-  Mono<MindCountResult> countByUserSequenceAndUseYn(String sequence, YnType useYn);
+  Mono<MindCountResult> countByUserSequenceAndUseYn(String userSequence, YnType useYn);
+
+  Mono<MindCountResult> countByRelationshipSequenceAndUseYn(
+      String userSequence,
+      String relationshipSequence,
+      YnType useYn
+  );
 }

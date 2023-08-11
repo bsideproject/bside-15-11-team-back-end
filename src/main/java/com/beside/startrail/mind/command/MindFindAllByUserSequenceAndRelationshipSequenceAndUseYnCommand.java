@@ -3,21 +3,30 @@ package com.beside.startrail.mind.command;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.mind.document.Mind;
 import com.beside.startrail.mind.repository.MindRepository;
-import org.springframework.data.domain.Sort;
 import reactor.core.publisher.Flux;
 
-public class MindFindAllByRelationshipSequenceCommand {
+public class MindFindAllByUserSequenceAndRelationshipSequenceAndUseYnCommand {
+  private final String userSequence;
   private final String relationshipSequence;
+  private final YnType useYn;
+
   private Flux<Mind> result;
 
-  public MindFindAllByRelationshipSequenceCommand(String relationshipSequence) {
+  public MindFindAllByUserSequenceAndRelationshipSequenceAndUseYnCommand(
+      String userSequence,
+      String relationshipSequence,
+      YnType useYn
+  ) {
+    this.userSequence = userSequence;
     this.relationshipSequence = relationshipSequence;
+    this.useYn = useYn;
   }
 
   public Flux<Mind> execute(MindRepository mindRepository) {
-    result = mindRepository.findAllByRelationshipSequenceAndUseYn(
+    result = mindRepository.findAllByUserSequenceAndRelationshipSequenceAndUseYn(
+        userSequence,
         relationshipSequence,
-        YnType.Y
+        useYn
     );
 
     return result;

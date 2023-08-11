@@ -4,7 +4,6 @@ import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.mind.MindProtoUtil;
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.image.command.ImageDeleteCommand;
 import com.beside.startrail.image.repository.ImageRepository;
 import com.beside.startrail.image.service.ImageService;
 import com.beside.startrail.mind.repository.MindRepository;
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import protobuf.mind.MindPostRequestProto;
@@ -27,6 +25,7 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
   private final String bucketName;
   private final MindRepository mindRepository;
   private final ImageRepository imageRepository;
+
   private String key;
 
   public MindPostHandler(
@@ -106,7 +105,8 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
         )
         .onErrorMap(throwable -> {
               if (!StringUtils.isBlank(key)) {
-                new ImageDeleteCommand(bucketName, key)
+                ImageService
+                    .delete(bucketName, key)
                     .execute(imageRepository);
               }
 

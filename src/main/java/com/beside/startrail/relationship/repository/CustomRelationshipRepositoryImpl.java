@@ -5,10 +5,11 @@ import com.beside.startrail.relationship.document.Relationship;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
+@Repository
 public class CustomRelationshipRepositoryImpl implements CustomRelationshipRepository {
-
   private final String USER_SEQUENCE_FIELD = "userSequence";
   private final String NICK_NAME_FIELD = "nickname";
   private final ReactiveMongoTemplate reactiveMongoTemplate;
@@ -18,7 +19,7 @@ public class CustomRelationshipRepositoryImpl implements CustomRelationshipRepos
   }
 
   @Override
-  public Flux<Relationship> findRelationshipsByCriteria(
+  public Flux<Relationship> findAllRelationshipByUserSequenceAndNicknameKeywordAndUseYn(
       String userSequence,
       String nicknameKeyword,
       YnType useYn

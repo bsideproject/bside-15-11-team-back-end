@@ -5,18 +5,15 @@ import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.image.repository.ImageRepository;
 import com.beside.startrail.image.service.ImageService;
-import com.beside.startrail.mind.command.MindFindAllByUserSequenceCommand;
-import com.beside.startrail.mind.command.MindSaveOneCommand;
 import com.beside.startrail.mind.document.Mind;
 import com.beside.startrail.mind.repository.MindRepository;
-import com.beside.startrail.relationship.command.RelationshipFindAllByUserSequenceCommand;
-import com.beside.startrail.relationship.command.RelationshipSaveOneCommand;
+import com.beside.startrail.mind.service.MindService;
 import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
-import com.beside.startrail.user.command.UserFindOneBySequenceCommand;
-import com.beside.startrail.user.command.UserSaveOneCommand;
+import com.beside.startrail.relationship.service.RelationshipService;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
+import com.beside.startrail.user.service.UserService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -61,7 +58,8 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
         )
         .flatMap(signWithdrawalRequestProto ->
             Mono.when(
-                    new UserFindOneBySequenceCommand(sequence)
+                    UserService
+                        .getBySequenceAndUseYn(sequence, YnType.Y)
                         .execute(userRepository)
                         .map(user ->
                             User.fromReason(user, signWithdrawalRequestProto.getWithdrawalReason())
@@ -69,37 +67,39 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
                         .map(user ->
                             User.fromUseYn(user, YnType.N)
                         )
-                        .map(UserSaveOneCommand::new)
+                        .map(UserService::create)
                         .flatMap(userSaveCommand ->
                             userSaveCommand.execute(userRepository)
                         ),
-                    new RelationshipFindAllByUserSequenceCommand(sequence)
+                    RelationshipService
+                        .getByUserSequenceAndUseYn(sequence, YnType.Y)
                         .execute(friendRepository)
                         .map(friend ->
-                            new RelationshipSaveOneCommand(Relationship.from(friend, YnType.N))
+                            RelationshipService
+                                .create(Relationship.from(friend, YnType.N))
                         )
                         .flatMap(friendSaveCommand ->
                             friendSaveCommand.execute(friendRepository)),
-                    new MindFindAllByUserSequenceCommand(sequence)
+                    MindService
+                        .getByUserSequenceAndUseYn(sequence, YnType.Y)
                         .execute(relationshipRepository)
-                        .flatMap(relationship ->
+                        .flatMap(mind ->
                             Optional.ofNullable(
                                     ImageService
                                         .delete(
                                             bucketName,
-                                            ImageService.getKey(relationship.getItem().getImageLink())
+                                            ImageService.getKey(mind.getItem().getImageLink())
                                         )
                                 )
                                 .map(imageDeleteCommand -> imageDeleteCommand.execute(imageRepository))
                                 .orElse(Mono.empty())
                                 .thenReturn(
-                                    new MindSaveOneCommand(
-                                        Mind.from(relationship, YnType.N)
-                                    )
+                                    MindService
+                                        .create(Mind.from(mind, YnType.N))
                                 )
                         )
-                        .flatMap(relationshipSaveCommand ->
-                            relationshipSaveCommand.execute(relationshipRepository)
+                        .flatMap(mindSaveOneCommand ->
+                            mindSaveOneCommand.execute(relationshipRepository)
                         )
                 )
                 .then(

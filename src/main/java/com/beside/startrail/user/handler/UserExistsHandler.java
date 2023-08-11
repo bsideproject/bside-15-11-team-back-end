@@ -1,9 +1,9 @@
 package com.beside.startrail.user.handler;
 
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.user.command.UserExistsByUserIdAndUseYnCommand;
 import com.beside.startrail.user.document.UserId;
 import com.beside.startrail.user.repository.UserRepository;
+import com.beside.startrail.user.service.UserService;
 import com.beside.startrail.user.type.OauthServiceType;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -28,13 +28,17 @@ public class UserExistsHandler implements HandlerFunction<ServerResponse> {
     );
     String serviceUserId = serverRequest.pathVariable("serviceUserId");
 
-    return Mono.just(
+    return Mono
+        .just(
             UserId.builder()
                 .oauthServiceType(oauthServiceType)
                 .serviceUserId(serviceUserId)
                 .build()
         )
-        .map(userId -> new UserExistsByUserIdAndUseYnCommand(userId, YnType.Y))
+        .map(userId ->
+            UserService
+                .existsByUserIdAndUseYn(userId, YnType.Y)
+        )
         .flatMap(userExistsByUserIdAndUseYnCommand ->
             userExistsByUserIdAndUseYnCommand.execute(userRepository)
         )

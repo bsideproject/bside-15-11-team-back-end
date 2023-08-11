@@ -6,10 +6,10 @@ import com.beside.startrail.common.protocolbuffer.mind.MindProtoUtil;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.image.repository.ImageRepository;
 import com.beside.startrail.image.service.ImageService;
-import com.beside.startrail.mind.command.MindSaveOneCommand;
 import com.beside.startrail.mind.document.Mind;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
+import io.micrometer.common.util.StringUtils;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -43,6 +43,7 @@ public class MindDeleteHandler extends AbstractSignedHandler {
 
     return MindService
         .getBySequence(
+            super.jwtPayloadProto.getSequence(),
             sequence
         )
         .execute(mindRepository)
@@ -57,7 +58,7 @@ public class MindDeleteHandler extends AbstractSignedHandler {
                 .map(imageDeleteCommand -> imageDeleteCommand.execute(imageRepository))
         )
         .map(mind -> Mind.from(mind, YnType.N))
-        .map(MindSaveOneCommand::new)
+        .map(MindService::create)
         .flatMap(mindSaveOneCommand ->
             mindSaveOneCommand.execute(mindRepository)
         )
@@ -73,6 +74,16 @@ public class MindDeleteHandler extends AbstractSignedHandler {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .build()
+        )
+        .onErrorMap(throwable -> {
+              if (!StringUtils.isBlank(key)) {
+                ImageService
+                    .delete(bucketName, key)
+                    .execute(imageRepository);
+              }
+
+              return throwable;
+            }
         );
   }
 }

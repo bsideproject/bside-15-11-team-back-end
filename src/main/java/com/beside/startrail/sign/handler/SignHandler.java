@@ -4,8 +4,8 @@ import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.user.UserIdProtoUtil;
 import com.beside.startrail.common.service.JwtProtoService;
 import com.beside.startrail.common.type.YnType;
-import com.beside.startrail.user.command.UserFindByUserIdAndUseYnCommand;
 import com.beside.startrail.user.repository.UserRepository;
+import com.beside.startrail.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
@@ -40,7 +40,7 @@ public class SignHandler implements HandlerFunction<ServerResponse> {
             UserIdProtoUtil.toUserId(signRequestProto.getUserId())
         )
         .map(userId ->
-            new UserFindByUserIdAndUseYnCommand(userId, YnType.Y)
+            UserService.getByUserIdAndUseYn(userId, YnType.Y)
         )
         .flatMap(userExistsByUserIdAndUseYnCommand ->
             userExistsByUserIdAndUseYnCommand.execute(userRepository)

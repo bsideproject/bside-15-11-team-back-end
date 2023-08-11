@@ -3,10 +3,10 @@ package com.beside.startrail.user.handler;
 import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.user.UserProtoUtil;
-import com.beside.startrail.user.command.UserFindOneBySequenceCommand;
-import com.beside.startrail.user.command.UserSaveOneCommand;
+import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
+import com.beside.startrail.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,8 @@ public class UserPatchHandler extends AbstractSignedTransactionalHandler {
   protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
     String sequence = jwtPayloadProto.getSequence();
 
-    return new UserFindOneBySequenceCommand(sequence)
+    return UserService
+        .getBySequenceAndUseYn(sequence, YnType.Y)
         .execute(userRepository)
         .flatMap(user ->
             serverRequest
@@ -44,7 +45,8 @@ public class UserPatchHandler extends AbstractSignedTransactionalHandler {
                 )
                 .mapNotNull(UserProtoUtil::toUser)
                 .map(editUser -> mergeUser(user, editUser))
-                .map(UserSaveOneCommand::new)
+                .map(UserService::create
+                )
                 .flatMap(userSaveCommand ->
                     userSaveCommand.execute(userRepository)
                 )
