@@ -5,6 +5,7 @@ import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.levelinformation.LevelInformationProtoUtil;
 import com.beside.startrail.common.protocolbuffer.relationship.RelationshipProtoUtil;
 import com.beside.startrail.common.type.YnType;
+import com.beside.startrail.mind.model.MindCountResult;
 import com.beside.startrail.mind.repository.CustomMindRepository;
 import com.beside.startrail.mind.service.MindService;
 import com.beside.startrail.relationship.repository.CustomRelationshipRepository;
@@ -23,12 +24,12 @@ import protobuf.relationship.SortTypeProto;
 import reactor.core.publisher.Mono;
 
 @Component
-public class RelationshipGetBySequenceAndKeywordAndSortHandler extends AbstractSignedHandler {
+public class RelationshipGetByNicknameKeywordWithSortHandler extends AbstractSignedHandler {
   private final CustomRelationshipRepository customRelationshipRepository;
   private final CustomMindRepository customMindRepository;
   private final RelationshipLevelRepository relationshipLevelRepository;
 
-  public RelationshipGetBySequenceAndKeywordAndSortHandler(
+  public RelationshipGetByNicknameKeywordWithSortHandler(
       @Value("${sign.attributeName}") String attributeName,
       CustomRelationshipRepository customRelationshipRepository,
       CustomMindRepository customMindRepository,
@@ -48,7 +49,7 @@ public class RelationshipGetBySequenceAndKeywordAndSortHandler extends AbstractS
         .flatMapMany(relationshipGetRequestProto ->
             RelationshipService
                 .sort(
-                    RelationshipService.getByUserSequenceAndNicknameKeywordAndUseYn(
+                    RelationshipService.getByNicknameKeyword(
                             super.jwtPayloadProto.getSequence(),
                             relationshipGetRequestProto.getKeyword(),
                             YnType.Y
@@ -58,12 +59,13 @@ public class RelationshipGetBySequenceAndKeywordAndSortHandler extends AbstractS
                         .flatMap(
                             relationshipResponseProto ->
                                 MindService
-                                    .countByRelationshipSequenceAndUseYn(
+                                    .countByRelationshipSequence(
                                         super.jwtPayloadProto.getSequence(),
                                         relationshipResponseProto.getSequence(),
                                         YnType.Y
                                     )
                                     .execute(customMindRepository)
+                                    .switchIfEmpty(Mono.just(MindCountResult.makeDefault()))
                                     .flatMap(mindCountResult ->
                                         RelationshipLevelService
                                             .getBetweenCount(mindCountResult.getTotal())

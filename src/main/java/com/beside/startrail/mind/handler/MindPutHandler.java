@@ -6,13 +6,18 @@ import com.beside.startrail.common.protocolbuffer.mind.MindProtoUtil;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.image.repository.ImageRepository;
 import com.beside.startrail.image.service.ImageService;
+import com.beside.startrail.mind.document.Item;
+import com.beside.startrail.mind.document.Mind;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
-import io.micrometer.common.util.StringUtils;
+import com.google.common.collect.Lists;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import protobuf.mind.MindPutRequestProto;
@@ -23,8 +28,6 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
   private final String bucketName;
   private final MindRepository mindRepository;
   private final ImageRepository imageRepository;
-
-  private String key;
 
   public MindPutHandler(
       @Value("${sign.attributeName}") String attributeName,
@@ -40,6 +43,8 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
 
   @Override
   protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
+    AtomicReference<List<String>> keys = new AtomicReference<>(Lists.newArrayList());
+
     return serverRequest
         .bodyToMono(String.class)
         .flatMap(body ->
@@ -47,6 +52,30 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
                 body,
                 MindPutRequestProto.newBuilder()
             )
+        )
+        .flatMap(mindPutRequestProto ->
+            MindService
+                .getBySequence(
+                    super.jwtPayloadProto.getSequence(),
+                    mindPutRequestProto.getSequence(),
+                    YnType.Y
+                )
+                .execute(mindRepository)
+                .map(Mind::getItem)
+                .map(Item::getImageLink)
+                .map(imageLink ->
+                    Optional.ofNullable(
+                            ImageService
+                                .delete(
+                                    bucketName,
+                                    ImageService.getKey(imageLink)
+                                )
+                        )
+                        .map(imageDeleteCommand ->
+                            imageDeleteCommand.execute(imageRepository)
+                        )
+                )
+                .thenReturn(mindPutRequestProto)
         )
         .flatMap(mindPutRequestProto ->
             Optional.ofNullable(
@@ -60,7 +89,9 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
                 .map(imageSaveCommand ->
                     imageSaveCommand
                         .execute(imageRepository)
-                        .doOnNext(imageLink -> key = imageLink)
+                        .doOnNext(imageLink ->
+                            keys.get().add(ImageService.getKey(imageLink))
+                        )
                         .mapNotNull(imageLink ->
                             MindProtoUtil.toMindWithImageLink(
                                 mindPutRequestProto,
@@ -99,10 +130,19 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
                         .build()
                 )
                 .onErrorMap(throwable -> {
-                      if (!StringUtils.isBlank(key)) {
-                        ImageService
-                            .delete(bucketName, key)
-                            .execute(imageRepository);
+                      if (!CollectionUtils.isEmpty(keys.get())) {
+                        keys
+                            .get()
+                            .stream()
+                            .map(ImageService::getKey)
+                            .forEach((key) ->
+                                Optional.ofNullable(
+                                    ImageService
+                                        .delete(bucketName, key)
+                                ).map(imageDeleteCommand ->
+                                    imageDeleteCommand.execute(imageRepository)
+                                )
+                            );
                       }
 
                       return throwable;

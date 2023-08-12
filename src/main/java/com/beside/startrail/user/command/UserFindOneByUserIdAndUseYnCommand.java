@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 public class UserFindOneByUserIdAndUseYnCommand {
   private final UserId userId;
   private final YnType useYn;
+
   private Mono<User> result;
 
   public UserFindOneByUserIdAndUseYnCommand(UserId userId, YnType useYn) {

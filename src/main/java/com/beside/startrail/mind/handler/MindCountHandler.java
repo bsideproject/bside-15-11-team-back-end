@@ -29,7 +29,7 @@ public class MindCountHandler extends AbstractSignedHandler {
   @Override
   protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
     return MindService
-        .countByUserSequenceAndUseYn(super.jwtPayloadProto.getSequence(), YnType.Y)
+        .countByUserSequence(super.jwtPayloadProto.getSequence(), YnType.Y)
         .execute(customMindRepository)
         .map(MindProtoUtil::toMindCountResponseProto)
         .flatMap(mindCountResponseProto ->

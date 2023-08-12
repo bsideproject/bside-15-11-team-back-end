@@ -10,6 +10,7 @@ import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
 import io.micrometer.common.util.StringUtils;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -25,8 +26,6 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
   private final String bucketName;
   private final MindRepository mindRepository;
   private final ImageRepository imageRepository;
-
-  private String key;
 
   public MindPostHandler(
       @Value("${sign.attributeName}") String attributeName,
@@ -45,6 +44,8 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
 
   @Override
   protected Mono<ServerResponse> signedTransactionalHandle(ServerRequest serverRequest) {
+    AtomicReference<String> key = new AtomicReference<>("");
+
     return serverRequest
         .bodyToMono(String.class)
         .flatMap(body ->
@@ -68,7 +69,7 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
                         .map(imageSaveCommand ->
                             imageSaveCommand
                                 .execute(imageRepository)
-                                .doOnNext(imageLink -> key = imageLink)
+                                .doOnNext(key::set)
                                 .mapNotNull(imageLink ->
                                     MindProtoUtil.toMindWithImageLink(
                                         mindRequestProto,
@@ -104,10 +105,17 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
                 .bodyValue(body)
         )
         .onErrorMap(throwable -> {
-              if (!StringUtils.isBlank(key)) {
-                ImageService
-                    .delete(bucketName, key)
-                    .execute(imageRepository);
+              if (!StringUtils.isBlank(key.get())) {
+                Optional.ofNullable(
+                        ImageService
+                            .delete(
+                                bucketName,
+                                ImageService.getKey(key.get())
+                            )
+                    )
+                    .map(imageDeleteCommand ->
+                        imageDeleteCommand.execute(imageRepository)
+                    );
               }
 
               return throwable;

@@ -41,7 +41,7 @@ public class UserPostHandler implements HandlerFunction<ServerResponse> {
           );
 
           return Mono
-              .just(UserService.existsByUserIdAndUseYn(userId, YnType.Y))
+              .just(UserService.existsByUserId(userId, YnType.Y))
               .flatMap(userExistsByUserIdAndUseYnCommand ->
                   userExistsByUserIdAndUseYnCommand.execute(userRepository)
               )

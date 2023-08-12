@@ -65,7 +65,7 @@ public class RelationshipDeleteHandler extends AbstractSignedTransactionalHandle
                 .flatMap(mindSaveOneCommand ->
                     mindSaveOneCommand.execute(mindRepository)
                 ),
-            RelationshipService.getByUserSequenceAndSequenceAndUseYn(
+            RelationshipService.getBySequence(
                     super.jwtPayloadProto.getSequence(),
                     sequence,
                     YnType.Y

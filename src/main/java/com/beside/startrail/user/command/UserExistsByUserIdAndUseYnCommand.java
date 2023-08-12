@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 public class UserExistsByUserIdAndUseYnCommand {
   private final UserId userId;
   private final YnType useYn;
+
   private Mono<Boolean> result;
 
   public UserExistsByUserIdAndUseYnCommand(UserId userId, YnType useYn) {

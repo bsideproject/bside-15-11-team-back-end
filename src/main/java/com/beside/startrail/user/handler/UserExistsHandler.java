@@ -37,7 +37,7 @@ public class UserExistsHandler implements HandlerFunction<ServerResponse> {
         )
         .map(userId ->
             UserService
-                .existsByUserIdAndUseYn(userId, YnType.Y)
+                .existsByUserId(userId, YnType.Y)
         )
         .flatMap(userExistsByUserIdAndUseYnCommand ->
             userExistsByUserIdAndUseYnCommand.execute(userRepository)

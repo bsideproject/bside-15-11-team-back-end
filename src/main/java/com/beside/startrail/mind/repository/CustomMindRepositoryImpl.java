@@ -47,7 +47,7 @@ public class CustomMindRepositoryImpl implements CustomMindRepository {
   }
 
   @Override
-  public Mono<MindCountResult> countByRelationshipSequenceAndUseYn(
+  public Mono<MindCountResult> countByUserSequenceAndRelationshipSequenceAndUseYn(
       String userSequence,
       String relationshipSequence,
       YnType useYn
@@ -68,10 +68,10 @@ public class CustomMindRepositoryImpl implements CustomMindRepository {
 
     return Mono.from(
         reactiveMongoTemplate.aggregate(
-            aggregation,
-            Mind.class,
-            MindCountResult.class
-        )
+                aggregation,
+                Mind.class,
+                MindCountResult.class
+            )
     );
   }
 }

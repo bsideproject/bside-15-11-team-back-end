@@ -5,6 +5,7 @@ import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.levelinformation.LevelInformationProtoUtil;
 import com.beside.startrail.common.protocolbuffer.relationship.RelationshipProtoUtil;
 import com.beside.startrail.common.type.YnType;
+import com.beside.startrail.mind.model.MindCountResult;
 import com.beside.startrail.mind.repository.CustomMindRepository;
 import com.beside.startrail.mind.service.MindService;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
@@ -41,7 +42,7 @@ public class RelationshipGetBySequenceHandler extends AbstractSignedHandler {
     String sequence = serverRequest.pathVariable("sequence");
 
     return RelationshipService
-        .getByUserSequenceAndSequenceAndUseYn(
+        .getBySequence(
             super.jwtPayloadProto.getSequence(),
             sequence,
             YnType.Y
@@ -51,12 +52,13 @@ public class RelationshipGetBySequenceHandler extends AbstractSignedHandler {
         .flatMap(
             relationshipResponseProto ->
                 MindService
-                    .countByRelationshipSequenceAndUseYn(
+                    .countByRelationshipSequence(
                         super.jwtPayloadProto.getSequence(),
                         relationshipResponseProto.getSequence(),
                         YnType.Y
                     )
                     .execute(customMindRepository)
+                    .switchIfEmpty(Mono.just(MindCountResult.makeDefault()))
                     .flatMap(mindCountResult ->
                         RelationshipLevelService
                             .getBetweenCount(mindCountResult.getTotal())

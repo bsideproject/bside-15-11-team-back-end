@@ -59,7 +59,7 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
         .flatMap(signWithdrawalRequestProto ->
             Mono.when(
                     UserService
-                        .getBySequenceAndUseYn(sequence, YnType.Y)
+                        .getBySequence(sequence, YnType.Y)
                         .execute(userRepository)
                         .map(user ->
                             User.fromReason(user, signWithdrawalRequestProto.getWithdrawalReason())
@@ -72,7 +72,7 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
                             userSaveCommand.execute(userRepository)
                         ),
                     RelationshipService
-                        .getByUserSequenceAndUseYn(sequence, YnType.Y)
+                        .getByUserSequence(sequence, YnType.Y)
                         .execute(friendRepository)
                         .map(friend ->
                             RelationshipService
@@ -81,7 +81,7 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
                         .flatMap(friendSaveCommand ->
                             friendSaveCommand.execute(friendRepository)),
                     MindService
-                        .getByUserSequenceAndUseYn(sequence, YnType.Y)
+                        .getByUserSequence(sequence, YnType.Y)
                         .execute(relationshipRepository)
                         .flatMap(mind ->
                             Optional.ofNullable(

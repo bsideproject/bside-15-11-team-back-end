@@ -12,4 +12,10 @@ public class MindCountResult {
   private int total;
   private int given;
   private int taken;
+
+  public static MindCountResult makeDefault() {
+    return MindCountResult
+        .builder()
+        .build();
+  }
 }

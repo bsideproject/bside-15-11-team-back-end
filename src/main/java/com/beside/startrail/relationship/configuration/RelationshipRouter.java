@@ -1,7 +1,7 @@
 package com.beside.startrail.relationship.configuration;
 
 import com.beside.startrail.relationship.handler.RelationshipDeleteHandler;
-import com.beside.startrail.relationship.handler.RelationshipGetBySequenceAndKeywordAndSortHandler;
+import com.beside.startrail.relationship.handler.RelationshipGetByNicknameKeywordWithSortHandler;
 import com.beside.startrail.relationship.handler.RelationshipGetBySequenceHandler;
 import com.beside.startrail.relationship.handler.RelationshipPostHandler;
 import com.beside.startrail.relationship.handler.RelationshipPutHandler;
@@ -16,18 +16,19 @@ public class RelationshipRouter {
   private final RelationshipPutHandler relationshipPutHandler;
   private final RelationshipDeleteHandler relationshipDeleteHandler;
   private final RelationshipGetBySequenceHandler relationshipGetBySequenceHandler;
-  private final RelationshipGetBySequenceAndKeywordAndSortHandler
-      relationshipGetBySequenceAndKeywordAndSortHandler;
+  private final RelationshipGetByNicknameKeywordWithSortHandler
+      relationshipGetByNicknameKeywordWithSortHandler;
 
   public RelationshipRouter(
       RelationshipGetBySequenceHandler relationshipGetBySequenceHandler,
-      RelationshipGetBySequenceAndKeywordAndSortHandler relationshipGetBySequenceAndKeywordAndSortHandler,
+      RelationshipGetByNicknameKeywordWithSortHandler relationshipGetByNicknameKeywordWithSortHandler,
       RelationshipPostHandler relationshipPostHandler,
       RelationshipPutHandler relationshipPutHandler,
       RelationshipDeleteHandler relationshipDeleteHandler
   ) {
     this.relationshipGetBySequenceHandler = relationshipGetBySequenceHandler;
-    this.relationshipGetBySequenceAndKeywordAndSortHandler = relationshipGetBySequenceAndKeywordAndSortHandler;
+    this.relationshipGetByNicknameKeywordWithSortHandler =
+        relationshipGetByNicknameKeywordWithSortHandler;
     this.relationshipPostHandler = relationshipPostHandler;
     this.relationshipPutHandler = relationshipPutHandler;
     this.relationshipDeleteHandler = relationshipDeleteHandler;
@@ -37,7 +38,7 @@ public class RelationshipRouter {
   public RouterFunction<?> routerRelationship() {
     return RouterFunctions.route()
         .GET("/api/relationships/{sequence}", relationshipGetBySequenceHandler)
-        .GET("/api/relationships", relationshipGetBySequenceAndKeywordAndSortHandler)
+        .GET("/api/relationships", relationshipGetByNicknameKeywordWithSortHandler)
         .POST("/api/relationships", relationshipPostHandler)
         .PUT("/api/relationships/{sequence}", relationshipPutHandler)
         .DELETE("/api/relationships/{sequence}", relationshipDeleteHandler)

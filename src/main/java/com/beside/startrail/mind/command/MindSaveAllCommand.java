@@ -3,7 +3,6 @@ package com.beside.startrail.mind.command;
 import com.beside.startrail.mind.document.Mind;
 import com.beside.startrail.mind.repository.MindRepository;
 import java.util.List;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 public class MindSaveAllCommand {
@@ -14,7 +13,6 @@ public class MindSaveAllCommand {
     this.minds = minds;
   }
 
-  @Transactional
   public Flux<Mind> execute(MindRepository mindRepository) {
     result = mindRepository.saveAll(minds);
 

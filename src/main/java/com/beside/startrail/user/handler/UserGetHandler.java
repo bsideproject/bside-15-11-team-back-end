@@ -28,7 +28,7 @@ public class UserGetHandler extends AbstractSignedHandler {
   @Override
   protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
     return UserService
-        .getBySequenceAndUseYn(
+        .getBySequence(
             super.jwtPayloadProto.getSequence(),
             YnType.Y
         )

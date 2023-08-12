@@ -5,22 +5,28 @@ import com.beside.startrail.mind.document.Mind;
 import com.beside.startrail.mind.repository.MindRepository;
 import reactor.core.publisher.Mono;
 
-public class MindFindOneByUserSequenceAndSequenceCommand {
+public class MindFindOneByUserSequenceAndSequenceAndUseYnCommand {
   private final String userSequence;
   private final String sequence;
+  private final YnType useYn;
 
   private Mono<Mind> result;
 
-  public MindFindOneByUserSequenceAndSequenceCommand(String userSequence, String sequence) {
+  public MindFindOneByUserSequenceAndSequenceAndUseYnCommand(
+      String userSequence,
+      String sequence,
+      YnType useYn
+  ) {
     this.userSequence = userSequence;
     this.sequence = sequence;
+    this.useYn = useYn;
   }
 
   public Mono<Mind> execute(MindRepository mindRepository) {
     result = mindRepository.findOneByUserSequenceAndSequenceAndUseYn(
         userSequence,
         sequence,
-        YnType.Y
+        useYn
     );
 
     return result;

@@ -5,12 +5,12 @@ import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import reactor.core.publisher.Flux;
 
-public class RelationshipFindAllByUserSequenceCommand {
+public class RelationshipFindAllByUserSequenceAndUseYnCommand {
   private final String userSequence;
   private final YnType useYn;
   private Flux<Relationship> result;
 
-  public RelationshipFindAllByUserSequenceCommand(String userSequence, YnType useYn) {
+  public RelationshipFindAllByUserSequenceAndUseYnCommand(String userSequence, YnType useYn) {
     this.userSequence = userSequence;
     this.useYn = useYn;
   }

@@ -6,6 +6,7 @@ import reactor.core.publisher.Mono;
 
 public class UserSaveOneCommand {
   private final User user;
+
   private Mono<User> result;
 
   public UserSaveOneCommand(User user) {

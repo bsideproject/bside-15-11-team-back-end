@@ -5,13 +5,13 @@ import com.beside.startrail.user.document.User;
 import com.beside.startrail.user.repository.UserRepository;
 import reactor.core.publisher.Mono;
 
-public class UserFindOneBySequenceCommand {
+public class UserFindOneBySequenceAndUseYnCommand {
   private final String sequence;
   private final YnType useYn;
 
   private Mono<User> result;
 
-  public UserFindOneBySequenceCommand(
+  public UserFindOneBySequenceAndUseYnCommand(
       String sequence,
       YnType useYn
   ) {

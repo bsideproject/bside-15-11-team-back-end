@@ -3,6 +3,7 @@ package com.beside.startrail.mind.handler;
 import com.beside.startrail.common.handler.AbstractSignedHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.mind.MindProtoUtil;
+import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,8 @@ public class MindGetBySequenceHandler extends AbstractSignedHandler {
     return MindService
         .getBySequence(
             super.jwtPayloadProto.getSequence(),
-            sequence
+            sequence,
+            YnType.Y
         )
         .execute(mindRepository)
         .map(MindProtoUtil::toMindResponseProto)

@@ -2,7 +2,7 @@ package com.beside.startrail.relationship.service;
 
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.relationship.command.RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand;
-import com.beside.startrail.relationship.command.RelationshipFindAllByUserSequenceCommand;
+import com.beside.startrail.relationship.command.RelationshipFindAllByUserSequenceAndUseYnCommand;
 import com.beside.startrail.relationship.command.RelationshipFindOneByUserSequenceAndSequenceAndUseYnCommand;
 import com.beside.startrail.relationship.command.RelationshipSaveOneCommand;
 import com.beside.startrail.relationship.document.Relationship;
@@ -45,7 +45,7 @@ public class RelationshipService {
     }
   }
 
-  public static RelationshipFindOneByUserSequenceAndSequenceAndUseYnCommand getByUserSequenceAndSequenceAndUseYn(
+  public static RelationshipFindOneByUserSequenceAndSequenceAndUseYnCommand getBySequence(
       String userSequence,
       String sequence,
       YnType useYn
@@ -57,7 +57,7 @@ public class RelationshipService {
     );
   }
 
-  public static RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand getByUserSequenceAndNicknameKeywordAndUseYn(
+  public static RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand getByNicknameKeyword(
       String userSequence,
       String nicknameKeyword,
       YnType useYn
@@ -73,10 +73,10 @@ public class RelationshipService {
     return new RelationshipSaveOneCommand(relationship);
   }
 
-  public static RelationshipFindAllByUserSequenceCommand getByUserSequenceAndUseYn(
+  public static RelationshipFindAllByUserSequenceAndUseYnCommand getByUserSequence(
       String userSequence,
       YnType useYn
   ) {
-    return new RelationshipFindAllByUserSequenceCommand(userSequence, useYn);
+    return new RelationshipFindAllByUserSequenceAndUseYnCommand(userSequence, useYn);
   }
 }

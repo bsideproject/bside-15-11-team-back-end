@@ -40,7 +40,7 @@ public class SignHandler implements HandlerFunction<ServerResponse> {
             UserIdProtoUtil.toUserId(signRequestProto.getUserId())
         )
         .map(userId ->
-            UserService.getByUserIdAndUseYn(userId, YnType.Y)
+            UserService.getByUserId(userId, YnType.Y)
         )
         .flatMap(userExistsByUserIdAndUseYnCommand ->
             userExistsByUserIdAndUseYnCommand.execute(userRepository)

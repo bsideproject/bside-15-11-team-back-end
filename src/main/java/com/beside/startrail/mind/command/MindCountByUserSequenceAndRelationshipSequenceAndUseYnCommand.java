@@ -22,10 +22,8 @@ public class MindCountByUserSequenceAndRelationshipSequenceAndUseYnCommand {
     this.useYn = useYn;
   }
 
-  public Mono<MindCountResult> execute(
-      CustomMindRepository customMindRepository
-  ) {
-    result = customMindRepository.countByRelationshipSequenceAndUseYn(
+  public Mono<MindCountResult> execute(CustomMindRepository customMindRepository) {
+    result = customMindRepository.countByUserSequenceAndRelationshipSequenceAndUseYn(
         userSequence,
         relationshipSequence,
         useYn

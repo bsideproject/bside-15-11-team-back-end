@@ -11,6 +11,7 @@ import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
 import io.micrometer.common.util.StringUtils;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -39,15 +40,17 @@ public class MindDeleteHandler extends AbstractSignedHandler {
 
   @Override
   protected Mono<ServerResponse> signedHandle(ServerRequest serverRequest) {
+    AtomicReference<String> key = new AtomicReference<>("");
     String sequence = serverRequest.pathVariable("sequence");
 
     return MindService
         .getBySequence(
             super.jwtPayloadProto.getSequence(),
-            sequence
+            sequence,
+            YnType.Y
         )
         .execute(mindRepository)
-        .doOnNext(mind -> key = mind.getItem().getImageLink())
+        .doOnNext(mind -> key.set(mind.getItem().getImageLink()))
         .doOnNext(mind ->
             Optional.ofNullable(
                     ImageService.delete(
@@ -76,10 +79,14 @@ public class MindDeleteHandler extends AbstractSignedHandler {
                 .build()
         )
         .onErrorMap(throwable -> {
-              if (!StringUtils.isBlank(key)) {
-                ImageService
-                    .delete(bucketName, key)
-                    .execute(imageRepository);
+              if (!StringUtils.isBlank(key.get())) {
+                Optional.ofNullable(
+                        ImageService
+                            .delete(bucketName, key.get())
+                    )
+                    .map(imageDeleteCommand ->
+                        imageDeleteCommand.execute(imageRepository)
+                    );
               }
 
               return throwable;

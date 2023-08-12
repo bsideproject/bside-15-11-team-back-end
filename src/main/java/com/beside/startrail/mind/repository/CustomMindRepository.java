@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 public interface CustomMindRepository {
   Mono<MindCountResult> countByUserSequenceAndUseYn(String userSequence, YnType useYn);
 
-  Mono<MindCountResult> countByRelationshipSequenceAndUseYn(
+  Mono<MindCountResult> countByUserSequenceAndRelationshipSequenceAndUseYn(
       String userSequence,
       String relationshipSequence,
       YnType useYn

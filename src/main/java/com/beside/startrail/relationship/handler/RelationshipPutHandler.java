@@ -39,7 +39,7 @@ public class RelationshipPutHandler extends AbstractSignedTransactionalHandler {
             )
         )
         .flatMap(relationshipPutRequestProto ->
-            RelationshipService.getByUserSequenceAndSequenceAndUseYn(
+            RelationshipService.getBySequence(
                     super.jwtPayloadProto.getSequence(),
                     sequence,
                     YnType.Y

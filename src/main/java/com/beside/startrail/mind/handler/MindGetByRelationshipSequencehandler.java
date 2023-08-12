@@ -3,6 +3,7 @@ package com.beside.startrail.mind.handler;
 import com.beside.startrail.common.handler.AbstractSignedHandler;
 import com.beside.startrail.common.protocolbuffer.ProtocolBufferUtil;
 import com.beside.startrail.common.protocolbuffer.mind.MindProtoUtil;
+import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
 import com.beside.startrail.mind.type.SortOrderType;
@@ -37,7 +38,8 @@ public class MindGetByRelationshipSequencehandler extends AbstractSignedHandler 
                 .getByRelationshipSequenceWithOrder(
                     super.jwtPayloadProto.getSequence(),
                     mindGetRequestProto.getRelationshipSequence(),
-                    SortOrderType.valueOf(mindGetRequestProto.getSort().name())
+                    SortOrderType.valueOf(mindGetRequestProto.getSort().name()),
+                    YnType.Y
                 )
         )
         .flatMapMany(mindFindAllByRelationshipSequenceCommand ->

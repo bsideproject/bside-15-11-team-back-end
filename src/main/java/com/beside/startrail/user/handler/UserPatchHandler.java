@@ -32,7 +32,7 @@ public class UserPatchHandler extends AbstractSignedTransactionalHandler {
     String sequence = jwtPayloadProto.getSequence();
 
     return UserService
-        .getBySequenceAndUseYn(sequence, YnType.Y)
+        .getBySequence(sequence, YnType.Y)
         .execute(userRepository)
         .flatMap(user ->
             serverRequest
