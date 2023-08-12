@@ -10,8 +10,8 @@ import com.beside.startrail.mind.service.MindService;
 import com.beside.startrail.relationship.repository.CustomRelationshipRepository;
 import com.beside.startrail.relationship.service.RelationshipService;
 import com.beside.startrail.relationship.type.SortType;
-import com.beside.startrail.relationshiplevel.command.RelationshipLevelFindOneBetweenCountCommand;
 import com.beside.startrail.relationshiplevel.repository.RelationshipLevelRepository;
+import com.beside.startrail.relationshiplevel.service.RelationshipLevelService;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -65,8 +65,8 @@ public class RelationshipGetBySequenceAndKeywordAndSortHandler extends AbstractS
                                     )
                                     .execute(customMindRepository)
                                     .flatMap(mindCountResult ->
-                                        new RelationshipLevelFindOneBetweenCountCommand(
-                                            mindCountResult.getTotal())
+                                        RelationshipLevelService
+                                            .getBetweenCount(mindCountResult.getTotal())
                                             .execute(relationshipLevelRepository)
                                             .map(relationshipLevel ->
                                                 LevelInformationProtoUtil.toLevelInformationProto(
@@ -87,7 +87,6 @@ public class RelationshipGetBySequenceAndKeywordAndSortHandler extends AbstractS
                     getSortType(relationshipGetRequestProto.getSort())
                 )
         )
-        .map(ProtocolBufferUtil::print)
         .collectList()
         .flatMap(body ->
             ServerResponse

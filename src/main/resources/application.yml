@@ -35,7 +35,7 @@ server:
     key-store-type: PKCS12
     key-store-password: local
 log:
-  level: info
+  level: debug
 
 ---
 

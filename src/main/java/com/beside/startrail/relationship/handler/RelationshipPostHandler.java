@@ -44,7 +44,6 @@ public class RelationshipPostHandler extends AbstractSignedTransactionalHandler 
             relationshipSaveOneCommand.execute(relationshipRepository)
         )
         .map(RelationshipProtoUtil::toRelationshipResponseProto)
-        .map(ProtocolBufferUtil::print)
         .collectList()
         .flatMap(body ->
             ServerResponse.ok()
