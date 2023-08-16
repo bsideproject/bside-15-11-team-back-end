@@ -123,7 +123,8 @@ public class MindProtoUtil {
   public static MindPutResponseProto toMindPutResponseProto(
       Mind relationship) {
     if (Objects.isNull(relationship)) {
-      return MindPutResponseProto.newBuilder()
+      return MindPutResponseProto
+          .newBuilder()
           .clear()
           .build();
     }

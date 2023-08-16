@@ -23,10 +23,10 @@ public class LevelInformationProtoUtil {
 
     LevelInformationProto.Builder builder = LevelInformationProto
         .newBuilder()
+        .clear()
         .setTotal(total)
         .setGiven(given)
-        .setTaken(taken)
-        .clear();
+        .setTaken(taken);
 
     if (Objects.nonNull(relationshipLevel.getLevel())) {
       builder.setLevel(relationshipLevel.getLevel());
