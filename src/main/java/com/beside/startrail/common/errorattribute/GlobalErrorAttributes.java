@@ -1,7 +1,7 @@
 package com.beside.startrail.common.errorattribute;
 
-import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.http.HttpStatus;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+@Slf4j
 @Component
 public class GlobalErrorAttributes extends DefaultErrorAttributes {
   @Override
@@ -16,9 +17,10 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
       ServerRequest serverRequest,
       ErrorAttributeOptions options
   ) {
-    Map<String, Object> attributes = new HashMap<>();
+    Map<String, Object> attributes = super.getErrorAttributes(serverRequest, options);
 
-    Throwable throwable = getError(serverRequest);
+    Throwable throwable = super.getError(serverRequest);
+    log.error("", throwable);
 
     if (throwable instanceof ResponseStatusException responseStatusException) {
       attributes.put("status", responseStatusException.getStatusCode());
