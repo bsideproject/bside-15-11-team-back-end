@@ -41,6 +41,17 @@ public class User {
         .build();
   }
 
+  public static User fromAllowInformation(User user, AllowInformation allowInformation) {
+    return User.builder()
+        .userId(user.userId)
+        .sequence(user.sequence)
+        .userInformation(user.userInformation)
+        .allowInformation(allowInformation)
+        .useYn(user.useYn)
+        .withdrawlReason(user.getWithdrawlReason())
+        .build();
+  }
+
   public static User fromReason(User user, String reason) {
     return User.builder()
         .userId(user.getUserId())

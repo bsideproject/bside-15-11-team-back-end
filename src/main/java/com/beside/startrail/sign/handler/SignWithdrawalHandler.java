@@ -12,6 +12,7 @@ import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationship.service.RelationshipService;
 import com.beside.startrail.user.document.User;
+import com.beside.startrail.user.model.AllowInformation;
 import com.beside.startrail.user.repository.UserRepository;
 import com.beside.startrail.user.service.UserService;
 import java.util.Optional;
@@ -66,6 +67,9 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
                         )
                         .map(user ->
                             User.fromUseYn(user, YnType.N)
+                        )
+                        .map(user ->
+                            User.fromAllowInformation(user, AllowInformation.builder().build())
                         )
                         .map(UserService::create)
                         .flatMap(userSaveCommand ->
