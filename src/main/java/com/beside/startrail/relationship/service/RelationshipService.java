@@ -1,17 +1,21 @@
 package com.beside.startrail.relationship.service;
 
+import com.beside.startrail.common.command.Command;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.relationship.command.RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand;
 import com.beside.startrail.relationship.command.RelationshipFindAllByUserSequenceAndUseYnCommand;
 import com.beside.startrail.relationship.command.RelationshipFindOneByUserSequenceAndSequenceAndUseYnCommand;
 import com.beside.startrail.relationship.command.RelationshipSaveOneCommand;
 import com.beside.startrail.relationship.document.Relationship;
+import com.beside.startrail.relationship.repository.CustomRelationshipRepository;
+import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationship.type.SortType;
 import java.util.Comparator;
 import java.util.Optional;
 import protobuf.common.LevelInformationProto;
 import protobuf.relationship.RelationshipResponseProto;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public class RelationshipService {
   public static Flux<RelationshipResponseProto> sort(
@@ -45,7 +49,7 @@ public class RelationshipService {
     }
   }
 
-  public static RelationshipFindOneByUserSequenceAndSequenceAndUseYnCommand getBySequence(
+  public static Command<Mono<Relationship>, RelationshipRepository> getBySequence(
       String userSequence,
       String sequence,
       YnType useYn
@@ -57,7 +61,7 @@ public class RelationshipService {
     );
   }
 
-  public static RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand getByNicknameKeyword(
+  public static Command<Flux<Relationship>, CustomRelationshipRepository> getByNicknameKeyword(
       String userSequence,
       String nicknameKeyword,
       YnType useYn
@@ -69,11 +73,15 @@ public class RelationshipService {
     );
   }
 
-  public static RelationshipSaveOneCommand create(Relationship relationship) {
+  public static Command<Mono<Relationship>, RelationshipRepository> create(Relationship relationship) {
     return new RelationshipSaveOneCommand(relationship);
   }
 
-  public static RelationshipFindAllByUserSequenceAndUseYnCommand getByUserSequence(
+  public static Command<Mono<Relationship>, RelationshipRepository> update(Relationship relationship) {
+    return new RelationshipSaveOneCommand(relationship);
+  }
+
+  public static Command<Flux<Relationship>, RelationshipRepository> getByUserSequence(
       String userSequence,
       YnType useYn
   ) {

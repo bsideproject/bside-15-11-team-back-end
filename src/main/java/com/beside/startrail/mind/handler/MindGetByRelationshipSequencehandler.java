@@ -42,8 +42,8 @@ public class MindGetByRelationshipSequencehandler extends AbstractSignedHandler 
                     YnType.Y
                 )
         )
-        .flatMapMany(mindFindAllByRelationshipSequenceCommand ->
-            mindFindAllByRelationshipSequenceCommand
+        .flatMapMany(command ->
+            command
                 .execute(mindRepository)
                 .map(MindProtoUtil::toMindResponseProto)
         )

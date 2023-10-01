@@ -1,11 +1,12 @@
 package com.beside.startrail.user.command;
 
+import com.beside.startrail.common.command.Command;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.user.document.UserId;
 import com.beside.startrail.user.repository.UserRepository;
 import reactor.core.publisher.Mono;
 
-public class UserExistsByUserIdAndUseYnCommand {
+public class UserExistsByUserIdAndUseYnCommand implements Command<Mono<Boolean>, UserRepository> {
   private final UserId userId;
   private final YnType useYn;
 
@@ -16,6 +17,7 @@ public class UserExistsByUserIdAndUseYnCommand {
     this.useYn = useYn;
   }
 
+  @Override
   public Mono<Boolean> execute(UserRepository userRepository) {
     result = userRepository.existsByUserIdAndUseYn(userId, useYn);
 

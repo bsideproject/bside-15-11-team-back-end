@@ -66,8 +66,8 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
                                 mindRequestProto.getItem().getImageExtension()
                             )
                         )
-                        .map(imageSaveCommand ->
-                            imageSaveCommand
+                        .map(command ->
+                            command
                                 .execute(imageRepository)
                                 .doOnNext(key::set)
                                 .mapNotNull(imageLink ->
@@ -113,8 +113,8 @@ public class MindPostHandler extends AbstractSignedTransactionalHandler {
                                 ImageService.getKey(key.get())
                             )
                     )
-                    .map(imageDeleteCommand ->
-                        imageDeleteCommand.execute(imageRepository)
+                    .map(command ->
+                        command.execute(imageRepository)
                     );
               }
 

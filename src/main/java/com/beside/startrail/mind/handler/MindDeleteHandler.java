@@ -58,12 +58,12 @@ public class MindDeleteHandler extends AbstractSignedHandler {
                         ImageService.getKey(mind.getItem().getImageLink())
                     )
                 )
-                .map(imageDeleteCommand -> imageDeleteCommand.execute(imageRepository))
+                .map(command -> command.execute(imageRepository))
         )
         .map(mind -> Mind.from(mind, YnType.N))
         .map(MindService::create)
-        .flatMap(mindSaveOneCommand ->
-            mindSaveOneCommand.execute(mindRepository)
+        .flatMap(command ->
+            command.execute(mindRepository)
         )
         .map(MindProtoUtil::toMindResponseProto)
         .map(ProtocolBufferUtil::print)
@@ -84,8 +84,8 @@ public class MindDeleteHandler extends AbstractSignedHandler {
                         ImageService
                             .delete(bucketName, key.get())
                     )
-                    .map(imageDeleteCommand ->
-                        imageDeleteCommand.execute(imageRepository)
+                    .map(command ->
+                        command.execute(imageRepository)
                     );
               }
 

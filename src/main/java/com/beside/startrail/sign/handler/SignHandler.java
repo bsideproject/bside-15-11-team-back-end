@@ -42,8 +42,8 @@ public class SignHandler implements HandlerFunction<ServerResponse> {
         .map(userId ->
             UserService.getByUserId(userId, YnType.Y)
         )
-        .flatMap(userExistsByUserIdAndUseYnCommand ->
-            userExistsByUserIdAndUseYnCommand.execute(userRepository)
+        .flatMap(command ->
+            command.execute(userRepository)
         )
         .map(user ->
             JwtPayloadProto.newBuilder()

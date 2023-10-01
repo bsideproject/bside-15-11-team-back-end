@@ -40,8 +40,8 @@ public class RelationshipPostHandler extends AbstractSignedTransactionalHandler 
             )
         )
         .map(RelationshipService::create)
-        .flatMap(relationshipSaveOneCommand ->
-            relationshipSaveOneCommand.execute(relationshipRepository)
+        .flatMap(command ->
+            command.execute(relationshipRepository)
         )
         .map(RelationshipProtoUtil::toRelationshipResponseProto)
         .collectList()

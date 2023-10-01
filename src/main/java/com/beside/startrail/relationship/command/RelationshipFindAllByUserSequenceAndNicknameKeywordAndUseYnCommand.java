@@ -1,11 +1,13 @@
 package com.beside.startrail.relationship.command;
 
+import com.beside.startrail.common.command.Command;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.CustomRelationshipRepository;
 import reactor.core.publisher.Flux;
 
-public class RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand {
+public class RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand
+    implements Command<Flux<Relationship>, CustomRelationshipRepository> {
   private final String userSequence;
   private final String nicknameKeyword;
   private final YnType useYn;
@@ -22,12 +24,14 @@ public class RelationshipFindAllByUserSequenceAndNicknameKeywordAndUseYnCommand 
     this.useYn = useYn;
   }
 
+  @Override
   public Flux<Relationship> execute(CustomRelationshipRepository customRelationshipRepository) {
-    result = customRelationshipRepository.findAllRelationshipByUserSequenceAndNicknameKeywordAndUseYn(
-        userSequence,
-        nicknameKeyword,
-        useYn
-    );
+    result =
+        customRelationshipRepository.findAllRelationshipByUserSequenceAndNicknameKeywordAndUseYn(
+            userSequence,
+            nicknameKeyword,
+            useYn
+        );
 
     return result;
   }

@@ -1,13 +1,16 @@
 package com.beside.startrail.image.service;
 
+import com.beside.startrail.common.command.Command;
 import com.beside.startrail.image.command.ImageDeleteCommand;
 import com.beside.startrail.image.command.ImageSaveCommand;
+import com.beside.startrail.image.repository.ImageRepository;
 import io.jsonwebtoken.lang.Objects;
 import io.micrometer.common.util.StringUtils;
 import java.util.UUID;
+import reactor.core.publisher.Mono;
 
 public class ImageService {
-  public static ImageSaveCommand create(
+  public static Command<Mono<String>, ImageRepository> create(
       String bucketName,
       byte[] image,
       String imageName,
@@ -22,7 +25,7 @@ public class ImageService {
     return new ImageSaveCommand(bucketName, image, key);
   }
 
-  public static ImageDeleteCommand delete(String bucketName, String key) {
+  public static Command<Mono<Void>, ImageRepository> delete(String bucketName, String key) {
     if (StringUtils.isBlank(key)) {
       return null;
     }

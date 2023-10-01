@@ -4,11 +4,9 @@ import com.beside.startrail.common.handler.AbstractSignedTransactionalHandler;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.image.repository.ImageRepository;
 import com.beside.startrail.image.service.ImageService;
-import com.beside.startrail.mind.command.MindSaveOneCommand;
 import com.beside.startrail.mind.document.Mind;
 import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.service.MindService;
-import com.beside.startrail.relationship.command.RelationshipSaveOneCommand;
 import com.beside.startrail.relationship.document.Relationship;
 import com.beside.startrail.relationship.repository.RelationshipRepository;
 import com.beside.startrail.relationship.service.RelationshipService;
@@ -58,12 +56,12 @@ public class RelationshipDeleteHandler extends AbstractSignedTransactionalHandle
                                 ImageService.getKey(mind.getItem().getImageLink())
                             )
                         )
-                        .map(imageDeleteCommand -> imageDeleteCommand.execute(imageRepository))
+                        .map(command -> command.execute(imageRepository))
                 )
                 .map(mind -> Mind.from(mind, YnType.N))
-                .map(MindSaveOneCommand::new)
-                .flatMap(mindSaveOneCommand ->
-                    mindSaveOneCommand.execute(mindRepository)
+                .map(MindService::update)
+                .flatMap(command ->
+                    command.execute(mindRepository)
                 ),
             RelationshipService.getBySequence(
                     super.jwtPayloadProto.getSequence(),
@@ -74,9 +72,9 @@ public class RelationshipDeleteHandler extends AbstractSignedTransactionalHandle
                 .map(relationship ->
                     Relationship.from(relationship, YnType.N)
                 )
-                .map(RelationshipSaveOneCommand::new)
-                .flatMap(relationshipSaveOneCommand ->
-                    relationshipSaveOneCommand.execute(relationshipRepository)
+                .map(RelationshipService::update)
+                .flatMap(command ->
+                    command.execute(relationshipRepository)
                 )
         )
         .then(

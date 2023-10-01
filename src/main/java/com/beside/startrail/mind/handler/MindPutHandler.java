@@ -71,8 +71,8 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
                                     ImageService.getKey(imageLink)
                                 )
                         )
-                        .map(imageDeleteCommand ->
-                            imageDeleteCommand.execute(imageRepository)
+                        .map(command ->
+                            command.execute(imageRepository)
                         )
                 )
                 .thenReturn(mindPutRequestProto)
@@ -86,8 +86,8 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
                         mindPutRequestProto.getItem().getImageExtension()
                     )
                 )
-                .map(imageSaveCommand ->
-                    imageSaveCommand
+                .map(command ->
+                    command
                         .execute(imageRepository)
                         .doOnNext(imageLink ->
                             keys.get().add(ImageService.getKey(imageLink))
@@ -112,8 +112,8 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
                     )
                 )
                 .map(MindService::update)
-                .flatMap(mindSaveOneCommand ->
-                    mindSaveOneCommand.execute(mindRepository)
+                .flatMap(command ->
+                    command.execute(mindRepository)
                 )
                 .map(MindProtoUtil::toMindPutResponseProto)
                 .map(ProtocolBufferUtil::print)
@@ -139,8 +139,8 @@ public class MindPutHandler extends AbstractSignedTransactionalHandler {
                                 Optional.ofNullable(
                                     ImageService
                                         .delete(bucketName, key)
-                                ).map(imageDeleteCommand ->
-                                    imageDeleteCommand.execute(imageRepository)
+                                ).map(command ->
+                                    command.execute(imageRepository)
                                 )
                             );
                       }

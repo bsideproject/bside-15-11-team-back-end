@@ -72,8 +72,8 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
                             User.fromAllowInformation(user, AllowInformation.builder().build())
                         )
                         .map(UserService::create)
-                        .flatMap(userSaveCommand ->
-                            userSaveCommand.execute(userRepository)
+                        .flatMap(command ->
+                            command.execute(userRepository)
                         ),
                     RelationshipService
                         .getByUserSequence(sequence, YnType.Y)
@@ -82,8 +82,8 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
                             RelationshipService
                                 .create(Relationship.from(friend, YnType.N))
                         )
-                        .flatMap(friendSaveCommand ->
-                            friendSaveCommand.execute(friendRepository)),
+                        .flatMap(command ->
+                            command.execute(friendRepository)),
                     MindService
                         .getByUserSequence(sequence, YnType.Y)
                         .execute(relationshipRepository)
@@ -95,15 +95,15 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
                                             ImageService.getKey(mind.getItem().getImageLink())
                                         )
                                 )
-                                .map(imageDeleteCommand -> imageDeleteCommand.execute(imageRepository))
+                                .map(command -> command.execute(imageRepository))
                                 .orElse(Mono.empty())
                                 .thenReturn(
                                     MindService
                                         .create(Mind.from(mind, YnType.N))
                                 )
                         )
-                        .flatMap(mindSaveOneCommand ->
-                            mindSaveOneCommand.execute(relationshipRepository)
+                        .flatMap(command ->
+                            command.execute(relationshipRepository)
                         )
                 )
                 .then(

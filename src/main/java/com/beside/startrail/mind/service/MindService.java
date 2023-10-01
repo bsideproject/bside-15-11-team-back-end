@@ -1,5 +1,6 @@
 package com.beside.startrail.mind.service;
 
+import com.beside.startrail.common.command.Command;
 import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.mind.command.MindCountByUserSequenceAndRelationshipSequenceAndUseYnCommand;
 import com.beside.startrail.mind.command.MindCountByUserSequenceAndUseYnCommand;
@@ -10,18 +11,23 @@ import com.beside.startrail.mind.command.MindFindOneByUserSequenceAndSequenceAnd
 import com.beside.startrail.mind.command.MindSaveAllCommand;
 import com.beside.startrail.mind.command.MindSaveOneCommand;
 import com.beside.startrail.mind.document.Mind;
+import com.beside.startrail.mind.model.MindCountResult;
+import com.beside.startrail.mind.repository.CustomMindRepository;
+import com.beside.startrail.mind.repository.MindRepository;
 import com.beside.startrail.mind.type.SortOrderType;
 import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public class MindService {
-  public static MindCountByUserSequenceAndUseYnCommand countByUserSequence(
+  public static Command<Mono<MindCountResult>, CustomMindRepository> countByUserSequence(
       String userSequence,
       YnType useYn
   ) {
     return new MindCountByUserSequenceAndUseYnCommand(userSequence, useYn);
   }
 
-  public static MindCountByUserSequenceAndRelationshipSequenceAndUseYnCommand countByRelationshipSequence(
+  public static Command<Mono<MindCountResult>, CustomMindRepository> countByRelationshipSequence(
       String userSequence,
       String relationshipSequence,
       YnType useYn
@@ -33,7 +39,7 @@ public class MindService {
     );
   }
 
-  public static MindFindAllByUserSequenceAndRelationshipSequenceWithOrderAndUseYnCommand getByRelationshipSequenceWithOrder(
+  public static Command<Flux<Mind>, MindRepository> getByRelationshipSequenceWithOrder(
       String userSequence,
       String relationshipSequence,
       SortOrderType sortOrderType,
@@ -47,7 +53,7 @@ public class MindService {
     );
   }
 
-  public static MindFindAllByUserSequenceAndRelationshipSequenceAndUseYnCommand getByRelationshipSequence(
+  public static Command<Flux<Mind>, MindRepository> getByRelationshipSequence(
       String userSequence,
       String relationshipSequence,
       YnType useYn
@@ -59,7 +65,7 @@ public class MindService {
     );
   }
 
-  public static MindFindOneByUserSequenceAndSequenceAndUseYnCommand getBySequence(
+  public static Command<Mono<Mind>, MindRepository> getBySequence(
       String userSequence,
       String sequence,
       YnType useYn
@@ -71,20 +77,20 @@ public class MindService {
     );
   }
 
-  public static MindSaveOneCommand create(Mind mind) {
+  public static Command<Mono<Mind>, MindRepository> create(Mind mind) {
     return new MindSaveOneCommand(mind);
   }
 
 
-  public static MindSaveAllCommand create(List<Mind> minds) {
+  public static Command<Flux<Mind>, MindRepository> create(List<Mind> minds) {
     return new MindSaveAllCommand(minds);
   }
 
-  public static MindSaveOneCommand update(Mind mind) {
+  public static Command<Mono<Mind>, MindRepository> update(Mind mind) {
     return new MindSaveOneCommand(mind);
   }
 
-  public static MindFindAllByUserSequenceAndUseYnCommand getByUserSequence(
+  public static Command<Flux<Mind>, MindRepository> getByUserSequence(
       String userSequence,
       YnType useYn
   ) {

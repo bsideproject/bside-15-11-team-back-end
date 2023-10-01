@@ -42,15 +42,15 @@ public class UserPostHandler implements HandlerFunction<ServerResponse> {
 
           return Mono
               .just(UserService.existsByUserId(userId, YnType.Y))
-              .flatMap(userExistsByUserIdAndUseYnCommand ->
-                  userExistsByUserIdAndUseYnCommand.execute(userRepository)
+              .flatMap(command ->
+                  command.execute(userRepository)
               )
               .map(result -> !result)
               .filter(Boolean::booleanValue)
               .mapNotNull(__ -> UserProtoUtil.toUser(userPostRequestProto))
               .<User>map(user -> User.fromSequence(user, UUID.randomUUID().toString()))
               .map(UserService::create)
-              .flatMap(userSaveCommand -> userSaveCommand.execute(userRepository))
+              .flatMap(command -> command.execute(userRepository))
               .map(UserProtoUtil::toUserResponseProto)
               .flatMap(userResponseProto ->
                   ServerResponse

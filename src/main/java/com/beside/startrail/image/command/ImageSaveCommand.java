@@ -1,9 +1,10 @@
 package com.beside.startrail.image.command;
 
+import com.beside.startrail.common.command.Command;
 import com.beside.startrail.image.repository.ImageRepository;
 import reactor.core.publisher.Mono;
 
-public class ImageSaveCommand {
+public class ImageSaveCommand implements Command<Mono<String>, ImageRepository> {
   private final String bucketName;
   private final byte[] image;
   private final String key;
@@ -16,6 +17,7 @@ public class ImageSaveCommand {
     this.key = key;
   }
 
+  @Override
   public Mono<String> execute(ImageRepository imageRepository) {
     result = imageRepository
         .save(bucketName, image, key)

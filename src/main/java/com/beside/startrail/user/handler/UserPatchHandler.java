@@ -47,8 +47,8 @@ public class UserPatchHandler extends AbstractSignedTransactionalHandler {
                 .map(editUser -> mergeUser(user, editUser))
                 .map(UserService::create
                 )
-                .flatMap(userSaveCommand ->
-                    userSaveCommand.execute(userRepository)
+                .flatMap(command ->
+                    command.execute(userRepository)
                 )
                 .map(UserProtoUtil::toUserResponseProto)
                 .flatMap(userResponseProto ->
