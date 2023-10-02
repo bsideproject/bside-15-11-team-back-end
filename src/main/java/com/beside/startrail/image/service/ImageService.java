@@ -16,7 +16,7 @@ public class ImageService {
       String imageName,
       String fileExtension
   ) {
-    if (isNotValidToCreate(image, imageName, fileExtension)) {
+    if (isInValidToCreate(image, imageName, fileExtension)) {
       return null;
     }
 
@@ -43,9 +43,10 @@ public class ImageService {
     return url.substring(lastIndex + 1);
   }
 
-  private static boolean isNotValidToCreate(byte[] image, String imageName, String fileExtension) {
-    return Objects.isEmpty(image) || StringUtils.isBlank(imageName) ||
-        StringUtils.isBlank(fileExtension);
+  private static boolean isInValidToCreate(byte[] image, String imageName, String fileExtension) {
+    return Objects.isEmpty(image)
+        || StringUtils.isBlank(imageName)
+        || StringUtils.isBlank(fileExtension);
   }
 
   private static String makeKey(String imageName, String fileExtension) {
