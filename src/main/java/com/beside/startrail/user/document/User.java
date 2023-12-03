@@ -4,6 +4,7 @@ import com.beside.startrail.common.type.YnType;
 import com.beside.startrail.user.model.AllowInformation;
 import com.beside.startrail.user.model.UserInformation;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class User {
   @LastModifiedDate
   private final LocalDateTime modifyDate;
   private final AllowInformation allowInformation;
-  private final String withdrawlReason;
+  private final List<String> withdrawlReason;
 
   public static User fromUseYn(User user, YnType useYn) {
     return User.builder()
@@ -52,7 +53,7 @@ public class User {
         .build();
   }
 
-  public static User fromReason(User user, String reason) {
+  public static User fromReason(User user, List<String> reason) {
     return User.builder()
         .userId(user.getUserId())
         .sequence(user.getSequence())

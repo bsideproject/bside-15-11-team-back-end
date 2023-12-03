@@ -63,7 +63,7 @@ public class SignWithdrawalHandler extends AbstractSignedTransactionalHandler {
                         .getBySequence(sequence, YnType.Y)
                         .execute(userRepository)
                         .map(user ->
-                            User.fromReason(user, signWithdrawalRequestProto.getWithdrawalReason())
+                            User.fromReason(user, signWithdrawalRequestProto.getWithdrawalReasonList())
                         )
                         .map(user ->
                             User.fromUseYn(user, YnType.N)
