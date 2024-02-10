@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.savedrequest.NoOpServerRequestCache;
 
 @Configuration
 public class SecurityConfiguration {
@@ -21,9 +20,6 @@ public class SecurityConfiguration {
         .authorizeExchange(authorizeExchangeSpec ->
             authorizeExchangeSpec.anyExchange().permitAll()
         )
-        .requestCache()
-        .requestCache(NoOpServerRequestCache.getInstance())
-        .and()
         .build();
   }
 }
