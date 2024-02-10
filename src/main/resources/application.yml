@@ -50,7 +50,7 @@ cors:
 server:
   port: 443
   ssl:
-    key-store: file:${ssl.keyPath}
+    key-store: file:${ssl.path}
     key-store-type: PKCS12
     key-store-password: ${ssl.password}
 log:
