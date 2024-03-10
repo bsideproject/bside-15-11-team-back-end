@@ -14,6 +14,8 @@ import protobuf.relationship.RelationshipResponseProto;
 import reactor.core.publisher.Flux;
 
 public class RelationshipProtoUtil {
+  private RelationshipProtoUtil() {}
+
   public static RelationshipResponseProto toRelationshipResponseProto(Relationship relationship) {
     if (Objects.isNull(relationship)) {
       return RelationshipResponseProto
