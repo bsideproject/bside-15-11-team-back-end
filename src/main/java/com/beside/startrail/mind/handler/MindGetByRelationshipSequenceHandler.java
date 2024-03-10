@@ -17,10 +17,10 @@ import protobuf.mind.MindGetResponseProto;
 import reactor.core.publisher.Mono;
 
 @Component
-public class MindGetByRelationshipSequencehandler extends AbstractSignedHandler {
+public class MindGetByRelationshipSequenceHandler extends AbstractSignedHandler {
   private final MindRepository mindRepository;
 
-  public MindGetByRelationshipSequencehandler(
+  public MindGetByRelationshipSequenceHandler(
       @Value("${sign.attributeName}") String attributeName,
       MindRepository mindRepository
   ) {

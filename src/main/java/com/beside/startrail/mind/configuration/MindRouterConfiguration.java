@@ -4,7 +4,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 
 import com.beside.startrail.mind.handler.MindCountHandler;
 import com.beside.startrail.mind.handler.MindDeleteHandler;
-import com.beside.startrail.mind.handler.MindGetByRelationshipSequencehandler;
+import com.beside.startrail.mind.handler.MindGetByRelationshipSequenceHandler;
 import com.beside.startrail.mind.handler.MindGetBySequenceHandler;
 import com.beside.startrail.mind.handler.MindPostHandler;
 import com.beside.startrail.mind.handler.MindPutHandler;
@@ -17,7 +17,7 @@ public class MindRouterConfiguration {
   @Bean
   public RouterFunction<?> routeMind(
       MindCountHandler mindCountHandler,
-      MindGetByRelationshipSequencehandler mindGetByRelationshipSequencehandler,
+      MindGetByRelationshipSequenceHandler mindGetByRelationshipSequenceHandler,
       MindGetBySequenceHandler mindGetBySequenceHandler,
       MindPostHandler mindPostHandler,
       MindPutHandler mindPutHandler,
@@ -25,7 +25,7 @@ public class MindRouterConfiguration {
   ) {
     return route()
         .GET("/api/minds/count", mindCountHandler)
-        .GET("/api/minds", mindGetByRelationshipSequencehandler)
+        .GET("/api/minds", mindGetByRelationshipSequenceHandler)
         .GET("/api/minds/{sequence}", mindGetBySequenceHandler)
         .POST("/api/minds", mindPostHandler)
         .PUT("/api/minds", mindPutHandler)
