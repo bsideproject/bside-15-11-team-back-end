@@ -21,7 +21,8 @@ public class Relationship {
   private final String relationship;
   private final Birth birth;
   private final String memo;
-
+  @Builder.Default
+  private final YnType favoriteYn = YnType.N;
   @Builder.Default
   private final YnType useYn = YnType.Y;
 
@@ -38,6 +39,7 @@ public class Relationship {
         .relationship(relationship.relationship)
         .birth(relationship.birth)
         .memo(relationship.memo)
+        .favoriteYn(relationship.favoriteYn)
         .useYn(useYn)
         .build();
   }
@@ -50,7 +52,8 @@ public class Relationship {
         .relationship(relationship.relationship)
         .birth(relationship.birth)
         .memo(relationship.memo)
-        .useYn(relationship.getUseYn())
+        .favoriteYn(relationship.favoriteYn)
+        .useYn(relationship.useYn)
         .build();
   }
 }

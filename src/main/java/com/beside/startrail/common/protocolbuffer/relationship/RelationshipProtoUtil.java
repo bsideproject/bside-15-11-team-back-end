@@ -14,7 +14,6 @@ import protobuf.relationship.RelationshipResponseProto;
 import reactor.core.publisher.Flux;
 
 public class RelationshipProtoUtil {
-
   public static RelationshipResponseProto toRelationshipResponseProto(Relationship relationship) {
     if (Objects.isNull(relationship)) {
       return RelationshipResponseProto
@@ -41,6 +40,9 @@ public class RelationshipProtoUtil {
     }
     if (Objects.nonNull(relationship.getMemo())) {
       builder.setMemo(relationship.getMemo());
+    }
+    if (Objects.nonNull(relationship.getFavoriteYn())) {
+      builder.setFavoriteYn(YnTypeProto.valueOf(relationship.getFavoriteYn().name()));
     }
 
     return builder.build();
@@ -94,6 +96,7 @@ public class RelationshipProtoUtil {
         .relationship(relationshipPutRequestProto.getRelationship())
         .birth(toBirth(relationshipPutRequestProto.getBirth()))
         .memo(relationshipPutRequestProto.getMemo())
+        .favoriteYn(YnType.valueOf(relationshipPutRequestProto.getFavoriteYn().name()))
         .build();
   }
 
