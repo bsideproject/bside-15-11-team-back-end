@@ -90,6 +90,7 @@ public class RelationshipGetByNicknameKeywordWithSortHandler extends AbstractSig
                 )
         )
         .collectList()
+        .map(ProtocolBufferUtil::printAll)
         .flatMap(body ->
             ServerResponse
                 .ok()

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 
@@ -37,6 +39,14 @@ public final class ProtocolBufferUtil {
           String.format("message json 변환에 실패했습니다. message: %s", message.toString()),
           invalidProtocolBufferException);
     }
+  }
+
+  public static <T extends Message> String printAll(Collection<T> messages) {
+    return "["
+        + messages.stream()
+        .map(ProtocolBufferUtil::print)
+        .collect(Collectors.joining(","))
+        + "]";
   }
 
   @SuppressWarnings("unchecked")
